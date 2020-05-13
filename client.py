@@ -5,7 +5,7 @@ from select import select #check is connected now or not
 import json
 
 server = '0.0.0.0'#server address
-port = 8873
+port = 8871
 
 uname = input("name khoda ra vare konid : ")
 toclient = input("name dost khod ra vare konid : ")
@@ -48,7 +48,7 @@ class Socket:
         user = ({"id": uname, "user": uname, "toclient": toclient})
         user = json.dumps(user)
         self.socket.sendall((user.encode()))#
-        print(self.socket, 'joined.')
+        print(uname, 'joined.')
 
     def _on_disconnect(self):
         print(self.socket, 'disconnected.')
@@ -74,12 +74,7 @@ s = Socket(server, port)
 while True:
 
     message = input("")
-    if message == "[e]":
-        message = "Left chat room!"
-        s.send(message)
-
-        print("\n")
-        s.close()
-        break
-
+    if message == "end":
+        toclient = input("name dost jadid khod ra vare konid : ")
+        message=""
     s.send(message)

@@ -1,26 +1,28 @@
 from socket import socket
 import threading #run movazi
 from extra import *
+from datetime import datetime
 import json
-import datetime
 
 
 
-print("\nWelcome to Chat Room\n")
-print("Initialising....\n")
+print("\nThe server was successfully activated.\n")
 
+#Server information
 ip = '0.0.0.0'
-port = 8873
+port = 8871
 
 
 class Socket:
-    size = 4096#hame taghir mikone
-    clients = {}#save clients
-    user_info =""
+    size = 4096 #Size of information sent and received
+    clients = {} #Save users
+    user_info = ""
+
     def __init__(self, host, port): #first run
         self.socket = socket() #socket.socket()
         self.socket.bind((host, port))
-        self.socket.listen(1)#open port and wait
+        self.socket.listen(1) #Open the port and wait for the new user
+
         while True:          # trade two function            #connect to client
             threading.Thread(target=self._wait_recv, args=self.socket.accept()).start() #2ta khorji conn,addr ghabli
 
@@ -47,21 +49,22 @@ class Socket:
 
         self.user_info = json.loads(client.recv(self.size))
         self.clients.update({client:self.user_info["user"]})
-        print(self.user_info["user"], ' joined.')
+        print(self.user_info["user"], ' joined at ',datetime.now().strftime("%I:%M %p"))
 
 
     def _on_disconnect(self, client: socket):
         if client in self.clients:
+            print(self.clients.get(client), 'disconnected at ',datetime.now().strftime("%I:%M %p"))
             del self.clients[client]
         #print(self.clients)
-        print(client, 'disconnected.')
+
 
     def _on_message(self, client: socket, data: bytes):
         x=(json.loads(data.decode()))
         for toclient, username in self.clients.items():
             if username == x["toclient"]:
                 self.send_to(toclient, x["message"],x["username"])
-                print("messege from : ",x["username"]," sended.")
+                print("The message was sent by {0} to {1} at {2}".format(x["username"],x["toclient"],datetime.now().strftime("%I:%M %p")))
         pass
 
     def send_to(self, client, data, mfrom):#kolan karesh ersale
