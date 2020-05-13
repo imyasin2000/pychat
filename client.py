@@ -4,8 +4,8 @@ from socket import socket
 from select import select #check is connected now or not
 import json
 
-server = '0.0.0.0'#server address
-port = 8871
+server = '51.195.19.3'#server address
+port = 8876
 
 uname = input("name khoda ra vare konid : ")
 toclient = input("name dost khod ra vare konid : ")
