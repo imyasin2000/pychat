@@ -4,6 +4,7 @@ from numbers import Number
 import json
 
 
+
 def encrypt(data: bytes) -> bytes:
     return data
 

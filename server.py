@@ -11,6 +11,7 @@ port = 3235
 print(host, "(", ip, ")\n")
 
 
+
 class Socket:
     size = 4096
     clients = []
