@@ -4,7 +4,6 @@ from numbers import Number
 import json
 
 
-
 def encrypt(data: bytes) -> bytes:
     return data
 
@@ -12,14 +11,15 @@ def encrypt(data: bytes) -> bytes:
 def decrypt(data: bytes) -> bytes:
     return data
 
-
+#not importent
 def json_to_model(data: bytes, model):
     obj = model()
     obj.__dict__.update(json.loads(data.decode()))
     return obj
 
+##'{"type":"login","user":"mhfa1380","pass":""}'
 
-def make_object(v):
+def make_object(v):#moteghayer to json readable
     if isinstance(v, (str, bool, Number)):
         return v
 
@@ -29,16 +29,13 @@ def make_object(v):
     if isinstance(v, dict):
         return dict(map(lambda item: (item[0], make_object(item[1])), v.items()))
 
-    if isinstance(v, Iterable):
-        l = []
-        for i in v:
-            l.append(make_object(i))
-        return l
+    if isinstance(v, Iterable):#list , map , ...
+        return list(map(make_object, v))
 
     return str(v)
 
 
-class Model:
+class Model:#base tamam model ha ke bdinim noeshon chie?
     def dict(self):
         return make_object(self.__dict__)
 
@@ -54,6 +51,7 @@ class Media(Model):
     size: int
 
     def size_text(self):
+
         suffix = ('B', 'KB', 'MB', 'GB')
         size = self.size
         for i in range(len(suffix)):
@@ -150,3 +148,4 @@ class VideoMessage(WithTextMessage):
 
 class FileMessage(WithTextMessage):
     file: File
+

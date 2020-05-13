@@ -1,35 +1,32 @@
 from extra import *
 import threading
-import socket
-import select
+from socket import socket
+from select import select #check is connected now or not
+import json
 
+server = '0.0.0.0'#server address
+port = 8873
 
-print("\nWelcome to Chat Room\n")
-print("Initialising....\n")
+uname = input("name khoda ra vare konid : ")
+toclient = input("name dost khod ra vare konid : ")
 
-shost = socket.gethostname()
-ip = socket.gethostbyname(shost)
-print(shost, "(", ip, ")\n")
-host = shost  # input(str("Enter server address: "))
-port = 3235
-print("\nTrying to connect to ", host, "(", port, ")\n")
-print("Connected...\n")
-
-
+# toclient = 'ali fadavi'
+# uname = 'ahmad poor'
 class Socket:
     size = 4096
 
     def __init__(self, host, port):
-        self.socket = socket.socket()
-        self.socket.connect((host, port))
-        threading.Thread(target=self._wait_recv).start()
+        self.socket = socket()
+        self.socket.connect((host, port))#connected
+        threading.Thread(target=self._wait_recv).start()#tabe movazi run mikne bara daryaft o send message
 
     def _wait_recv(self):
         self._on_connect()
         data = b''
         while True:
             try:
-                r, _, _ = select.select([self.socket], [self.socket], [])
+                #do taye dg niaz nabod
+                r, _, _ = select([self.socket], [self.socket], [])#baresi mishe vasl hast ya na
                 if r:
                     d = self.socket.recv(self.size)
                     data += d
@@ -47,30 +44,42 @@ class Socket:
                 return
 
     def _on_connect(self):
+
+        user = ({"id": uname, "user": uname, "toclient": toclient})
+        user = json.dumps(user)
+        self.socket.sendall((user.encode()))#
         print(self.socket, 'joined.')
 
     def _on_disconnect(self):
         print(self.socket, 'disconnected.')
 
     def _on_message(self, data: bytes):
-        print(self.socket, len(data.decode()))
+        x = (json.loads(data.decode()))
+        print(x["from"]," : ",x["message"])
 
     def close(self):
         self.socket.close()
 
     def send(self, data):
-        self.socket.send(encrypt(data) + b'\0')
+        message_body = ({"username":uname,"message":data,"toclient":toclient})
+        message_body=json.dumps(message_body)
+        self.socket.send((message_body.encode()+ b'\0'))
+
+        # self.socket.send(encrypt(data) + b'\0')#
 
 
-s = Socket(host, port)
+
+s = Socket(server, port)
 
 while True:
-    message = input("Enter a message: ")
+
+    message = input("")
     if message == "[e]":
         message = "Left chat room!"
-        s.send(message.encode())
+        s.send(message)
+
         print("\n")
         s.close()
         break
 
-    s.send(message.encode())
+    s.send(message)
