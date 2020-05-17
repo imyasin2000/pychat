@@ -21,9 +21,6 @@ class Socket:
     size = 4096
 
     def __init__(self, host, port):
-        app = QApplication(sys.argv)
-        window = UI()
-        app.exec_()
         self.socket = socket()
         self.socket.connect((host, port))#connected
         threading.Thread(target=self._wait_recv).start()#tabe movazi run mikne bara daryaft o send message
@@ -77,7 +74,7 @@ class Socket:
 
 
 class UI(QMainWindow):
-
+    s = Socket(server, port)
     def __init__(self):
         super(UI, self).__init__()
         uic.loadUi("untitled.ui", self)
@@ -89,14 +86,13 @@ class UI(QMainWindow):
         self.textedit_3 = self.findChild(QTextEdit, "textEdit_3")
         self.button = self.findChild(QPushButton, "pushButton")
         self.button.clicked.connect(self.clickedBtn)
-        self.textedit.setPlainText(uname)
+
 
         self.show()
 
     def clickedBtn(self):
         global uname
         global toclient
-
         uname = (self.textEdit.toPlainText())
         toclient = (self.textedit_2.toPlainText())
         i=0
@@ -105,9 +101,11 @@ class UI(QMainWindow):
         message = (self.textedit_3.toPlainText())
         self.s.send(message)
 
-uname=input("enter youre name :")
-s = Socket(server, port)
 
+
+app = QApplication(sys.argv)
+window = UI()
+app.exec_()
 
 
 
