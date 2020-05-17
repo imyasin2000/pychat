@@ -9,11 +9,12 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit
 from PyQt5 import uic
 import sys
 ##
-server = '51.195.19.3'#server address
-port = 8874
+server = '0.0.0.0'#server address
+port = 8871
 
 uname = "hassan"
 toclient = ""
+messege="hi"
 uname = input("youre name :  ")
 # toclient = 'ali fadavi'
 # uname = 'ahmad poor'
@@ -30,6 +31,7 @@ class Socket:
         data = b''
         while True:
             try:
+
                 #do taye dg niaz nabod
                 r, _, _ = select([self.socket], [self.socket], [])#baresi mishe vasl hast ya na
                 if r:
@@ -59,8 +61,9 @@ class Socket:
         print(self.socket, 'disconnected.')
 
     def _on_message(self, data: bytes):
+        global messege
         x = (json.loads(data.decode()))
-        print(x["from"]," : ",x["message"])
+        messege=(x["from"]," : ",x["message"])
 
     def close(self):
         self.socket.close()
@@ -78,10 +81,11 @@ class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
         uic.loadUi("Client_UI.ui", self)
-
+        threading.Thread(target=self._timer).start()
         self.textedit = self.findChild(QTextEdit, "textEdit")
         self.textedit_2 = self.findChild(QTextEdit, "textEdit_2")
         self.textedit_3 = self.findChild(QTextEdit, "textEdit_3")
+        self.textedit_4 = self.findChild(QTextEdit, "textEdit_4")
         self.button = self.findChild(QPushButton, "pushButton")
         global uname
         # find the widgets in the xml file
@@ -90,13 +94,17 @@ class UI(QMainWindow):
 
 
         self.show()
-
+    def _timer(self):
+        while True():
+            print("hi there")
     def clickedBtn(self):
         global uname
         global toclient
+        global messege
         uname = (self.textEdit.toPlainText())
         toclient = (self.textedit_2.toPlainText())
-
+        self.textedit_4.setPlainText(str(messege))
+        print(messege)
         message = (self.textedit_3.toPlainText())
         self.s.send(message)
 
