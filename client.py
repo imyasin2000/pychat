@@ -65,6 +65,7 @@ class Socket:
         x = (json.loads(data.decode()))
         messege=(x["from"]," : ",x["message"])
 
+
     def close(self):
         self.socket.close()
 
@@ -77,11 +78,12 @@ class Socket:
 
 
 class UI(QMainWindow):
+
     s = Socket(server, port)
     def __init__(self):
         super(UI, self).__init__()
         uic.loadUi("Client_UI.ui", self)
-        threading.Thread(target=self._timer).start()
+
         self.textedit = self.findChild(QTextEdit, "textEdit")
         self.textedit_2 = self.findChild(QTextEdit, "textEdit_2")
         self.textedit_3 = self.findChild(QTextEdit, "textEdit_3")
@@ -94,16 +96,15 @@ class UI(QMainWindow):
 
 
         self.show()
-    def _timer(self):
-        while True():
-            print("hi there")
+
+
     def clickedBtn(self):
         global uname
         global toclient
         global messege
         uname = (self.textEdit.toPlainText())
         toclient = (self.textedit_2.toPlainText())
-        self.textedit_4.setPlainText(str(messege))
+
         print(messege)
         message = (self.textedit_3.toPlainText())
         self.s.send(message)
