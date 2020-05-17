@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit
 from PyQt5 import uic
 import sys
 ##
-server = '0.0.0.0'#server address
+server = '1.0.0.0'#server address
 port = 8871
 
 uname = "hassan"
