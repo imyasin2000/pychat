@@ -4,11 +4,16 @@ from socket import socket
 from select import select #check is connected now or not
 import json
 
-server = '51.195.19.3'#server address
-port = 8876
+###
+from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit
+from PyQt5 import uic
+import sys
+##
+server = '0.0.0.0'#server address
+port = 8875
 
-uname = input("name khoda ra vare konid : ")
-toclient = input("name dost khod ra vare konid : ")
+uname = "hassan"
+toclient = ""
 
 # toclient = 'ali fadavi'
 # uname = 'ahmad poor'
@@ -16,6 +21,9 @@ class Socket:
     size = 4096
 
     def __init__(self, host, port):
+        app = QApplication(sys.argv)
+        window = UI()
+        app.exec_()
         self.socket = socket()
         self.socket.connect((host, port))#connected
         threading.Thread(target=self._wait_recv).start()#tabe movazi run mikne bara daryaft o send message
@@ -68,13 +76,38 @@ class Socket:
         # self.socket.send(encrypt(data) + b'\0')#
 
 
+class UI(QMainWindow):
 
+    def __init__(self):
+        super(UI, self).__init__()
+        uic.loadUi("untitled.ui", self)
+
+        # find the widgets in the xml file
+
+        self.textedit = self.findChild(QTextEdit, "textEdit")
+        self.textedit_2 = self.findChild(QTextEdit, "textEdit_2")
+        self.textedit_3 = self.findChild(QTextEdit, "textEdit_3")
+        self.button = self.findChild(QPushButton, "pushButton")
+        self.button.clicked.connect(self.clickedBtn)
+        self.textedit.setPlainText(uname)
+
+        self.show()
+
+    def clickedBtn(self):
+        global uname
+        global toclient
+
+        uname = (self.textEdit.toPlainText())
+        toclient = (self.textedit_2.toPlainText())
+        i=0
+
+
+        message = (self.textedit_3.toPlainText())
+        self.s.send(message)
+
+uname=input("enter youre name :")
 s = Socket(server, port)
 
-while True:
 
-    message = input("")
-    if message == "end":
-        toclient = input("name dost jadid khod ra vare konid : ")
-        message=""
-    s.send(message)
+
+
