@@ -6,6 +6,12 @@ import json
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit
 from PyQt5 import uic
 import sys
+<<<<<<< Updated upstream
+=======
+##
+server = '192.168.1.107'#server address
+port = 8871
+>>>>>>> Stashed changes
 
 
 
