@@ -100,7 +100,7 @@ class PrivateChat(Chat):
 
 class GroupChat(Chat):
     owner: User
-    admins: List[User]
+    # admins: List[User]
     members: List[User]
 
 

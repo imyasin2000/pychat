@@ -3,28 +3,29 @@ import threading
 from socket import socket
 from select import select #check is connected now or not
 import json
-
-###
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit
 from PyQt5 import uic
 import sys
-##
-server = '1.0.0.0'#server address
-port = 8871
 
-uname = "hassan"
+
+
+server = '0.0.0.0'#server address
+port = 8872
+
+uname = ""#file as biron
 toclient = ""
-messege="hi"
+
 uname = input("youre name :  ")
-# toclient = 'ali fadavi'
-# uname = 'ahmad poor'
+toclient = input("youre freind name :  ")
 class Socket:
     size = 4096
 
-    def __init__(self, host, port):
+    def __init__(self, host, port,ui):
         self.socket = socket()
         self.socket.connect((host, port))#connected
         threading.Thread(target=self._wait_recv).start()#tabe movazi run mikne bara daryaft o send message
+        #ready to add
+        # self.UI=ui
 
     def _wait_recv(self):
         self._on_connect()
@@ -61,9 +62,10 @@ class Socket:
         print(self.socket, 'disconnected.')
 
     def _on_message(self, data: bytes):
-        global messege
         x = (json.loads(data.decode()))
-        messege=(x["from"]," : ",x["message"])
+        print(x["from"], " : ", x["message"])
+        ####add later
+        # self.UI.messege((x["from"]," : ",x["message"]))
 
 
     def close(self):
@@ -76,45 +78,50 @@ class Socket:
 
         # self.socket.send(encrypt(data) + b'\0')#
 
-
+#ready to add to clinet(do not open)
 class UI(QMainWindow):
 
-    s = Socket(server, port)
+
     def __init__(self):
         super(UI, self).__init__()
         uic.loadUi("Client_UI.ui", self)
-
+        global server,port
+        self.socket = Socket(server, port,self)
         self.textedit = self.findChild(QTextEdit, "textEdit")
         self.textedit_2 = self.findChild(QTextEdit, "textEdit_2")
         self.textedit_3 = self.findChild(QTextEdit, "textEdit_3")
         self.textedit_4 = self.findChild(QTextEdit, "textEdit_4")
         self.button = self.findChild(QPushButton, "pushButton")
         global uname
-        # find the widgets in the xml file
         self.textedit.setPlainText(uname)
         self.button.clicked.connect(self.clickedBtn)
 
 
         self.show()
 
+    def messege(self,data):
+        # self.textedit_4.setPlainText(str(data))
+        print(data)
 
     def clickedBtn(self):
         global uname
         global toclient
-        global messege
         uname = (self.textEdit.toPlainText())
         toclient = (self.textedit_2.toPlainText())
-
-        print(messege)
         message = (self.textedit_3.toPlainText())
-        self.s.send(message)
+        self.socket.send(message)
 
+#do not open
+# app = QApplication(sys.argv)
+# window = UI()
+# app.exec_()
 
-
-
-app = QApplication(sys.argv)
-window = UI()
-app.exec_()
-
-
+#######for yasin test#####
+s = Socket(server, port,UI)
+while True:
+    message = input("")
+    if message == "end":
+        toclient = input("name dost jadid khod ra vare konid : ")
+        message=""
+    s.send(message)
 
