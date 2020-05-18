@@ -3,20 +3,13 @@ import threading
 from socket import socket
 from select import select #check is connected now or not
 import json
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit
-from PyQt5 import uic
 import sys
-<<<<<<< Updated upstream
-=======
+
 ##
 server = '192.168.1.107'#server address
 port = 8871
->>>>>>> Stashed changes
 
 
-
-server = '0.0.0.0'#server address
-port = 8872
 
 uname = ""#file as biron
 toclient = ""
@@ -93,11 +86,11 @@ class UI(QMainWindow):
         uic.loadUi("Client_UI.ui", self)
         global server,port
         self.socket = Socket(server, port,self)
-        self.textedit = self.findChild(QTextEdit, "textEdit")
-        self.textedit_2 = self.findChild(QTextEdit, "textEdit_2")
-        self.textedit_3 = self.findChild(QTextEdit, "textEdit_3")
-        self.textedit_4 = self.findChild(QTextEdit, "textEdit_4")
-        self.button = self.findChild(QPushButton, "pushButton")
+        #self.textedit = self.findChild(QTextEdit, "textEdit")
+        #self.textedit_2 = self.findChild(QTextEdit, "textEdit_2")
+        #self.textedit_3 = self.findChild(QTextEdit, "textEdit_3")
+        #self.textedit_4 = self.findChild(QTextEdit, "textEdit_4")
+        #self.button = self.findChild(QPushButton, "pushButton")
         global uname
         self.textedit.setPlainText(uname)
         self.button.clicked.connect(self.clickedBtn)
