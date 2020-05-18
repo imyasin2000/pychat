@@ -10,13 +10,13 @@ import sys
 
 
 server = '0.0.0.0'#server address
-port = 8871
+port = 8872
 
 uname = ""#file as biron
 toclient = ""
 
 uname = input("youre name :  ")
-
+toclient = input("youre freind name :  ")
 class Socket:
     size = 4096
 
@@ -24,7 +24,8 @@ class Socket:
         self.socket = socket()
         self.socket.connect((host, port))#connected
         threading.Thread(target=self._wait_recv).start()#tabe movazi run mikne bara daryaft o send message
-        self.UI=ui
+        #ready to add
+        # self.UI=ui
 
     def _wait_recv(self):
         self._on_connect()
@@ -62,7 +63,9 @@ class Socket:
 
     def _on_message(self, data: bytes):
         x = (json.loads(data.decode()))
-        self.UI.messege((x["from"]," : ",x["message"]))
+        print(x["from"], " : ", x["message"])
+        ####add later
+        # self.UI.messege((x["from"]," : ",x["message"]))
 
 
     def close(self):
@@ -75,7 +78,7 @@ class Socket:
 
         # self.socket.send(encrypt(data) + b'\0')#
 
-
+#ready to add to clinet(do not open)
 class UI(QMainWindow):
 
 
@@ -108,12 +111,17 @@ class UI(QMainWindow):
         message = (self.textedit_3.toPlainText())
         self.socket.send(message)
 
+#do not open
+# app = QApplication(sys.argv)
+# window = UI()
+# app.exec_()
 
-
-
-app = QApplication(sys.argv)
-window = UI()
-app.exec_()
-
-
+#######for yasin test#####
+s = Socket(server, port,UI)
+while True:
+    message = input("")
+    if message == "end":
+        toclient = input("name dost jadid khod ra vare konid : ")
+        message=""
+    s.send(message)
 

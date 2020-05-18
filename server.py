@@ -11,7 +11,7 @@ print("\nThe server was successfully activated.\n")
 
 #Server information
 ip = '0.0.0.0'
-port = 8871
+port = 8872
 
 
 class Socket:
