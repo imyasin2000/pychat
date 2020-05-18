@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit
 from PyQt5 import uic
 import sys
 import time
-
+import send_email
 
 
 class UI_l(QMainWindow):
@@ -60,6 +60,7 @@ class UI_f(QMainWindow):
         super(UI_f, self).__init__()
         uic.loadUi("Forget_F.ui", self)
         self.textedit1 = self.findChild(QTextEdit, "textEdit")
+        self.label1 = self.findChild(QTextEdit, "label")
         self.button_1 = self.findChild(QPushButton, "pushButton")
         self.button_1.clicked.connect(self.clickedBtn_1)
 
@@ -69,9 +70,15 @@ class UI_f(QMainWindow):
 
     def clickedBtn_1(self):#forget
         # self.frame1.setVisible(True)
-        for i in range (2):
-            time.sleep(.2)
-            self.resize((self.frameGeometry().width()),self.frameGeometry().height())
+        # for i in range (2):
+        #     time.sleep(.2)
+        #     self.resize((self.frameGeometry().width()),self.frameGeometry().height())
+        sender=self.textedit1.toPlainText()
+        self.textedit1.setPlainText("wait . . .")
+        if (send_email.send_email_c(sender)==1):
+            self.textedit1.setVisible(False)
+
+
 
 
     def clickedBtn_2(self):#login
