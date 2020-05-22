@@ -12,6 +12,9 @@ def add_new_user(pychatid, yourname, email, pasword):
     connection.commit()
     connection.close()
 
+def delet_ac(pychatid):
+    
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(("192.168.109.1", 14200))
