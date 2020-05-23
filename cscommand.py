@@ -6,6 +6,13 @@ from select import select  # check is connected now or not
 import json
 import sys
 
+from queue import Queue 
+q=Queue()
+
+
+
+
+
 
 #socket samte client 
 class Socket:
@@ -24,7 +31,8 @@ class Socket:
     def __init__(self, host="192.168.1.107", port=14200):
         self.socket = socket()
         self.socket.connect((host, port))  # connected
-        threading.Thread(target=self._wait_recv).start() # tabe movazi run mikne bara daryaft o send message
+        tm=threading.Thread(target=self._wait_recv) # tabe movazi run mikne bara daryaft o send message
+        tm.start()
         # ready to add
         # self.UI=ui
 
@@ -33,12 +41,12 @@ class Socket:
         #mavared daryafti be byte hastan 
         data = b''
         while True:
-            try:
-
+            
+            
                 #se ta khoruji dare r yani readable hastan una
                 r, _, _ = select([self.socket], [self.socket], [])  # baresi mishe vasl hast ya na
-                if r:
-                    d = self.socket.recv(32)
+                if  r or _:
+                    d = self.socket.recv(4096)
                     data += d
                     if len(d) < self.size:
                         if data:
@@ -50,9 +58,9 @@ class Socket:
                             data = d[-1]
                         else:
                             self.socket.close()
-            except:
-                self._on_disconnect()
-                return
+            # except:
+            #     self._on_disconnect()
+            #     return
                 
     # def _on_connect(self):
 
@@ -66,8 +74,27 @@ class Socket:
 
     def recive_data(self, data: bytes):
         new_data=(json.loads(data.decode()))
-        print(new_data)
         new_task=new_data[0]
+
+        if new_task==500:
+            data=email_verify(new_data,yasin.data)
+            self.send(data)
+
+        elif new_task==501:
+            pass
+
+        elif new_task==502:
+            pass
+
+        elif new_task==503:
+            pass
+
+        elif new_task==504:
+            pass
+
+        elif new_task==505:
+            pass
+
 
          
 
@@ -83,23 +110,25 @@ class Socket:
 
 class user :
 
+
     def __init__ (slef):
+        
         pass
 
     #ersal etelaat karbar jadid be samte server 
     def login(self,s:Socket):
-        data=[int(100)]
+        self.data=[int(100)]
         self.name=input("enter your name :")
-        data.append(self.name)
+        self.data.append(self.name)
         self.username=input("enter your user name: ")
-        data.append(self.name)
+        self.data.append(self.username)
         self.email=input("enter your email :")
-        data.append(self.name)
+        self.data.append(self.email)
         self.password=input("enter your password :")
         to_chek_password=input("enter your password agian:")
         if self.cheking_password(self.password,to_chek_password):
-            data.append(self.name)
-            s.send(data)
+            self.data.append(self.password)
+            s.send(self.data)
 
     #tabe baraye chek kardan motabegh budan password
     def cheking_password(self,pass1,pass2):
@@ -114,12 +143,29 @@ class user :
             self.cheking_password(self.password,to_chek_password)
 
 
+def email_verify(user_data:list,data):
+    print(user_data[1])
+    if user_data[1]==int(input("enter 8-digit code : ")):
+        data=[int(102)]+yasin.data
+        return data
+        
+    else:
+        print("try angin ...")
+
+
+
+
+
+
+
+work={'500':email_verify, '501':'send_email' }
 
 
 
 s=Socket()
 yasin=user()
 yasin.login(s)
+
 
 
 

@@ -4,8 +4,12 @@ import threading #run movazi
 from extra import *
 from datetime import datetime
 import json
+import sqlite3
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 
-work={100:__login_chek__ , 101:send_email }
+
 
 print("\nThe server was successfully activated.\n")
 
@@ -13,9 +17,6 @@ print("\nThe server was successfully activated.\n")
 
 ip = '192.168.1.107'
 port = 14200
-
-
-
 
 
 class Socket:
@@ -34,7 +35,7 @@ class Socket:
         self._on_connect(conn)
         data = b''#byte format
         while True:#wait for new message
-            try:
+            
                 d = conn.recv(self.size)
                 data += d
                 if len(d) < self.size:#for biger bytes
@@ -45,9 +46,7 @@ class Socket:
                         data = d[-1]#ali\0mohammad\0 bade \0 akhari ham mide msln bara kamel bodn payam
                     else:
                         conn.close()#if client leave
-            except:#dissconect client
-                self._on_disconnect(conn)
-                return
+
     #addres karbar = client 
     def _on_connect(self, client: socket):
         print(client,"start working with server")
@@ -61,13 +60,15 @@ class Socket:
     def _on_message(self, client: socket, data: bytes):
         x=(json.loads(data.decode()))
         task=x[0]
-        work[f"{task}"](client,data)
+        work[f"{task}"](client,x)
         y=x[1]
         y=json.dumps(y)
         client.send((y.encode()+b'\0'))
-    def send(client:Socket,ssdata):
-        ssdata = json.dumps(ssdata)
-        self.socket.send((ssdata.encode() + b'\0'))
+        print("data resived _onmassage")
+        
+    # def send(client,ssdata):
+    #     ssdata = json.dumps(ssdata)
+    #     self.socket.send((ssdata.encode() + b'\0'))
 
 
     #client.send(#x["1"]())
@@ -80,8 +81,9 @@ class Socket:
 
 
 #vaghti ye nafar sabte nam mikone bayad motmaeen beshim
-#ghablan inja account nadashe age dash behesh begim ghablan sabte nam kardi !
-def __login_chek__(data,s:Socket):
+#ghablan inja account nadashe age dash behesh begim ghablan sabte nam kardi ! 
+def login_chek(s:socket,data):
+    user_id=data[1]
     sock=s
     connection = sqlite3.connect("./users.db")
     cursor = connection.cursor()
@@ -89,15 +91,19 @@ def __login_chek__(data,s:Socket):
     r = cursor.fetchall()
     connection.close()
     if r==[]:
-        send_email(s,data[3])
+        print("login_chek")
+        send_email(s,data)
+        print("login_chek")
     else:
         sock.send(sock,"in data base ghablan vojud dashte")
 
 
 #ersal mail baraye kasi ke faramush kade pass ash ra 
 #ya baraye user jadid
-def send_email(s:Socket,data):
+def send_email(s:socket,data):
+    print(data)
     emialaddress=data[3]
+    
 # setup the parameters of the message
     password = [97, 109, 105, 110, 109, 104, 102, 97]
     password=''.join(chr(i) for i in password)
@@ -119,15 +125,32 @@ def send_email(s:Socket,data):
     # send the message via the server.
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
+    #client_chek_mail(s,random_number)
     client_chek_mail(s,random_number)
 
+    
 #baad az ersal mail bayad be client khabr dade shavad ta 
 #mail khod ra chek konad 
 
-def client_chek_mail(s:Socket,random_n):
+def client_chek_mail(s:socket,random_n):
     data=[int(500),random_n]
-    s.send(s,data)
+    data = json.dumps(data)
+    s.send((data.encode() + b'\0'))
 
 
+
+
+def add_new_user(info: list):
+    #ghab in tabe tabe chek kardan username farakhani mishavad 
+    #agar chek kardan user name sahih bud in farakhani shavad 
+    connection = sqlite3.connect("./users.db")
+    cur = connection.cursor()
+    cur.execute("INSERT INTO users VALUES (?,?,?,?)", (info[1], info[2], info[3], info[4]))
+    connection.commit()
+    connection.close()
+
+
+
+work={'100':login_chek , '101':send_email ,'500':add_new_user}
 s=Socket(ip, port)#run socket init make object from socket
 #s.send
