@@ -13,7 +13,6 @@ s.connect(('192.168.1.107',14200))
 #in tabe tamame dade haye vorude be barname ra misanjad agar daraye etebar bashad 
 #an hara accsept  mikonad 
 
-
 def _accsepting(s:socket):
     data = b''
     while True:
@@ -36,8 +35,8 @@ def _accsepting(s:socket):
                 else:
                     s.close()
         except:
-            print("connection failed ...")
-            return
+                print("connection failed ...")
+                # return
 
 
 
@@ -47,6 +46,7 @@ def _accsepting(s:socket):
 def load_data(data):
     x=(json.loads(data.decode()))
     q.put(x)
+ 
 
 #ba farakhani in tabe har data ghbel fahm baraye server ra ersal 
 #mikonim  in tabee khodkar tamame vorudi ash ra be json tablil karde
@@ -56,13 +56,17 @@ def sending_to_server(socket:socket,data):
         socket.send((data.encode()+ b'\0'))
 
 def create_worker():
-    for i in range(7):
-        print(q.get())
-        q.task_done()
+    while True:
+        time.sleep(0.03)
+        if not q.empty():
+            print(q.get())
+            q.task_done()
         
-s.send("yes its work".encode())
+
 threading.Thread(target=_accsepting ,args=(s, )).start()
-create_worker()
+threading.Thread(target=create_worker).start()
 print(q.empty())
-s.close()
+x=input()
+print(x)
+
 
