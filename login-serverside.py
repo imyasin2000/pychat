@@ -153,9 +153,35 @@ def add_new_user(s:socket,data: list):
     s.send((data1.encode() + b'\0'))
     print("new_user_added")
 
+def sign_in_request(s:socket,data:list):
+    user_id=data[0]
+    print(user_id)
+    
+    connection = sqlite3.connect("./users.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
+    r = cursor.fetchall()
+    connection.close()
+    print(r)
+    print(data[1])
+    if r[0][0]==data[0] and r[0][3]==data[1]:
+        data1=[int(502),"welcome to pychat!"]
+        data1 = json.dumps(data1)
+        s.send((data1.encode() + b'\0'))
+
+    else :
+        data1=[int(502),"oh! usernme/password is not correct "]
+        data1 = json.dumps(data1)
+        s.send((data1.encode() + b'\0'))
 
 
-work={'100':login_chek,'101':send_email,'102':add_new_user}
+    #erasl dastur be samte client va etela az hazf shodan az data base 
+    #
+
+
+
+
+work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request}
 s=Socket(ip, port)#run socket init make object from socket
 
 #s.send

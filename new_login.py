@@ -21,10 +21,10 @@ class user :
     #ersal etelaat karbar jadid be samte server 
     def login(self,s:socket):
         self.data=[int(100)]
-        self.name=input("enter your name :")
-        self.data.append(self.name)
-        self.username=input("enter your user name: ")
+        self.username=input("enter your username :")
         self.data.append(self.username)
+        self.name=input("enter your user name: ")
+        self.data.append(self.name)
         self.email=input("enter your email :")
         self.data.append(self.email)
         self.password=input("enter your password :")
@@ -54,15 +54,42 @@ class user :
             
         else:
             print("try angin ...")
+            email_verify(self,s,user_data)
 
+
+    #pasokh server be inke aya ba movafaghiat user jadid ra
+    #be data base ezafe karde ya kheir
     def server_added_user_to_database(self,s:socket,data:list):
         print(data[0])
 
 
+    def user_want_sign_in(self,s:socket):
+        self.data=[int(103)]
+        self.username=input("* enter your user name: *")
+        self.data.append(self.username)
+        self.password=input("enter your password: ")
+        self.data.append(self.password)
+        sending_to_server(s,self.data)
 
 
 
+    def forgot_password(self,s:socket):
+        self.mail=input("enter your email: ")
+        data=[int(102),_,_,self.email]
+        sending_to_server(s,data)
 
+
+#--------------other func -------------------------------------------------
+
+def regex_chek_email():
+    pass
+
+    
+
+    
+
+
+#----------------network connections with Queue--------------------------------
 
 #in tabe tamame dade haye vorude be barname ra misanjad agar daraye etebar bashad 
 #an hara accsept  mikonad 
@@ -116,7 +143,6 @@ def do_work(obj:user,s:socket):
         time.sleep(0.03)
         if not q.empty():
             new_data=q.get()
-            print(new_data)
             task=new_data[0]
 
             work[f"{task}"](s,new_data[1:])
@@ -130,13 +156,21 @@ def do_work(obj:user,s:socket):
             q.task_done()
 
 obj=user()
-work={'500':obj.email_verify,'502':obj.server_added_user_to_database}
+work={'500':obj.email_verify,
+      '502':obj.server_added_user_to_database,
+      
+      
+      
+      
+      }
 
 
 threading.Thread(target=_accsepting ,args=(s, )).start()
 threading.Thread(target=do_work,args=(obj,s)).start()
 
 
-obj.login(s)
+#obj.login(s)
+#obj.user_want_sign_in(s)
+obj.forgot_password(s)
 
 
