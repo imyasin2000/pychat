@@ -60,11 +60,7 @@ class Socket:
     def _on_message(self, client: socket, data: bytes):
         x=(json.loads(data.decode()))
         task=x[0]
-        work[f"{task}"](client,x)
-        y=x[1]
-        y=json.dumps(y)
-        client.send((y.encode()+b'\0'))
-        print("data resived _onmassage")
+        work[f"{task}"](client,x[1:])
         
     # def send(client,ssdata):
     #     ssdata = json.dumps(ssdata)
@@ -83,7 +79,7 @@ class Socket:
 #vaghti ye nafar sabte nam mikone bayad motmaeen beshim
 #ghablan inja account nadashe age dash behesh begim ghablan sabte nam kardi ! 
 def login_chek(s:socket,data):
-    user_id=data[1]
+    user_id=data[0]
     sock=s
     connection = sqlite3.connect("./users.db")
     cursor = connection.cursor()
@@ -95,14 +91,15 @@ def login_chek(s:socket,data):
         send_email(s,data)
         print("login_chek")
     else:
-        sock.send(sock,"in data base ghablan vojud dashte")
+        #sock.send(sock,"in data base ghablan vojud dashte")
+        pass
 
 
 #ersal mail baraye kasi ke faramush kade pass ash ra 
 #ya baraye user jadid
-def send_email(s:socket,data):
+def send_email(s:socket,data:list):
     print(data)
-    emialaddress=data[3]
+    emialaddress=data[2]
     
 # setup the parameters of the message
     password = [97, 109, 105, 110, 109, 104, 102, 97]
@@ -114,6 +111,7 @@ def send_email(s:socket,data):
     msg['Subject'] = "Subscription"
     import random
     random_number=(random.randint(100000,1000000))
+    
     message = (f"\nHi Dear {emialaddress}.\n\n\n welcome to pychat! your verify code is : {random_number} .")
     # add in the message body
     msg.attach(MIMEText(message, 'plain'))
@@ -125,32 +123,39 @@ def send_email(s:socket,data):
     # send the message via the server.
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
+    data.append(random_number)
+    
     #client_chek_mail(s,random_number)
-    client_chek_mail(s,random_number)
+    client_chek_mail(s,data)
 
     
 #baad az ersal mail bayad be client khabr dade shavad ta 
 #mail khod ra chek konad 
 
-def client_chek_mail(s:socket,random_n):
-    data=[int(500),random_n]
+def client_chek_mail(s:socket,data):
+    data=[int(500)]+data
     data = json.dumps(data)
     s.send((data.encode() + b'\0'))
 
 
 
 
-def add_new_user(info: list):
+def add_new_user(s:socket,data: list):
     #ghab in tabe tabe chek kardan username farakhani mishavad 
     #agar chek kardan user name sahih bud in farakhani shavad 
     connection = sqlite3.connect("./users.db")
     cur = connection.cursor()
-    cur.execute("INSERT INTO users VALUES (?,?,?,?)", (info[1], info[2], info[3], info[4]))
+    cur.execute("INSERT INTO users VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
     connection.commit()
     connection.close()
+    data1=[int(502),"welcome to pychat!"]
+    data1 = json.dumps(data1)
+    s.send((data1.encode() + b'\0'))
+    print("new_user_added")
 
 
 
-work={'100':login_chek , '101':send_email ,'500':add_new_user}
+work={'100':login_chek,'101':send_email,'102':add_new_user}
 s=Socket(ip, port)#run socket init make object from socket
+
 #s.send
