@@ -7,7 +7,7 @@ from select import select
 
 q=Queue()
 s=socket.socket()
-s.connect(('192.168.1.107',14200))
+s.connect(('0.0.0.0',1235))
 
 
 
@@ -169,8 +169,8 @@ threading.Thread(target=_accsepting ,args=(s, )).start()
 threading.Thread(target=do_work,args=(obj,s)).start()
 
 
-#obj.login(s)
+obj.login(s)
 #obj.user_want_sign_in(s)
-obj.forgot_password(s)
+#obj.forgot_password(s)
 
 

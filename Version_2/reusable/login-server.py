@@ -13,11 +13,11 @@ def add_new_user(pychatid, yourname, email, pasword):
     connection.close()
 
 def delet_ac(pychatid):
-    
+    pass
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("192.168.109.1", 14200))
+s.bind(("0.0.0.0", 1234))
 s.listen(1)
 conn, addr = s.accept()
 print('Connected by', addr)
