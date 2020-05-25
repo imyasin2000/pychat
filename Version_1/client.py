@@ -3,12 +3,9 @@ import threading
 from socket import socket
 from select import select  # check is connected now or not
 import json
-<<<<<<< HEAD:Vesion_1/client.py
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QTextEdit
 from PyQt5 import uic
 import time
-=======
->>>>>>> e8f7ace5eaa76046b27bf8723d3f679aac500cc6:client.py
 import sys
 
 ##

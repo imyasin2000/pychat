@@ -4,10 +4,15 @@ from queue import Queue
 import threading
 import time
 from select import select
+from PyQt5.QtWidgets import * #UI
+from PyQt5 import QtWidgets
+from PyQt5 import uic
+import sys
+from os import path
 
 q=Queue()
 s=socket.socket()
-s.connect(('0.0.0.0',1235))
+s.connect(('0.0.0.0',1231))
 
 
 
@@ -19,42 +24,50 @@ class user :
         pass
 
     #ersal etelaat karbar jadid be samte server 
-    def login(self,s:socket):
+    def login(self,s:socket,ui):
         self.data=[int(100)]
-        self.username=input("enter your username :")
+        self.username=ui.textedit_username.toPlainText()
         self.data.append(self.username)
-        self.name=input("enter your user name: ")
+        self.name=ui.textedit_fullname.toPlainText()
         self.data.append(self.name)
-        self.email=input("enter your email :")
+        self.email=ui.textedit_email.toPlainText()
         self.data.append(self.email)
-        self.password=input("enter your password :")
-        to_chek_password=input("enter your password agian:")
-        if self.cheking_password(self.password,to_chek_password):
+        self.password=ui.textedit_password.toPlainText()
+        to_chek_password=ui.textedit_repassword.toPlainText()
+        if self.cheking_password(self.password, to_chek_password):
             self.data.append(self.password)
-            sending_to_server(s,self.data)
+            sending_to_server(s, self.data)
+        else:
+            QMessageBox.about(ui, "password error", "oh! try agian to enter password because they are not equal!")
+
 
     #tabe baraye chek kardan motabegh budan password
     def cheking_password(self,pass1,pass2):
         if pass1==pass2:
             return True
+        else:
+            return False
+
         
 
-        else:
-            print("oh! try agian to enter password because ther r not equal try again ")
-            self.password=input("enter your password :")
-            to_chek_password=input("enter your password agian:")
-            self.cheking_password(self.password,to_chek_password)
+
 
 
     def email_verify(self,s:socket,user_data:list):
+        print("email cheak")
         print(user_data[-1])
-        if user_data[-1]==int(input("enter 8-digit code : ")):
-            self.data1=[int(102)]+user_data[:-1]
-            sending_to_server(s,self.data1)
+
+        code, ok = QInputDialog.getText(UI_rigister(), 'Input Dialog', 'Enter code:')
+        if ok and user_data[-1]== code:
+            print("hi")
+            self.data1 = [int(102)] + user_data[:-1]
+            sending_to_server(s, self.data1)
+
+
             
-        else:
-            print("try angin ...")
-            email_verify(self,s,user_data)
+        # else:
+        #     print("try angin ...")
+            # email_verify(self,s,user_data)
 
 
     #pasokh server be inke aya ba movafaghiat user jadid ra
@@ -63,11 +76,11 @@ class user :
         print(data[0])
 
 
-    def user_want_sign_in(self,s:socket):
+    def user_want_sign_in(self,s:socket,ui):
         self.data=[int(103)]
-        self.username=input("* enter your user name: *")
+        self.username=ui.textedit_username.toPlainText()
         self.data.append(self.username)
-        self.password=input("enter your password: ")
+        self.password=ui.textedit_password.toPlainText()
         self.data.append(self.password)
         sending_to_server(s,self.data)
 
@@ -84,9 +97,6 @@ class user :
 def regex_chek_email():
     pass
 
-    
-
-    
 
 
 #----------------network connections with Queue--------------------------------
@@ -169,7 +179,76 @@ threading.Thread(target=_accsepting ,args=(s, )).start()
 threading.Thread(target=do_work,args=(obj,s)).start()
 
 
-obj.login(s)
+#____________UI__________________________
+
+class UI_login(QMainWindow):
+
+    def __init__(self):
+        super(UI_login, self).__init__()
+        uic.loadUi("UI/Login_F.ui", self)
+        self.button_login = self.findChild(QPushButton, "login_b")
+        self.button_rigister = self.findChild(QPushButton, "rigister_b")
+        self.button_forget = self.findChild(QPushButton, "forget_b")
+        self.textedit_username = self.findChild(QTextEdit, "username_t")
+        self.textedit_password = self.findChild(QTextEdit, "password_t")
+        self.button_login.clicked.connect(self.clickedBtn_login)
+        self.button_rigister.clicked.connect(self.clickedBtn_rigister)
+        self.button_forget.clicked.connect(self.clickedBtn_forget)
+        self.show()
+
+
+    def clickedBtn_login(self):#login page run mishe
+
+        obj.user_want_sign_in(s,self)
+
+    def clickedBtn_rigister(self):#OPEN RIGISTER PAGE
+        self.myOtherWindow = UI_rigister()
+        self.myOtherWindow.show()
+        self.hide()
+
+
+    def clickedBtn_forget(self):#OPEN forget PAGE
+        pass
+        # obj.forgot_password(s)
+        # self.myOtherWindow = UI_rigister()
+        # self.myOtherWindow.show()
+        # self.hide()
+
+class UI_rigister(QMainWindow):
+    def __init__(self):
+        super(UI_rigister, self).__init__()
+        uic.loadUi("UI/Rigister_F.ui", self)
+        self.textedit_username = self.findChild(QTextEdit, "username_t")
+        self.textedit_fullname = self.findChild(QTextEdit, "fullname_t")
+        self.textedit_email = self.findChild(QTextEdit, "email_t")
+        self.textedit_password = self.findChild(QTextEdit, "password_t")
+        self.textedit_repassword = self.findChild(QTextEdit, "repassword_t")
+        self.button_rigister = self.findChild(QPushButton, "rigister_b")
+        self.button_rigister.clicked.connect(self.clickedBtn_rigister)
+
+
+        self.show()
+
+
+    def clickedBtn_rigister(self):#forget
+
+        obj.login(s,self)
+
+    def clickedBtn_2(self):#login
+        pass
+
+
+
+if (path.isfile('Other/lice_l_2.txt')):
+    with open("Other/lice_l_2.txt") as file: # Use file to refer to the file object
+        data = file.read()
+        if data:
+            print("login shodid!")
+else:
+    app = QApplication(sys.argv)
+    window = UI_login()
+    app.exec_()
+# obj.login(s,self)
 #obj.user_want_sign_in(s)
 #obj.forgot_password(s)
 

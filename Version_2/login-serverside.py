@@ -16,7 +16,7 @@ print("\nThe server was successfully activated.\n")
 #Server information
 
 ip = '0.0.0.0'
-port = 1235
+port = 1231
 
 
 class Socket:
@@ -35,17 +35,20 @@ class Socket:
         self._on_connect(conn)
         data = b''#byte format
         while True:#wait for new message
-            
-                d = conn.recv(self.size)
-                data += d
-                if len(d) < self.size:#for biger bytes
-                    if data:
-                        d = data.split(b'\0')#get meeseges \0 hi ali\0 hello\0
-                        for i in range(len(d) - 1):
-                            self._on_message(conn, decrypt(d[i]))#client,messeg sended
-                        data = d[-1]#ali\0mohammad\0 bade \0 akhari ham mide msln bara kamel bodn payam
-                    else:
-                        conn.close()#if client leave
+            try:
+                 d = conn.recv(self.size)
+                 data += d
+                 if len(d) < self.size:#for biger bytes
+                      if data:
+                           d = data.split(b'\0')#get meeseges \0 hi ali\0 hello\0
+                           for i in range(len(d) - 1):
+                                self._on_message(conn, decrypt(d[i]))#client,messeg sended
+                           data = d[-1]#ali\0mohammad\0 bade \0 akhari ham mide msln bara kamel bodn payam
+                      else:
+                           conn.close()#if client leave
+            except:  # dissconect client
+                    self._on_disconnect(conn)
+                    return
 
     #addres karbar = client 
     def _on_connect(self, client: socket):
@@ -164,16 +167,20 @@ def sign_in_request(s:socket,data:list):
     connection.close()
     print(r)
     print(data[1])
-    if r[0][0]==data[0] and r[0][3]==data[1]:
-        data1=[int(502),"welcome to pychat!"]
-        data1 = json.dumps(data1)
-        s.send((data1.encode() + b'\0'))
+    if r:
+        if r[0][0]==data[0] and r[0][3]==data[1]:
+            data1=[int(502),"welcome to pychat!"]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
 
+        else :
+            data1=[int(502),"oh! usernme/password is not correct "]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
     else :
-        data1=[int(502),"oh! usernme/password is not correct "]
+        data1=[int(502),"oh! usernme not found"]
         data1 = json.dumps(data1)
         s.send((data1.encode() + b'\0'))
-
 
     #erasl dastur be samte client va etela az hazf shodan az data base 
     #
