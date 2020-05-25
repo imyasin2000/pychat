@@ -10,8 +10,10 @@ import json
 print("\nThe server was successfully activated.\n")
 
 #Server information
-ip = '0.0.0.0'
-port = 8872
+
+ip = '192.168.1.107'
+port = 8871
+
 
 
 class Socket:
