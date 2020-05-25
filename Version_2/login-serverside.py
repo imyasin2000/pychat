@@ -16,7 +16,7 @@ print("\nThe server was successfully activated.\n")
 #Server information
 
 ip = '0.0.0.0'
-port = 1231
+port = 1238
 
 
 class Socket:
@@ -89,11 +89,12 @@ def login_chek(s:socket,data):
     cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     r = cursor.fetchall()
     connection.close()
-    if r==[]:
+    if not r:
         print("login_chek")
         send_email(s,data)
         print("login_chek")
     else:
+        print("no")
         #sock.send(sock,"in data base ghablan vojud dashte")
         pass
 
@@ -114,7 +115,6 @@ def send_email(s:socket,data:list):
     msg['Subject'] = "Subscription"
     import random
     random_number=(random.randint(100000,1000000))
-    
     message = (f"\nHi Dear {emialaddress}.\n\n\n welcome to pychat! your verify code is : {random_number} .")
     # add in the message body
     msg.attach(MIMEText(message, 'plain'))
@@ -124,12 +124,16 @@ def send_email(s:socket,data:list):
     # Login Credentials for sending the mail
     server.login(msg['From'], password)
     # send the message via the server.
+
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
     data.append(random_number)
-    
-    #client_chek_mail(s,random_number)
-    client_chek_mail(s,data)
+    print(data)
+    client_chek_mail(s, data)
+
+
+
+
 
     
 #baad az ersal mail bayad be client khabr dade shavad ta 
@@ -139,6 +143,7 @@ def client_chek_mail(s:socket,data):
     data=[int(500)]+data
     data = json.dumps(data)
     s.send((data.encode() + b'\0'))
+
 
 
 

@@ -12,33 +12,44 @@ from os import path
 
 q=Queue()
 s=socket.socket()
-s.connect(('0.0.0.0',1231))
+s.connect(('0.0.0.0',1238))
 
 
-
+code_g=0
 class user :
 
 
     def __init__ (slef):
-        
+
         pass
 
     #ersal etelaat karbar jadid be samte server 
     def login(self,s:socket,ui):
         self.data=[int(100)]
         self.username=ui.textedit_username.toPlainText()
-        self.data.append(self.username)
+
         self.name=ui.textedit_fullname.toPlainText()
-        self.data.append(self.name)
+
         self.email=ui.textedit_email.toPlainText()
-        self.data.append(self.email)
-        self.password=ui.textedit_password.toPlainText()
-        to_chek_password=ui.textedit_repassword.toPlainText()
-        if self.cheking_password(self.password, to_chek_password):
-            self.data.append(self.password)
-            sending_to_server(s, self.data)
+        #cheak email is valid
+        import re
+        if (re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', self.email)):
+
+            self.password = ui.textedit_password.toPlainText()
+            to_chek_password = ui.textedit_repassword.toPlainText()
+            if self.cheking_password(self.password, to_chek_password):
+                self.data.append(self.username)
+                self.data.append(self.name)
+                self.data.append(self.email)
+                self.data.append(self.password)
+                sending_to_server(s, self.data)
+            else:
+                QMessageBox.about(ui, "password error", "oh! try agian to enter password because they are not equal!")
+
         else:
-            QMessageBox.about(ui, "password error", "oh! try agian to enter password because they are not equal!")
+            QMessageBox.about(ui, "Invalid Email","enter valid email")
+
+
 
 
     #tabe baraye chek kardan motabegh budan password
@@ -52,22 +63,30 @@ class user :
 
 
 
+    def code_enter_box(self):
+        import tkinter as tk
+        def show_entry_fields():
+            global code_g
+            code_g = e1.get()
+            master.destroy()
+        master = tk.Tk()
+        tk.Label(master, text="Code ").grid(row=0)
+        e1 = tk.Entry(master)
+        e1.grid(row=0, column=1)
+        tk.Button(master, text='Check', command=show_entry_fields).grid(row=3, column=1, sticky=tk.W, pady=4)
+        tk.mainloop()
 
     def email_verify(self,s:socket,user_data:list):
+        global code_g
         print("email cheak")
         print(user_data[-1])
-
-        code, ok = QInputDialog.getText(UI_rigister(), 'Input Dialog', 'Enter code:')
-        if ok and user_data[-1]== code:
-            print("hi")
+        self.code_enter_box()
+        if  user_data[-1] == int(code_g):
             self.data1 = [int(102)] + user_data[:-1]
             sending_to_server(s, self.data1)
-
-
-            
-        # else:
-        #     print("try angin ...")
-            # email_verify(self,s,user_data)
+        else:
+            print("try angin ...")
+            self.email_verify(s,user_data)
 
 
     #pasokh server be inke aya ba movafaghiat user jadid ra
@@ -239,6 +258,7 @@ class UI_rigister(QMainWindow):
 
 
 
+
 if (path.isfile('Other/lice_l_2.txt')):
     with open("Other/lice_l_2.txt") as file: # Use file to refer to the file object
         data = file.read()
@@ -248,6 +268,7 @@ else:
     app = QApplication(sys.argv)
     window = UI_login()
     app.exec_()
+
 # obj.login(s,self)
 #obj.user_want_sign_in(s)
 #obj.forgot_password(s)
