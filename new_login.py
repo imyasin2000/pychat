@@ -169,8 +169,8 @@ threading.Thread(target=_accsepting ,args=(s, )).start()
 threading.Thread(target=do_work,args=(obj,s)).start()
 
 
-#obj.login(s)
+obj.login(s)
 #obj.user_want_sign_in(s)
-obj.forgot_password(s)
+#obj.forgot_password(s)
 
 
