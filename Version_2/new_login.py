@@ -12,7 +12,7 @@ from os import path
 
 q=Queue()
 s=socket.socket()
-s.connect(('0.0.0.0',1238))
+s.connect(('51.195.19.3',1234))
 
 
 code_g=0
