@@ -42,7 +42,9 @@ class user :
                 self.data.append(self.name)
                 self.data.append(self.email)
                 self.data.append(self.password)
+
                 sending_to_server(s, self.data)
+                print("done")
             else:
                 QMessageBox.about(ui, "password error", "oh! try agian to enter password because they are not equal!")
 
@@ -62,18 +64,28 @@ class user :
         
 
 
-
+    #vorodi bara gereftan code
     def code_enter_box(self):
         import tkinter as tk
         def show_entry_fields():
             global code_g
             code_g = e1.get()
             master.destroy()
+
         master = tk.Tk()
-        tk.Label(master, text="Code ").grid(row=0)
+        master.title("Email confirmation")
+        master.resizable(False, False)
+        master.configure(bg='white')
+        tk.Label(master, text=" ", bg="white").grid(row=0)
+        tk.Label(master, text="     Youre Code   ", font=('', 9), bg="white").grid(row=1)
         e1 = tk.Entry(master)
-        e1.grid(row=0, column=1)
-        tk.Button(master, text='Check', command=show_entry_fields).grid(row=3, column=1, sticky=tk.W, pady=4)
+        e1.grid(row=1, column=1)
+
+        tk.Label(master, text="   ", bg="white").grid(row=1, column=4)
+        tk.Label(master, text="     ", bg="white").grid(row=1, column=2)
+        tk.Button(master, text=' Check ', bg="white", font=('', 8), command=show_entry_fields).grid(row=1, column=3,
+                                                                                                    sticky=tk.W, pady=0)
+        tk.Label(master, text=" ", bg="white").grid(row=3)
         tk.mainloop()
 
     def email_verify(self,s:socket,user_data:list):
@@ -89,10 +101,22 @@ class user :
             self.email_verify(s,user_data)
 
 
-    #pasokh server be inke aya ba movafaghiat user jadid ra
-    #be data base ezafe karde ya kheir
+    #baraye namayesh messegebox
+    def meesege_box(self,msg):
+        import tkinter as tk
+        root = tk.Tk()
+        root.resizable(False, False)
+        root.title(" server message ")
+        w = tk.Label(root, text="\n     "+str(msg)+"     \n", bg="white")
+        w.pack()
+        # root.eval('tk::PlaceWindow . center')
+        root.mainloop()
+
+
+        # pasokh server be inke aya ba movafaghiat user jadid ra
+        # be data base ezafe karde ya kheir
     def server_added_user_to_database(self,s:socket,data:list):
-        print(data[0])
+        self.meesege_box(data[0])
 
 
     def user_want_sign_in(self,s:socket,ui):
@@ -256,7 +280,11 @@ class UI_rigister(QMainWindow):
     def clickedBtn_2(self):#login
         pass
 
+#
 
+
+
+#
 
 
 if (path.isfile('Other/lice_l_2.txt')):

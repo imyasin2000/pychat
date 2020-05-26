@@ -91,10 +91,18 @@ def login_chek(s:socket,data):
     connection.close()
     if not r:
         print("login_chek")
+
+        data1 = [int(502), " Please Check youre Email!! "]
+        data1 = json.dumps(data1)
+        s.send((data1.encode() + b'\0'))
+
         send_email(s,data)
         print("login_chek")
     else:
-        print("no")
+        print("exist")
+        data1 = [int(502), " Username available! "]
+        data1 = json.dumps(data1)
+        s.send((data1.encode() + b'\0'))
         #sock.send(sock,"in data base ghablan vojud dashte")
         pass
 
@@ -150,7 +158,7 @@ def client_chek_mail(s:socket,data):
 
 def add_new_user(s:socket,data: list):
     #ghab in tabe tabe chek kardan username farakhani mishavad 
-    #agar chek kardan user name sahih bud in farakhani shavad 
+    #agar chek kardan user name sahih bud in farakhani shavad
     connection = sqlite3.connect("./users.db")
     cur = connection.cursor()
     cur.execute("INSERT INTO users VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
