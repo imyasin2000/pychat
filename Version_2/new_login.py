@@ -6,13 +6,20 @@ import time
 from select import select
 from PyQt5.QtWidgets import * #UI
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QIcon, QPixmap
+from captcha.image import ImageCaptcha
 from PyQt5 import uic
 import sys
+import os
 from os import path
+import random
 
 q=Queue()
 s=socket.socket()
-s.connect(('51.195.19.3',1234))
+
+#Server information
+## 51.195.19.3
+s.connect(('0.0.0.0',1234))
 
 
 code_g=0
@@ -202,7 +209,7 @@ def do_work(obj:user,s:socket):
             #yasinmhd110@gmail.com
 
 
-            
+
 
 
 
@@ -211,18 +218,23 @@ def do_work(obj:user,s:socket):
 obj=user()
 work={'500':obj.email_verify,
       '502':obj.server_added_user_to_database,
-      
-      
-      
-      
+
+
+
+
       }
 
 
 threading.Thread(target=_accsepting ,args=(s, )).start()
 threading.Thread(target=do_work,args=(obj,s)).start()
 
+#sakhte image recapcha
+def capcha():
+    img = ImageCaptcha()
+    image = img.generate_image(str(random.randint(10000, 100000)))
+    image.save("Other/random.jpeg")
 
-#____________UI__________________________
+#_____________________________________________________________________________________________UI__________________________
 
 class UI_login(QMainWindow):
 
@@ -234,6 +246,7 @@ class UI_login(QMainWindow):
         self.button_forget = self.findChild(QPushButton, "forget_b")
         self.textedit_username = self.findChild(QTextEdit, "username_t")
         self.textedit_password = self.findChild(QTextEdit, "password_t")
+        self.label = self.findChild(QLabel, "label")
         self.button_login.clicked.connect(self.clickedBtn_login)
         self.button_rigister.clicked.connect(self.clickedBtn_rigister)
         self.button_forget.clicked.connect(self.clickedBtn_forget)
@@ -251,7 +264,9 @@ class UI_login(QMainWindow):
 
 
     def clickedBtn_forget(self):#OPEN forget PAGE
-        pass
+        capcha()
+        self.label.setPixmap(QPixmap('Other/random.jpeg'))
+        os.remove("Other/random.jpeg")
         # obj.forgot_password(s)
         # self.myOtherWindow = UI_rigister()
         # self.myOtherWindow.show()

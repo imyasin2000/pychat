@@ -14,8 +14,8 @@ import smtplib
 print("\nThe server was successfully activated.\n")
 
 #Server information
-
-ip = '51.195.19.3'
+## 51.195.19.3
+ip = '0.0.0.0'
 port = 1234
 
 
