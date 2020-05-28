@@ -13,6 +13,7 @@ import sys
 import os
 from os import path
 import random
+import http.client as httplib
 
 q=Queue()
 s=socket.socket()
@@ -26,7 +27,7 @@ code_g=0
 class user :
 
 
-    def __init__ (slef):
+    def __init__ (self):
 
         pass
 
@@ -227,6 +228,16 @@ work={'500':obj.email_verify,
 
 threading.Thread(target=_accsepting ,args=(s, )).start()
 threading.Thread(target=do_work,args=(obj,s)).start()
+#cheak network
+def cheak_net():
+    conn = httplib.HTTPConnection("www.google.com", timeout=5)
+    try:
+        conn.request("HEAD", "/")
+        conn.close()
+        return True
+    except:
+        conn.close()
+        return False
 
 #sakhte image recapcha
 def capcha():
