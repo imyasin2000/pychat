@@ -1,4 +1,5 @@
 import socket
+import subprocess
 import json
 from queue import Queue 
 import threading
@@ -14,6 +15,8 @@ import os
 from os import path
 import random
 import http.client as httplib
+from playsound import playsound
+
 
 q=Queue()
 s=socket.socket()
@@ -124,7 +127,8 @@ class user :
         # pasokh server be inke aya ba movafaghiat user jadid ra
         # be data base ezafe karde ya kheir
     def server_added_user_to_database(self,s:socket,data:list):
-        self.meesege_box(data[0])
+        # self.meesege_box(data[0])
+        notification(data[0])
 
 
     def user_want_sign_in(self,s:socket,ui):
@@ -238,6 +242,12 @@ def cheak_net():
     except:
         conn.close()
         return False
+
+#PopUP Notification namayesh midahad
+def notification(messege):
+    img =  os.path.abspath(os.getcwd()+'/Other/icon.png')
+    subprocess.Popen(["notify-send", "-i", img, "PyChat", messege])
+    playsound('Other/notify.mp3')
 
 #sakhte image recapcha
 def capcha():
