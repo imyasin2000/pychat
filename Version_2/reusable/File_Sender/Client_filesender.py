@@ -1,5 +1,6 @@
 import socket
 import time
+import os
 
 TCP_IP = 'localhost'
 TCP_PORT = 9001
@@ -7,21 +8,28 @@ BUFFER_SIZE = 1024
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
-x=s.recv(BUFFER_SIZE).decode()
-recived_f = 'File '+str(time.time()).split(' .')[0]+str(x)
+size=s.recv(BUFFER_SIZE).decode()#file size
+x=s.recv(BUFFER_SIZE).decode()#passvand file
+down=0
+recived_f = 'File_'+str(time.time()).split('.')[0]+"_"+str(x)
 with open(recived_f, 'wb') as f:
-    print('file opened')
+    import sys
     while True:
-        #print('receiving data...')
+
         data = s.recv(BUFFER_SIZE)
-        print('data=%s', (data))
+
         if not data:
             f.close()
-            print('file close()')
+            print('\nfile close()')
             break
         # write data to a file
         f.write(data)
 
-print('Successfully get the file')
+        down = down + (sys.getsizeof(data)-33)
+        percent=(100 * float(down)/float(size))
+        print("\r",end="")
+        print("{:.0f} %".format(percent),end="")
+
+
+
 s.close()
-print('connection closed')

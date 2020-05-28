@@ -14,29 +14,29 @@ class ClientThread(Thread):
         self.ip = ip
         self.port = port
         self.sock = sock
-        print(" New thread started for "+ip+":"+str(port))
+
 
     def run(self):
 
         import os
         root = Tk()
-        root.filename = filedialog.askopenfilename(initialdir="/", title="Select file",filetypes=(("jpeg files","*.jpg"),("all files","*.*")))
-        print(root.filename)
+        root.filename = filedialog.askopenfilename(initialdir="/home/mhfa1380/Desktop/", title="Select file",filetypes=(("all files","*.*"),("jpeg files","*.jpg"),))
         name, ext = os.path.splitext(root.filename)
-        print(ext)
+        x=os.path.getsize(root.filename)
+        print(type(ext))
+        self.sock.send(str(x).encode())
         self.sock.send(ext.encode())
-
-        filename = 'README.md'
         f = open(root.filename, 'rb')
+
         while True:
             l = f.read(BUFFER_SIZE)
             while (l):
                 self.sock.send(l)
-                #print('Sent ',repr(l))
                 l = f.read(BUFFER_SIZE)
             if not l:
                 f.close()
                 self.sock.close()
+                root.destroy()
                 break
 
 
@@ -47,9 +47,9 @@ threads = []
 
 while True:
     tcpsock.listen(5)
-    print("Waiting for incoming connections...")
+
     (conn, (ip, port)) = tcpsock.accept()
-    print('Got connection from ', (ip, port))
+
     newthread = ClientThread(ip, port, conn)
     newthread.start()
     threads.append(newthread)
