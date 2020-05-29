@@ -87,9 +87,10 @@ class user :
         message=input("enter text for sending to your freind : ")
         message_time=datetime.datetime.now()
         message_id=str(time.time())
-        message_id=message_id[:-3]+work['token']
+        message_id=message_id[:-3]+obj_work['token']
         data=[int(104),sender,reciver,message,message_time,message_id]
         sending_to_server(s,data)
+
     
     
 
@@ -102,8 +103,13 @@ class user :
 
 #--------------other func -------------------------------------------------
 
-def regex_chek_email():
-    pass
+def recive_text_message(s:socket,data:list):
+    number_of_message=len(data)
+    print(f'{number_of_message}new message!')
+    for i in data:
+        print(f'{i[0]} : {i[2]} ({i[3]})')
+    
+
 
     
 
@@ -136,8 +142,10 @@ def _accsepting(s:socket):
                             data = d[-1]
                 else:
                     s.close()
+                    
         except:
                 print("connection failed ...")
+                break
                 # return
 
 
@@ -164,12 +172,17 @@ def do_work(obj:user,s:socket):
         time.sleep(0.03)
         if not q.empty():
             new_data=q.get()
-            task=new_data[0]
+            if new_data[0] in obj_work:
+                task=new_data[0]
+                obj_work[f"{task}"](s,new_data[1:])
+                #yasinmhd110@gmail.com
+                q.task_done()
+            else:
+                task=new_data[0]
+                global_work[f"{task}"](s,new_data[1:])
+                #yasinmhd110@gmail.com
+                q.task_done()
 
-            work[f"{task}"](s,new_data[1:])
-            #yasinmhd110@gmail.com
-
-            q.task_done()
 
 
 
@@ -177,9 +190,15 @@ def do_work(obj:user,s:socket):
 
 obj=user()
 
-work={ 'token':"yasin78",
+obj_work={ 'token':"yasin78",
       '500':obj.email_verify,
       '502':obj.server_added_user_to_database,
+      
+ 
+      }
+
+
+global_work={'503':recive_text_message,
       
  
       }

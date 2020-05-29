@@ -18,7 +18,7 @@ print("\nThe server was successfully activated.\n")
 ip = '192.168.1.107'
 port = 14200
 
-
+#-------------------------------connection-------------------------------------------------------
 class Socket:
     size = 4096 #Size of information sent and received
     user_info = ""
@@ -34,20 +34,20 @@ class Socket:
     def _wait_recv(self, conn: socket, addr):#waiting for new messege or conect or diconnect
         data = b''#byte format
         while True:#wait for new message
-            try:
-                d = conn.recv(self.size)
-                data += d
-                if len(d) < self.size:#for biger bytes
-                    if data:
-                        d = data.split(b'\0')#get meeseges \0 hi ali\0 hello\0
-                        for i in range(len(d) - 1):
-                            self._recive_data(conn, decrypt(d[i]))#client,messeg sended
-                        data = d[-1]#ali\0mohammad\0 bade \0 akhari ham mide msln bara kamel bodn payam
-                    else:
-                        conn.close()#if client leave
-            except:
-                del online_users[conn]
-                print(online_users)
+            # try:
+            d = conn.recv(self.size)
+            data += d
+            if len(d) < self.size:#for biger bytes
+                if data:
+                    d = data.split(b'\0')#get meeseges \0 hi ali\0 hello\0
+                    for i in range(len(d) - 1):
+                        self._recive_data(conn, decrypt(d[i]))#client,messeg sended
+                    data = d[-1]#ali\0mohammad\0 bade \0 akhari ham mide msln bara kamel bodn payam
+                else:
+                    conn.close()#if client leave
+            # except:
+            #     del online_users[conn]
+            #     print(online_users)
 
 
     #addres karbar = client 
@@ -78,10 +78,12 @@ class Socket:
     def close(self):
         self.socket.close()
 
+#---------------END----------------connection---------------------------END----------------------------
 
 
 
 
+#-------------------------------FUNCTIONS------------------------------------------------------------------
 #vaghti ye nafar sabte nam mikone bayad motmaeen beshim
 #ghablan inja account nadashe age dash behesh begim ghablan sabte nam kardi ! 
 def login_chek(s:socket,data):
@@ -183,11 +185,36 @@ def sign_in_request(s:socket,data:list):
         data1 = json.dumps(data1)
         s.send((data1.encode() + b'\0'))
 
+
+
+#ezafe kardan yek karbar jadid be afrad online va ferastan payam hayie
+#ke dar zaman ofline budan shakhs digari baraye vey ersal karde
+
 def adding_new_client_to_online(s:socket,data:list):
-    print('start')
+    #-------add to online------------------------------------------------------
+    print('ye nafar jadid online shod')
     online=data[0]
     online_users.update({s:data[0]})
     print(online_users)
+    #-----------start sending pm that recived when he/she was ofline------------
+
+    connection = sqlite3.connect("./unsend.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM unsend WHERE reciver=?", (online,))
+    r = cursor.fetchall()
+    connection.close()
+    if r!=[]:
+        data=[int(503)]+r
+        print("start sending unsend pm to user")
+        data = json.dumps(data)
+        s.send((data.encode() + b'\0'))
+        print("sending pm finished")
+    else:
+        pass
+
+
+
+#-----------------------------------------END FUNC ------------------------------------------------------------
 
 
 
