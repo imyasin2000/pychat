@@ -6,4 +6,4 @@ def sms_sender(from_c,send_to):
 
 
 
-sms_sender("Yasin Khamar","09113187038")
+sms_sender("Dr.mostafa bastam ","09113187038")

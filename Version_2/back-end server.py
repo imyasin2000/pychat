@@ -212,6 +212,29 @@ def adding_new_client_to_online(s:socket,data:list):
     else:
         pass
 
+def sending_messages(s:socket,data:list):
+    print(data)
+    for key, value in online_users.items(): 
+        if data[0] == value: 
+            data1=[int(503),(data[0],data[1],data[2],data[3],data[4])]
+            data1 = json.dumps(data1)
+            key.send((data1.encode() + b'\0'))
+            connection = sqlite3.connect("./sent.db")
+            cur = connection.cursor()
+            cur.execute("INSERT INTO sent VALUES (?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4]))
+            connection.commit()
+            connection.close()
+        else:
+            connection = sqlite3.connect("./unsend.db")
+            cur = connection.cursor()
+            cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4]))
+            connection.commit()
+            connection.close()
+
+
+
+
+
 
 
 #-----------------------------------------END FUNC ------------------------------------------------------------
@@ -220,7 +243,7 @@ def adding_new_client_to_online(s:socket,data:list):
 
 
 
-work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online}
+work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages}
 online_users={}
 s=Socket(ip, port)#run socket init make object from socket
 

@@ -85,10 +85,10 @@ class user :
 
     def send_text_message(self,s:socket,sender,reciver):
         message=input("enter text for sending to your freind : ")
-        message_time=datetime.datetime.now()
+        message_time=str(datetime.datetime.now())
         message_id=str(time.time())
         message_id=message_id[:-3]+obj_work['token']
-        data=[int(104),sender,reciver,message,message_time,message_id]
+        data=[int(106),sender,reciver,message,message_time,message_id]
         sending_to_server(s,data)
 
     
@@ -209,16 +209,17 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 
 #in 2 khat baraye etesal avalie be server ast ta in ke server client mara be onvan 
 #online zakhire konad #TODO #in tike ro bayad behtar konam 
-try:
-    token='yasin78'
-    im_online=[int(105),token]
-    sending_to_server(s,im_online)
-    print("done")
-except:
-    print("chek your internet and try")
+
+token='yasin78'
+im_online=[int(105),token]
+sending_to_server(s,im_online)
+print("done")
+
 
 #obj.login(s)
 #obj.user_want_sign_in(s)
 #obj.forgot_password(s)
+while True:
+    obj.send_text_message(s,'yasin78','yasin78')
 
 

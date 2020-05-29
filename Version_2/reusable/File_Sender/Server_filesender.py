@@ -2,6 +2,8 @@ import socket
 from threading import Thread
 from tkinter import filedialog
 from tkinter import *
+import os
+
 TCP_IP = 'localhost'
 TCP_PORT = 9001
 BUFFER_SIZE = 1024
@@ -18,7 +20,7 @@ class ClientThread(Thread):
 
     def run(self):
 
-        import os
+        
         root = Tk()
         root.filename = filedialog.askopenfilename(initialdir="/home/mhfa1380/Desktop/", title="Select file",filetypes=(("all files","*.*"),("jpeg files","*.jpg"),))
         name, ext = os.path.splitext(root.filename)
