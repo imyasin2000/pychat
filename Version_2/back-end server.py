@@ -90,7 +90,7 @@ def login_chek(s:socket,data):
     user_id=data[0]  #id_user khune 0 dade ersali ast 
     sock=s
     #peyda kardan karbar dar db
-    connection = sqlite3.connect("./users.db")
+    connection = sqlite3.connect("./database.db")
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     r = cursor.fetchall()
@@ -133,9 +133,16 @@ def send_email(s:socket,data:list):
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
     data.append(random_number)
+    if data[0]=='forgot':
+        data1=[int(509)]+data #email_verify
+        data1 = json.dumps(data1) #etelaat daryafti avalie + code random 
+        s.send((data1.encode() + b'\0'))
+
+
+    else:
     
-    #client_chek_mail(s,random_number)
-    client_chek_mail(s,data)
+        #client_chek_mail(s,random_number)
+        client_chek_mail(s,data)
 
     
 #baad az ersal mail bayad be client khabr dade shavad ta 
@@ -152,7 +159,7 @@ def client_chek_mail(s:socket,data):
 def add_new_user(s:socket,data: list):
     #ghab in tabe tabe chek kardan username farakhani mishavad 
     #agar chek kardan user name sahih bud in farakhani shavad 
-    connection = sqlite3.connect("./users.db")
+    connection = sqlite3.connect("./database.db")
     cur = connection.cursor()
     cur.execute("INSERT INTO users VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
     connection.commit()
@@ -168,7 +175,7 @@ def sign_in_request(s:socket,data:list):
     user_id=data[0]
     print(user_id)
     
-    connection = sqlite3.connect("./users.db")
+    connection = sqlite3.connect("./database.db")
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     r = cursor.fetchall()
@@ -185,6 +192,18 @@ def sign_in_request(s:socket,data:list):
         data1 = json.dumps(data1)
         s.send((data1.encode() + b'\0'))
 
+def edit_password(s:socket,data:list):
+    print(data)
+    connection=sqlite3.connect("./database.db")
+    cursor=connection.cursor()
+    cursor.execute("UPDATE users SET pas=? WHERE mail=?", (data[1],data[0]))
+    connection.commit()
+    connection.close()
+    data1=[int(504),"password changed "]
+    data1 = json.dumps(data1)
+    s.send((data1.encode() + b'\0'))
+    
+
 
 
 #ezafe kardan yek karbar jadid be afrad online va ferastan payam hayie
@@ -200,7 +219,7 @@ def adding_new_client_to_online(s:socket,data:list):
     print(online_users)
     #start sending pm that recived when client was ofline
 
-    connection = sqlite3.connect("./messages.db")
+    connection = sqlite3.connect("./database.db")
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM unsend WHERE reciver=?", (online,))
     r = cursor.fetchall()
@@ -253,7 +272,8 @@ def sending_messages(s:socket,data:list):
 
 
 
-work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages}
+work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
+      '107':edit_password}
 online_users={}
 s=Socket(ip, port)#run socket init make object from socket
 
