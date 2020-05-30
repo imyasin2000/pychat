@@ -189,6 +189,8 @@ def sign_in_request(s:socket,data:list):
 
 #ezafe kardan yek karbar jadid be afrad online va ferastan payam hayie
 #ke dar zaman ofline budan shakhs digari baraye vey ersal karde
+#in payam ha az data base sent unsend migardad va dar data base sent 
+#zakire migardad
 
 def adding_new_client_to_online(s:socket,data:list):
     #-------add to online------------------------------------------------------
@@ -196,36 +198,44 @@ def adding_new_client_to_online(s:socket,data:list):
     online=data[0]
     online_users.update({s:data[0]})
     print(online_users)
-    #-----------start sending pm that recived when he/she was ofline------------
+    #start sending pm that recived when client was ofline
 
-    connection = sqlite3.connect("./unsend.db")
+    connection = sqlite3.connect("./messages.db")
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM unsend WHERE reciver=?", (online,))
     r = cursor.fetchall()
-    connection.close()
+    cursor.execute("DELETE FROM unsend WHERE reciver=?", (online,))
     if r!=[]:
         data=[int(503)]+r
         print("start sending unsend pm to user")
         data = json.dumps(data)
         s.send((data.encode() + b'\0'))
         print("sending pm finished")
-    else:
-        pass
+        for i in r :
+            cursor.execute("INSERT INTO sent VALUES (?,?,?,?,?)", (i[0], i[1], i[2], i[3],i[4]))
+            connection.commit()
+        connection.close()
 
+    else:
+        connection.commit()
+        connection.close()
+
+#ersal payam haye daryafti be fard online va dar gheir in surat zakhire an ha 
+#dar data base unsend
 def sending_messages(s:socket,data:list):
     print(data)
     for key, value in online_users.items(): 
-        if data[0] == value: 
+        if data[1] == value: 
             data1=[int(503),(data[0],data[1],data[2],data[3],data[4])]
             data1 = json.dumps(data1)
             key.send((data1.encode() + b'\0'))
-            connection = sqlite3.connect("./sent.db")
+            connection = sqlite3.connect("./messages.db")
             cur = connection.cursor()
             cur.execute("INSERT INTO sent VALUES (?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4]))
             connection.commit()
             connection.close()
         else:
-            connection = sqlite3.connect("./unsend.db")
+            connection = sqlite3.connect("./messages.db")
             cur = connection.cursor()
             cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4]))
             connection.commit()

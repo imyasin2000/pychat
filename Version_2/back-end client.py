@@ -5,6 +5,7 @@ import threading
 import time
 from select import select
 import datetime
+import status
 
 q=Queue()
 s=socket.socket()
@@ -105,7 +106,7 @@ class user :
 
 def recive_text_message(s:socket,data:list):
     number_of_message=len(data)
-    print(f'{number_of_message}new message!')
+    print(f'\n{number_of_message}new message!')
     for i in data:
         print(f'{i[0]} : {i[2]} ({i[3]})')
     
@@ -210,7 +211,7 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 #in 2 khat baraye etesal avalie be server ast ta in ke server client mara be onvan 
 #online zakhire konad #TODO #in tike ro bayad behtar konam 
 
-token='yasin78'
+token='mhfa1380'
 im_online=[int(105),token]
 sending_to_server(s,im_online)
 print("done")
@@ -220,6 +221,6 @@ print("done")
 #obj.user_want_sign_in(s)
 #obj.forgot_password(s)
 while True:
-    obj.send_text_message(s,'yasin78','yasin78')
+    obj.send_text_message(s,'yasin78','mhfa1380')
 
 
