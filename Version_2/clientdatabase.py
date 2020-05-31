@@ -1,236 +1,46 @@
-import socket
-import json
-from queue import Queue 
-import threading
-import time
-from select import select
+import sqlite3
 import datetime
-import status
-
-q=Queue()
-s=socket.socket()
-s.connect(('192.168.1.107',14200))
-
-
-
-
-
-class user :
-
-
-    def __init__ (slef):
-        
-        pass
-
-    #ersal etelaat karbar jadid be samte server 
-    def login(self,s:socket):
-        self.data=[int(100)]
-        self.username=input("enter your username :")
-        self.data.append(self.username)
-        self.name=input("enter your user name: ")
-        self.data.append(self.name)
-        self.email=input("enter your email :")
-        self.data.append(self.email)
-        self.password=input("enter your password :")
-        to_chek_password=input("enter your password agian:")
-        if self.cheking_password(self.password,to_chek_password):
-            self.data.append(self.password)
-            sending_to_server(s,self.data)
-
-    #tabe baraye chek kardan motabegh budan password
-    def cheking_password(self,pass1,pass2):
-        if pass1==pass2:
-            return True
-        
-
-        else:
-            print("oh! try agian to enter password because ther r not equal try again ")
-            self.password=input("enter your password :")
-            to_chek_password=input("enter your password agian:")
-            self.cheking_password(self.password,to_chek_password)
-
-
-    def email_verify(self,s:socket,user_data:list):
-        print(user_data[-1])
-        if user_data[-1]==int(input("enter 8-digit code : ")):
-            self.data1=[int(102)]+user_data[:-1]
-            sending_to_server(s,self.data1)
-            
-        else:
-            print("try angin ...")
-            email_verify(self,s,user_data)
-
-
-    #pasokh server be inke aya ba movafaghiat user jadid ra
-    #be data base ezafe karde ya kheir
-    def server_added_user_to_database(self,s:socket,data:list):
-        print(data[0])
-
-
-    def user_want_sign_in(self,s:socket):
-        self.data=[int(103)]
-        self.username=input("* enter your user name: *")
-        self.data.append(self.username)
-        self.password=input("enter your password: ")
-        self.data.append(self.password)
-        sending_to_server(s,self.data)
-
-
-
-    def forgot_password(self,s:socket):
-        self.eemail=input("enter your email: ")
-        data=[int(101),'forgot','_',self.eemail]
-        sending_to_server(s,data)
-
-    def check_mail_forgotpass(self,s:socket,data:list):
-        print(data[-1])
-        code=int(input('open your email and enter 8-digit code :'))
-        if int(data[-1])==code:
-            pas=input('enter new password:')
-            pas2=input('enter new passworda again :')
-            self.cheking_password(pas,pas2)
-            data1=[int(107),self.eemail,pas]
-            sending_to_server(s,data1)
-        else:
-            print("codo barat print kardam dige chera eshtebah mizani?")
-
-    def password_changed(self,s:socket,data:list):
-        print(data[0])
-        
-
-
-    def send_text_message(self,s:socket,sender,reciver):
-        message=input("enter text for sending to your freind : ")
-        message_time=str(datetime.datetime.now())
-        message_id=str(time.time())
-        message_id=message_id[:-3]+obj_work['token']
-        data=[int(106),sender,reciver,message,message_time,message_id]
-        sending_to_server(s,data)
-
-    
-    
-
-
-
-
-        
-
-
-
-#--------------other func -------------------------------------------------
-
-def recive_text_message(s:socket,data:list):
-    number_of_message=len(data)
-    print(f'\n{number_of_message}new message!')
-    for i in data:
-        print(f'{i[0]} : {i[2]} ({i[3]})')
-        status.store_messages(i)
-    
+connection=sqlite3.connect("./client.db")
+cur=connection.cursor()
+sql="""
+    CREATE TABLE IF NOT EXISTS  messages(
+    sender VARCHAR (48),
+    reciver VARCHAR(48),
+    message VARCHAR (600),
+    message_time DATETIME (60),
+    message_id VARCHAR (60)
 
 
     
-
+    );
     
 
+"""
+cur.execute(sql)
 
-#----------------network connections with Queue--------------------------------
-
-#in tabe tamame dade haye vorude be barname ra misanjad agar daraye etebar bashad 
-#an hara accsept  mikonad 
-
-def _accsepting(s:socket):
-    data = b''
-    while True:
-        time.sleep(0.02)
-        try:
-
-            #do taye dg niaz nabod
-            r, _, _ = select([s], [s], [])#baresi mishe vasl hast ya na
-            if r:
-                d = s.recv(4096)
-                data += d
-                if len(d) < 4096:
-                    if data:
-                        d = data.split(b'\0')
-                        #extera baraye dycrypt ezafe beshe
-                        #load_data(decrypt(d[i]))
-                        for i in range(len(d) - 1):
-                            load_data(d[i])
-                            data = d[-1]
-                else:
-                    s.close()
-                    
-        except:
-                print("connection failed ...")
-                break
-                # return
+sql="""
+    CREATE TABLE IF NOT EXISTS  info(
+    user_id VARCHAR (48),
+    name VARCHAR(48),
+    mail VARCHAR (60),
+    password VARCHAR (60),
+    login INTEGER
 
 
 
-#in tabe vorudi haue ghbel pardazesh ke az tabee marhale 
-#ghabl amade ra decode mikonad va zemnan az halat json kharej 
-#mikonad va an ha ra darun q put mikonad 
-def load_data(data):
-    x=(json.loads(data.decode()))
-    q.put(x)
- 
+    
+    );
+    
 
-#ba farakhani in tabe har data ghbel fahm baraye server ra ersal 
-#mikonim  in tabee khodkar tamame vorudi ash ra be json tablil karde
-# va baad an ra ra encode mikond va ersal be server
-#vorudi in tabe sheye s hast ke bala az ruye socket sakhtim
-def sending_to_server(socket:socket,data):
-        data=json.dumps(data)
-        socket.send((data.encode()+ b'\0'))
-
-#in tabe kar ha va darkhast hayie ke az samte server amade ra inja ejra mikonad 
-def do_work(obj:user,s:socket):
-    while True:
-        time.sleep(0.03)
-        if not q.empty():
-            new_data=q.get()
-            print(new_data)
-            task=new_data[0]
-            obj_work[f"{task}"](s,new_data[1:])
-            #yasinmhd110@gmail.com
-            q.task_done()
+"""
+cur.execute(sql)
+connection.commit()
+connection.close()
 
 
-
-
-#--------------------------main--------------------------------------------------
-
-obj=user()
-
-obj_work={ 'token':"yasin78",
-      '500':obj.email_verify,
-      '502':obj.server_added_user_to_database,
-      '509':obj.check_mail_forgotpass,
-      '504':obj.password_changed,
-      '503':recive_text_message,
-      
- 
-      }
-
-
-
-threading.Thread(target=_accsepting ,args=(s, )).start()
-threading.Thread(target=do_work,args=(obj,s)).start()
-
-#in 2 khat baraye etesal avalie be server ast ta in ke server client mara be onvan 
-#online zakhire konad #TODO #in tike ro bayad behtar konam 
-
-token='yasin78'
-im_online=[int(105),token]
-sending_to_server(s,im_online)
-print("done")
-
-
-#obj.login(s)
-#obj.user_want_sign_in(s)
-obj.forgot_password(s)
-# while True:
-#     obj.send_text_message(s,'yasin78','yasin78')
-# #obj.forgot_password(s)
-
-
+# data=['unknown','unknown','unknown','unknown',0]
+# connection = sqlite3.connect("./client.db")
+# cur = connection.cursor()
+# cur.execute("INSERT INTO info VALUES (?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4]))
+# connection.commit()
+# connection.close()
