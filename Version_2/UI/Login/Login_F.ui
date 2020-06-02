@@ -29,7 +29,7 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="background">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -228,7 +228,7 @@ background-color: rgb(57, 175, 159);
         <rect>
          <x>100</x>
          <y>60</y>
-         <width>211</width>
+         <width>241</width>
          <height>41</height>
         </rect>
        </property>
@@ -734,7 +734,7 @@ background-color: rgb(57, 175, 159);</string>
        <x>0</x>
        <y>0</y>
        <width>801</width>
-       <height>531</height>
+       <height>541</height>
       </rect>
      </property>
      <property name="text">
@@ -1174,16 +1174,6 @@ background-color: rgb(57, 175, 159);
      </property>
     </widget>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>22</height>
-    </rect>
-   </property>
   </widget>
  </widget>
  <resources/>

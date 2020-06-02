@@ -16,6 +16,7 @@ from os import path
 import random
 import http.client as httplib
 from playsound import playsound
+from PyQt5 import QtCore
 
 
 q=Queue()
@@ -133,9 +134,9 @@ class user :
 
     def user_want_sign_in(self,s:socket,ui):
         self.data=[int(103)]
-        self.username=ui.textedit_username.toPlainText()
+        self.username=ui.lineEdit_username.text()
         self.data.append(self.username)
-        self.password=ui.textedit_password.toPlainText()
+        self.password=ui.lineEdit_password.text()
         self.data.append(self.password)
         sending_to_server(s,self.data)
 
@@ -261,66 +262,104 @@ class UI_login(QMainWindow):
 
     def __init__(self):
         super(UI_login, self).__init__()
-        uic.loadUi("UI/Login_F.ui", self)
-        self.button_login = self.findChild(QPushButton, "login_b")
-        self.button_rigister = self.findChild(QPushButton, "rigister_b")
-        self.button_forget = self.findChild(QPushButton, "forget_b")
-        self.textedit_username = self.findChild(QTextEdit, "username_t")
-        self.textedit_password = self.findChild(QTextEdit, "password_t")
-        self.label = self.findChild(QLabel, "label")
-        self.button_login.clicked.connect(self.clickedBtn_login)
-        self.button_rigister.clicked.connect(self.clickedBtn_rigister)
-        self.button_forget.clicked.connect(self.clickedBtn_forget)
+        uic.loadUi("UI/Login/Login_F.ui", self)
+        self.button_login = self.findChild(QPushButton, "signin_b")
+        self.button_signup= self.findChild(QPushButton, "Signup1_BTN")
+        self.button_forget = self.findChild(QPushButton, "forgotpass_b")
+        self.lineEdit_username = self.findChild(QLineEdit, "Username_LE")
+        self.lineEdit_password = self.findChild(QLineEdit, "Password_LE")
+
+        self.label_background = self.findChild(QLabel, "background")
+        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
+        self.label_background = self.findChild(QLabel, "label_3")
+        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
+        self.label_background = self.findChild(QLabel, "label_4")
+        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
+        self.label_background = self.findChild(QLabel, "label_5")
+        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
+        self.label_background = self.findChild(QLabel, "label_5")
+        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
+        self.label_background = self.findChild(QLabel, "label_6")
+        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
+
+        self.Signup1_BTN.clicked.connect(self.Go_to_signup)
+        self.pushButton.clicked.connect(self.Back_from_signup_to_signin)
+        self.Forgotpass_BTN_2.clicked.connect(self.Go_to_recovery)
+        self.Signin_BTN_2.clicked.connect(self.Go_to_varify)
+        self.Signup1_BTN_2.clicked.connect(self.Go_to_changepass)
+        self.pushButton_3.clicked.connect(self.Back_from_recoverpass_to_signin)
+        self.pushButton_4.clicked.connect(self.Back_from_varify_to_recoverpass)
+        self.pushButton_5.clicked.connect(self.Back_from_changepass_to_varify)
+        self.Signin_BTN.clicked.connect(self.clickedBtn_login)
+        self.Signin_BTN.clicked.connect(self.clickedBtn_login)
+
         self.show()
 
+    def center(self):
+        # geometry of the main window
+        qr = self.frameGeometry()
 
+        # center point of screen
+        cp = QDesktopWidget().availableGeometry().center()
+
+        # move rectangle's center point to screen's center point
+        qr.moveCenter(cp)
+
+        # top left of rectangle becomes top left of window centering it
+        self.move(qr.topLeft())
+
+    def Go_to_signup(self):
+        self.Signin_FRM.setGeometry(
+            QtCore.QRect(22000, 0, 801, 541))  # dge nabayad to x=22000 ui bezaram chon mishe zir majmoaash
+        self.Signup_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
+    def Back_from_signup_to_signin(self):
+        self.Signup_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))
+        self.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
+    def Go_to_recovery(self):
+        self.Signin_FRM.setGeometry(QtCore.QRect(-1000, 0, 801, 541))
+        self.Recover_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
+    def Go_to_varify(self):
+        self.Recover_FRM.setGeometry(QtCore.QRect(-3000, 0, 801, 541))
+        self.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
+    def Go_to_changepass(self):
+        self.Recover_FRM_2.setGeometry(QtCore.QRect(-2000, 0, 801, 541))
+        self.Recover_FRM_3.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
+    def Back_from_recoverpass_to_signin(self):
+        self.Recover_FRM.setGeometry(QtCore.QRect(25000, 0, 801, 541))
+        self.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
+    def Back_from_varify_to_recoverpass(self):
+        self.Recover_FRM_2.setGeometry(QtCore.QRect(35000, 0, 801, 541))
+        self.Recover_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
+    def Back_from_changepass_to_varify(self):
+        self.Recover_FRM_2.setGeometry(QtCore.QRect(4555000, 4000, 801, 541))
+        self.Recover_FRM_3.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
+    #
     def clickedBtn_login(self):#login page run mishe
 
         obj.user_want_sign_in(s,self)
-
-    def clickedBtn_rigister(self):#OPEN RIGISTER PAGE
-        self.myOtherWindow = UI_rigister()
-        self.myOtherWindow.show()
-        self.hide()
-
-
-    def clickedBtn_forget(self):#OPEN forget PAGE
-        capcha()
-        self.label.setPixmap(QPixmap('Other/random.jpeg'))
-        os.remove("Other/random.jpeg")
+    #
+    # def clickedBtn_rigister(self):#OPEN RIGISTER PAGE
+    #     self.myOtherWindow = UI_rigister()
+    #     self.myOtherWindow.show()
+    #     self.hide()
+    #
+    #
+    # def clickedBtn_forget(self):#OPEN forget PAGE
+    #     capcha()
+    #     self.label.setPixmap(QPixmap('Other/random.jpeg'))
+    #     os.remove("Other/random.jpeg")
         # obj.forgot_password(s)
         # self.myOtherWindow = UI_rigister()
         # self.myOtherWindow.show()
         # self.hide()
-
-class UI_rigister(QMainWindow):
-    def __init__(self):
-        super(UI_rigister, self).__init__()
-        uic.loadUi("UI/Rigister_F.ui", self)
-        self.textedit_username = self.findChild(QTextEdit, "username_t")
-        self.textedit_fullname = self.findChild(QTextEdit, "fullname_t")
-        self.textedit_email = self.findChild(QTextEdit, "email_t")
-        self.textedit_password = self.findChild(QTextEdit, "password_t")
-        self.textedit_repassword = self.findChild(QTextEdit, "repassword_t")
-        self.button_rigister = self.findChild(QPushButton, "rigister_b")
-        self.button_rigister.clicked.connect(self.clickedBtn_rigister)
-
-
-        self.show()
-
-
-    def clickedBtn_rigister(self):#forget
-
-        obj.login(s,self)
-
-    def clickedBtn_2(self):#login
-        pass
-
-#
-
-
-
-#
 
 
 if (path.isfile('Other/lice_l_2.txt')):
