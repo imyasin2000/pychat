@@ -1,16 +1,16 @@
 from PyQt5.QtWidgets import * #UI
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QIcon, QPixmap
+# from PyQt5.QtGui import QIcon, QPixmap
 from captcha.image import ImageCaptcha
 from PyQt5 import uic
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QApplication, QWidget, QScrollArea, QVBoxLayout, QGroupBox, QLabel, QPushButton, QFormLayout
+# from PyQt5.QtWidgets import QApplication, QWidget, QScrollArea, QVBoxLayout, QGroupBox, QLabel, QPushButton, QFormLayout
 from PyQt5.QtWidgets import * 
 from PyQt5.QtGui import * 
 from PyQt5 import QtCore 
-from PyQt5.QtCore import Qt 
+# from PyQt5.QtCore import Qt 
 import sys 
-from PyQt5.QtGui import QColor
+# from PyQt5.QtGui import QColor
 import os
 
 
@@ -36,6 +36,11 @@ class Window(QMainWindow):
         # self.Signin_FRM.setStyleSheet("border-radius:15px;") 
         # self.Signup_FRM.setStyleSheet("border-radius:15px;") 
 
+        # self.pushButton_3.setStyleSheet("background-color: transparent;border: 1px transparent;")
+
+
+
+
 
 
         self.Signup1_BTN.clicked.connect(self.Go_to_signup)
@@ -43,11 +48,38 @@ class Window(QMainWindow):
         self.Forgotpass_BTN_2.clicked.connect(self.Go_to_recovery)
         self.Signin_BTN_2.clicked.connect(self.Go_to_varify)
         self.Signup1_BTN_2.clicked.connect(self.Go_to_changepass)
+        self.pushButton_3.clicked.connect(self.Back_from_recoverpass_to_signin)
+        self.pushButton_4.clicked.connect(self.Back_from_varify_to_recoverpass)
+        self.pushButton_5.clicked.connect(self.Back_from_changepass_to_varify)
+
+
+
+        self.center()
+
+
+
+
+        # desktopRect = QApplication.desktop().availableGeometry(self.window)
+        # center = desktopRect.center()
+        # self.window.move(center.x()-self.window.width()  * 0.5,center.y()-self.window.height() * 0.5); 
 
 
 
         self.show()
 
+
+    def center(self):
+        # geometry of the main window
+        qr = self.frameGeometry()
+
+        # center point of screen
+        cp = QDesktopWidget().availableGeometry().center()
+
+        # move rectangle's center point to screen's center point
+        qr.moveCenter(cp)
+
+        # top left of rectangle becomes top left of window centering it
+        self.move(qr.topLeft())
 
 
     def Go_to_signup(self):
@@ -66,14 +98,28 @@ class Window(QMainWindow):
 
 
     def Go_to_varify(self):
+        self.Recover_FRM.setGeometry(QtCore.QRect(-3000,0, 801, 541))
         self.Recover_FRM_2.setGeometry(QtCore.QRect(0,0, 801, 541))
 
 
     def Go_to_changepass(self):
+        self.Recover_FRM_2.setGeometry(QtCore.QRect(-2000,0, 801, 541))
         self.Recover_FRM_3.setGeometry(QtCore.QRect(0,0, 801, 541))
 
 
+    def Back_from_recoverpass_to_signin(self):
+        self.Recover_FRM.setGeometry(QtCore.QRect(25000,0, 801, 541))
+        self.Signin_FRM.setGeometry(QtCore.QRect(0,0, 801, 541))
 
+    def Back_from_varify_to_recoverpass(self):
+        self.Recover_FRM_2.setGeometry(QtCore.QRect(35000,0, 801, 541))
+        self.Recover_FRM.setGeometry(QtCore.QRect(0,0, 801, 541))
+
+
+    def Back_from_changepass_to_varify(self):
+        self.Recover_FRM_2.setGeometry(QtCore.QRect(4555000,4000, 801, 541))
+        self.Recover_FRM_3.setGeometry(QtCore.QRect(0,0, 801, 541))
+       
 
 
 
