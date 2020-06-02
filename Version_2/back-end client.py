@@ -9,7 +9,7 @@ import status
 
 q=Queue()
 s=socket.socket()
-s.connect(('192.168.1.107',14200))
+s.connect(('0.0.0.0',1234))
 
 
 

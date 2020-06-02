@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>PyChat</class>
+ <widget class="QMainWindow" name="PyChat">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>972</width>
-    <height>508</height>
+    <width>1050</width>
+    <height>548</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>PyChat</string>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Triangular</enum>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QScrollArea" name="scrollArea">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>0</y>
-      <width>651</width>
-      <height>441</height>
+      <x>380</x>
+      <y>60</y>
+      <width>661</width>
+      <height>431</height>
      </rect>
     </property>
     <property name="tabletTracking">
@@ -28,6 +31,9 @@
     </property>
     <property name="contextMenuPolicy">
      <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgba(255, 255, 255, 0)</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::VLine</enum>
@@ -46,8 +52,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>647</width>
-       <height>437</height>
+       <width>657</width>
+       <height>427</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -71,8 +77,8 @@
    <widget class="QPushButton" name="send_b">
     <property name="geometry">
      <rect>
-      <x>930</x>
-      <y>450</y>
+      <x>1010</x>
+      <y>510</y>
       <width>31</width>
       <height>31</height>
      </rect>
@@ -91,9 +97,9 @@
    <widget class="QPushButton" name="other_b">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>450</y>
-      <width>83</width>
+      <x>172</x>
+      <y>500</y>
+      <width>91</width>
       <height>25</height>
      </rect>
     </property>
@@ -104,8 +110,8 @@
    <widget class="QPushButton" name="clear_b">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>450</y>
+      <x>280</x>
+      <y>500</y>
       <width>83</width>
       <height>25</height>
      </rect>
@@ -117,9 +123,9 @@
    <widget class="QTextEdit" name="messegebox_t">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>450</y>
-      <width>561</width>
+      <x>430</x>
+      <y>510</y>
+      <width>571</width>
       <height>31</height>
      </rect>
     </property>
@@ -127,10 +133,10 @@
    <widget class="QScrollArea" name="scrollArea_2">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
+      <x>60</x>
+      <y>50</y>
       <width>311</width>
-      <height>401</height>
+      <height>441</height>
      </rect>
     </property>
     <property name="cursor" stdset="0">
@@ -169,7 +175,7 @@
        <x>0</x>
        <y>0</y>
        <width>315</width>
-       <height>405</height>
+       <height>445</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -194,7 +200,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>410</y>
+      <y>500</y>
       <width>83</width>
       <height>25</height>
      </rect>
@@ -206,8 +212,8 @@
    <widget class="QPushButton" name="record_b">
     <property name="geometry">
      <rect>
-      <x>930</x>
-      <y>450</y>
+      <x>1010</x>
+      <y>510</y>
       <width>31</width>
       <height>31</height>
      </rect>
@@ -226,8 +232,8 @@
    <widget class="QPushButton" name="attach_b">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>450</y>
+      <x>390</x>
+      <y>510</y>
       <width>31</width>
       <height>31</height>
      </rect>
@@ -238,14 +244,241 @@
     <property name="text">
      <string/>
     </property>
+   </widget>
+   <widget class="QPushButton" name="menu_b">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">pushButton&gt;setStyleSheet(&quot;QPushButton{background:transparent;}&quot;);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../icons/clip.png</normaloff>../../icons/clip.png</iconset>
+      <normaloff>../../icons/menu (copy).png</normaloff>../../icons/menu (copy).png</iconset>
     </property>
    </widget>
+   <widget class="QLabel" name="side_bar_l">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>51</width>
+      <height>551</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="user_search_t">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>10</y>
+      <width>251</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="user_search_b">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>10</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">pushButton&gt;setStyleSheet(&quot;QPushButton{background:transparent;}&quot;);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../icons/menu (copy).png</normaloff>../../icons/menu (copy).png</iconset>
+    </property>
+   </widget>
+   <widget class="QLabel" name="topchat_bar_l">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>0</y>
+      <width>711</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="bottomchat_bar_l">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>500</y>
+      <width>711</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="usernamem_l">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>10</y>
+      <width>341</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Chilanka</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Mohammad Hossein Fadavi</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lastseen_l">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>30</y>
+      <width>141</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Chilanka</family>
+      <pointsize>8</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="text">
+     <string>last seen recently</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="menu_user_b">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>10</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="searchuser_b">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>10</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="call_b">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>10</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="background_l">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>50</y>
+      <width>691</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <zorder>background_l</zorder>
+   <zorder>scrollArea</zorder>
+   <zorder>side_bar_l</zorder>
+   <zorder>other_b</zorder>
+   <zorder>clear_b</zorder>
+   <zorder>scrollArea_2</zorder>
+   <zorder>user_b</zorder>
+   <zorder>menu_b</zorder>
+   <zorder>user_search_t</zorder>
+   <zorder>user_search_b</zorder>
+   <zorder>topchat_bar_l</zorder>
+   <zorder>usernamem_l</zorder>
+   <zorder>lastseen_l</zorder>
+   <zorder>menu_user_b</zorder>
+   <zorder>searchuser_b</zorder>
+   <zorder>call_b</zorder>
+   <zorder>bottomchat_bar_l</zorder>
+   <zorder>attach_b</zorder>
+   <zorder>messegebox_t</zorder>
+   <zorder>send_b</zorder>
+   <zorder>record_b</zorder>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>other_b</tabstop>
+  <tabstop>clear_b</tabstop>
+  <tabstop>messegebox_t</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>user_b</tabstop>
+  <tabstop>attach_b</tabstop>
+  <tabstop>menu_b</tabstop>
+  <tabstop>user_search_t</tabstop>
+  <tabstop>user_search_b</tabstop>
+  <tabstop>menu_user_b</tabstop>
+  <tabstop>searchuser_b</tabstop>
+  <tabstop>call_b</tabstop>
+  <tabstop>record_b</tabstop>
+  <tabstop>send_b</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

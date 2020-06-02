@@ -5,7 +5,7 @@ from tkinter import *
 import os
 
 TCP_IP = 'localhost'
-TCP_PORT = 9001
+TCP_PORT = 1234
 BUFFER_SIZE = 1024
 
 

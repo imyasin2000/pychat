@@ -15,8 +15,8 @@ print("\nThe server was successfully activated.\n")
 
 #Server information
 
-ip = '192.168.1.107'
-port = 14200
+ip = '0.0.0.0'
+port = 1234
 
 #-------------------------------connection-------------------------------------------------------
 class Socket:
