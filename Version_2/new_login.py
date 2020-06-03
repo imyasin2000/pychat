@@ -24,7 +24,7 @@ s=socket.socket()
 
 #Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0',1234))
+s.connect(('0.0.0.0',1237))
 
 
 code_g=0
@@ -36,26 +36,31 @@ class user :
         pass
 
     #ersal etelaat karbar jadid be samte server 
-    def login(self,s:socket,ui):
+    def login(self,s:socket,ui,capcha_code):
         self.data=[int(100)]
-        self.username=ui.textedit_username.toPlainText()
-
-        self.name=ui.textedit_fullname.toPlainText()
-
-        self.email=ui.textedit_email.toPlainText()
+        self.username=ui.lineEdit_user.text()
+        self.name=ui.lineEdit_name.text()
+        self.email=ui.lineEdit_email.text()
         #cheak email is valid
         import re
         if (re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', self.email)):
 
-            self.password = ui.textedit_password.toPlainText()
-            to_chek_password = ui.textedit_repassword.toPlainText()
+            self.password = ui.lineEdit_pass.text()
+            self.capcha_label = ui.lineEdit_capcha.text()
+            to_chek_password = ui.lineEdit_repass.text()
             if self.cheking_password(self.password, to_chek_password):
                 self.data.append(self.username)
                 self.data.append(self.name)
                 self.data.append(self.email)
                 self.data.append(self.password)
 
-                sending_to_server(s, self.data)
+                if self.capcha_label==str(capcha_code):
+                    sending_to_server(s, self.data)
+                else:
+                    QMessageBox.about(ui, "recapcha error", "capcha code is not true")
+
+
+
                 print("done")
             else:
                 QMessageBox.about(ui, "password error", "oh! try agian to enter password because they are not equal!")
@@ -108,6 +113,7 @@ class user :
         if  user_data[-1] == int(code_g):
             self.data1 = [int(102)] + user_data[:-1]
             sending_to_server(s, self.data1)
+
         else:
             print("try angin ...")
             self.email_verify(s,user_data)
@@ -142,12 +148,29 @@ class user :
 
 
 
-    def forgot_password(self,s:socket):
-        self.mail=input("enter your email: ")
-        data=[int(102),_,_,self.email]
-        sending_to_server(s,data)
+    def forgot_password(self,s:socket,ui):
+        self.eemail = ui.lineEdit_forgetemail.text()
+        data = [int(101), 'forgot', '_', self.eemail]
+        sending_to_server(s, data)
 
+    def check_mail_forgotpass(self,s:socket,data:list):
+        global code_g
+        print("email cheak")
+        print(data[-1])
+        self.code_enter_box()
+        if data[-1] == int(code_g):
+            pas = input('enter new password:')
+            pas2 = input('enter new passworda again :')
+            self.cheking_password(pas, pas2)
+            data1 = [int(107), self.eemail, pas]
+            sending_to_server(s, data1)
 
+        else:
+            print("try angin ...")
+            self.check_mail_forgotpass(s, data)
+
+    def password_changed(self,s:socket,data:list):
+        print(data[0])
 #--------------other func -------------------------------------------------
 
 def regex_chek_email():
@@ -203,7 +226,7 @@ def sending_to_server(socket:socket,data):
         data=json.dumps(data)
         socket.send((data.encode()+ b'\0'))
 
-#in tabe kar ha va darkhast hayie ke az samte server amade ra inja ejra mikonad 
+#in tabe kar ha va darkhast hayie ke az samte server amade ra inja ejra mikonad
 def do_work(obj:user,s:socket):
     while True:
         time.sleep(0.03)
@@ -211,7 +234,7 @@ def do_work(obj:user,s:socket):
             new_data=q.get()
             task=new_data[0]
 
-            work[f"{task}"](s,new_data[1:])
+            obj_work[f"{task}"](s,new_data[1:])
             #yasinmhd110@gmail.com
 
 
@@ -222,8 +245,12 @@ def do_work(obj:user,s:socket):
             q.task_done()
 
 obj=user()
-work={'500':obj.email_verify,
+obj_work={ 'token':"yasin78",
+      '500':obj.email_verify,
       '502':obj.server_added_user_to_database,
+      '509':obj.check_mail_forgotpass,
+      '504':obj.password_changed,
+
 
 
 
@@ -251,23 +278,38 @@ def notification(messege):
     playsound('Other/notify.mp3')
 
 #sakhte image recapcha
-def capcha():
-    img = ImageCaptcha()
-    image = img.generate_image(str(random.randint(10000, 100000)))
-    image.save("Other/random.jpeg")
+
 
 #_____________________________________________________________________________________________UI__________________________
 
 class UI_login(QMainWindow):
 
     def __init__(self):
+        self.capcha_code = 0
         super(UI_login, self).__init__()
         uic.loadUi("UI/Login/Login_F.ui", self)
-        self.button_login = self.findChild(QPushButton, "signin_b")
-        self.button_signup= self.findChild(QPushButton, "Signup1_BTN")
-        self.button_forget = self.findChild(QPushButton, "forgotpass_b")
+        self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
+        # self.button_forget = self.findChild(QPushButton, "forgotpass_b")
         self.lineEdit_username = self.findChild(QLineEdit, "Username_LE")
         self.lineEdit_password = self.findChild(QLineEdit, "Password_LE")
+
+
+        self.lineEdit_name = self.findChild(QLineEdit, "Password_LE_3")
+        self.lineEdit_user = self.findChild(QLineEdit, "Usename_LE_4")
+        self.lineEdit_email = self.findChild(QLineEdit, "Usename_LE_3")
+        self.lineEdit_pass = self.findChild(QLineEdit, "Password_LE_4")
+        self.lineEdit_repass = self.findChild(QLineEdit, "Username_LE_7")
+        self.lineEdit_capcha = self.findChild(QLineEdit, "lineEdit")
+        self.label_capcha= self.findChild(QLabel, "label")
+
+        self.lineEdit_forgetemail = self.findChild(QLineEdit, "Username_LE_2")
+        self.lineEdit_forgetcode = self.findChild(QLineEdit, "Username_LE_3")
+        self.lineEdit_forget_pass = self.findChild(QLineEdit, "Username_LE_5")
+        self.lineEdit_forget_repass = self.findChild(QLineEdit, "Username_LE_6")
+
+
+        self.capcha()
+
 
         self.label_background = self.findChild(QLabel, "background")
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
@@ -287,13 +329,34 @@ class UI_login(QMainWindow):
         self.Forgotpass_BTN_2.clicked.connect(self.Go_to_recovery)
         self.Signin_BTN_2.clicked.connect(self.Go_to_varify)
         self.Signup1_BTN_2.clicked.connect(self.Go_to_changepass)
-        self.pushButton_3.clicked.connect(self.Back_from_recoverpass_to_signin)
+        self.pushButton_6.clicked.connect(self.Back_from_recoverpass_to_signin)
         self.pushButton_4.clicked.connect(self.Back_from_varify_to_recoverpass)
         self.pushButton_5.clicked.connect(self.Back_from_changepass_to_varify)
         self.Signin_BTN.clicked.connect(self.clickedBtn_login)
-        self.Signin_BTN.clicked.connect(self.clickedBtn_login)
+        # self.Signin_BTN.setStyleSheet("background-color:  teal;border: 1px solid teal;border-radius:15px;")
+        # self.Signup1_BTN.setStyleSheet("background-color: rgb(58, 175, 159);border: 1px solid teal;border-radius:15px;")
+        self.Signin_BTN_3.clicked.connect(self.clickedBtn_rigister)
+        self.pushButton_2.clicked.connect(self.capcha)
+        # self.Forgotpass_BTN_2.clicked.connect(self.clickedBtn_forget)
+        self.pushButton_7.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
+        self.pushButton_8.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
+        self.pushButton_9.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
+        self.pushButton_7.clicked.connect(self.close_win)
+        self.pushButton_8.clicked.connect(self.close_win)
+        self.pushButton_9.clicked.connect(self.close_win)
 
+        self.center()
         self.show()
+
+    def close_win(self):
+        self.close()
+    def capcha(self):
+        img = ImageCaptcha()
+        rnd_num=random.randint(10000, 100000)
+        image = img.generate_image(str(rnd_num))
+        image.save("Other/random.jpeg")
+        self.label_capcha.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/Other/random.jpeg')))
+        self.capcha_code = rnd_num
 
     def center(self):
         # geometry of the main window
@@ -309,8 +372,8 @@ class UI_login(QMainWindow):
         self.move(qr.topLeft())
 
     def Go_to_signup(self):
-        self.Signin_FRM.setGeometry(
-            QtCore.QRect(22000, 0, 801, 541))  # dge nabayad to x=22000 ui bezaram chon mishe zir majmoaash
+
+        self.Signin_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))  # dge nabayad to x=22000 ui bezaram chon mishe zir majmoaash
         self.Signup_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
 
     def Back_from_signup_to_signin(self):
@@ -322,8 +385,10 @@ class UI_login(QMainWindow):
         self.Recover_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
 
     def Go_to_varify(self):
-        self.Recover_FRM.setGeometry(QtCore.QRect(-3000, 0, 801, 541))
-        self.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
+        obj.forgot_password(s, self)
+        # self.Recover_FRM.setGeometry(QtCore.QRect(-3000, 0, 801, 541))
+        # self.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
+
 
     def Go_to_changepass(self):
         self.Recover_FRM_2.setGeometry(QtCore.QRect(-2000, 0, 801, 541))
@@ -338,28 +403,20 @@ class UI_login(QMainWindow):
         self.Recover_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
 
     def Back_from_changepass_to_varify(self):
-        self.Recover_FRM_2.setGeometry(QtCore.QRect(4555000, 4000, 801, 541))
-        self.Recover_FRM_3.setGeometry(QtCore.QRect(0, 0, 801, 541))
+        self.Recover_FRM_3.setGeometry(QtCore.QRect(4555000, 4000, 801, 541))
+        self.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
 
     #
     def clickedBtn_login(self):#login page run mishe
 
         obj.user_want_sign_in(s,self)
     #
-    # def clickedBtn_rigister(self):#OPEN RIGISTER PAGE
-    #     self.myOtherWindow = UI_rigister()
-    #     self.myOtherWindow.show()
-    #     self.hide()
-    #
-    #
-    # def clickedBtn_forget(self):#OPEN forget PAGE
-    #     capcha()
-    #     self.label.setPixmap(QPixmap('Other/random.jpeg'))
-    #     os.remove("Other/random.jpeg")
-        # obj.forgot_password(s)
-        # self.myOtherWindow = UI_rigister()
-        # self.myOtherWindow.show()
-        # self.hide()
+    def clickedBtn_rigister(self):#OPEN RIGISTER PAGE
+        obj.login(s, self,self.capcha_code)
+        self.capcha()
+
+    def clickedBtn_forget(self):#OPEN forget PAGE
+        obj.forgot_password(s,self)
 
 
 if (path.isfile('Other/lice_l_2.txt')):
