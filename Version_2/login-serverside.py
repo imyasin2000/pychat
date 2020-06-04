@@ -14,8 +14,8 @@ print("\nThe server was successfully activated.\n")
 
 #Server information
 ## 51.195.19.3
-ip = '0.0.0.0'
-port = 1237
+ip = '51.195.19.3'
+port = 1239
 
 
 class Socket:
@@ -210,7 +210,7 @@ def add_new_user(s:socket,data: list):
     print(data)
 
     welcome_email(data)
-    data1=[int(502),"welcome to pychat!"]
+    data1=[int(502),"welcome to pychat !"]
     data1 = json.dumps(data1)
     s.send((data1.encode() + b'\0'))
     print("new_user_added")

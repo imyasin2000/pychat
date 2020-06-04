@@ -17,7 +17,9 @@ def record_voice(filename):
     print("Recording...")
     for i in range(int(44100 / chunk * record_seconds)):
         data = stream.read(chunk)
+        stream.write(data)
         frames.append(data)
+        
     print("Finished recording.")
     stream.stop_stream()
     stream.close()
