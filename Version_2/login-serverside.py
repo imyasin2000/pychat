@@ -1,6 +1,6 @@
 from socket import socket
 import threading #run movazi
-from .extra import *
+from extra import *
 from datetime import datetime
 import json
 import sqlite3
@@ -91,9 +91,7 @@ def login_chek(s:socket,data):
     if not r:
         print("login_chek")
 
-        data1 = [int(502), " Please Check youre Email!! "]
-        data1 = json.dumps(data1)
-        s.send((data1.encode() + b'\0'))
+
 
         send_email(s,data)
         print("login_chek")
