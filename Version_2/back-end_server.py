@@ -8,7 +8,7 @@ import sqlite3
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
-
+import sys
 
 
 print("\nThe server was successfully activated.\n")
@@ -16,8 +16,8 @@ print("\nThe server was successfully activated.\n")
 #Server information
 
 ip = '0.0.0.0'
-port = 1234
-
+port = 1236
+f=""
 #-------------------------------connection-------------------------------------------------------
 class Socket:
     size = 4096 #Size of information sent and received
@@ -64,7 +64,7 @@ class Socket:
     #conn hast
     def _recive_data(self, client: socket, data: bytes):
         x=(json.loads(data.decode()))
-        print('done')
+
         task=x[0]
         work[f"{task}"](client,x[1:])
         
@@ -213,10 +213,10 @@ def edit_password(s:socket,data:list):
 
 def adding_new_client_to_online(s:socket,data:list):
     #-------add to online------------------------------------------------------
-    print('ye nafar jadid online shod')
+    print(data[0]+' connect shod!')
     online=data[0]
     online_users.update({s:data[0]})
-    print(online_users)
+    # print(online_users)
     #start sending pm that recived when client was ofline
 
     connection = sqlite3.connect("./database.db")
@@ -261,6 +261,19 @@ def sending_messages(s:socket,data:list):
             connection.close()
 
 
+def add_picprofile(s:socket,data:list):
+    global f
+
+    recived_f = data[0]  + data[2]
+    if bytes.fromhex(data[3]) == b"start":
+        f = open(recived_f, "wb")
+
+    elif bytes.fromhex(data[3]) == b"end":
+        print("recived")
+        f.close()
+    else:
+
+        f.write(bytes.fromhex(data[3]))
 
 
 
@@ -273,7 +286,7 @@ def sending_messages(s:socket,data:list):
 
 
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
-      '107':edit_password}
+      '107':edit_password,'108':add_picprofile,}
 online_users={}
 s=Socket(ip, port)#run socket init make object from socket
 

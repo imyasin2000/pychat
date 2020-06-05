@@ -16,7 +16,8 @@ def record_voice(filename):
     frames = []
     print("Recording...")
     for i in range(int(44100 / chunk * record_seconds)):
-        data = stream.read(chunk)
+        data = stream.read(chunk)#save byte in moteghayer
+        data1 = [int(108), sender, recever,data]
         stream.write(data)
         frames.append(data)
         

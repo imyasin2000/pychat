@@ -177,7 +177,7 @@ class user :
         print(code_g)
 
         if str(code_g) == str(window.lineEdit_forgetcode.text()):
-            print("hi mmli")
+
             window.Recover_FRM_2.setGeometry(QtCore.QRect(-2000, 0, 801, 541))
             window.Recover_FRM_3.setGeometry(QtCore.QRect(0, 0, 801, 541))
 
@@ -261,15 +261,7 @@ def do_work(obj:user,s:socket):
         if not q.empty():
             new_data=q.get()
             task=new_data[0]
-
             obj_work[f"{task}"](s,new_data[1:])
-            #yasinmhd110@gmail.com
-
-
-
-
-
-
             q.task_done()
 
 obj=user()
