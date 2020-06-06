@@ -271,6 +271,8 @@ def wating_form(wating_until,form):
             movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection2.gif')
             window.label_18.setMovie(movie)
             movie.start()
+            threading.Thread(target=window.net_conncted, args=()).start()
+
 
 
 
@@ -343,11 +345,12 @@ def _accsepting(s:socket):
                         for i in range(len(d) - 1):
                             load_data(d[i])
                             data = d[-1]
-                else:
-                    s.close()
+                    else:
+                        s.close()
         except:
+
                 print("connection failed ...")
-                # return
+                return
 
 
 
@@ -475,16 +478,20 @@ class UI_login(QMainWindow):
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
         self.label_background = self.findChild(QLabel, "label_6")
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
-        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection2.gif')
+        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/sidebar.gif')
         self.label_2.setMovie(movie)
+        self.label_9.setMovie(movie)
+        self.label_21.setMovie(movie)
+        self.label_22.setMovie(movie)
+        self.label_25.setMovie(movie)
+        self.label_26.setMovie(movie)
+        # self.label_2.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
+        # self.label_9.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
+        # self.label_21.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
+        # self.label_22.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
+        # self.label_25.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
+        # self.label_26.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
         movie.start()
-        self.label_2.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        self.label_9.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        self.label_21.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        self.label_22.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        self.label_25.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        self.label_26.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-
         self.Username_LE.setFocus()
         self.Signup1_BTN.clicked.connect(self.Go_to_signup)
         self.pushButton.clicked.connect(self.Back_from_signup_to_signin)
@@ -539,6 +546,15 @@ class UI_login(QMainWindow):
         self.show()
 
 
+    def net_conncted(self):
+
+        while (not cheak_net()):
+            time.sleep(2)
+
+
+        wating_form(False,"")
+
+  
 
     def close_win(self):
         self.close()
