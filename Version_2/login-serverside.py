@@ -14,7 +14,7 @@ print("\nThe server was successfully activated.\n")
 
 #Server information
 ## 51.195.19.3
-ip = '0.0.0.0'
+ip = '51.195.19.3'
 port = 1239
 
 
@@ -249,7 +249,7 @@ def edit_password(s:socket,data:list):
     cursor.execute("UPDATE users SET pas=? WHERE mail=?", (data[1],data[0]))
     connection.commit()
     connection.close()
-    data1=[int(504),"password changed "]
+    data1=[int(504),"password changed !"]
     data1 = json.dumps(data1)
     s.send((data1.encode() + b'\0'))
 

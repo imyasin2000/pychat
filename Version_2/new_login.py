@@ -19,6 +19,9 @@ import http.client as httplib
 from playsound import playsound
 from PyQt5 import QtCore
 import re
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 
 q=Queue()
@@ -26,7 +29,7 @@ s=socket.socket()
 
 #Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0',1239))
+s.connect(('51.195.19.3',1239))
 
 email_changer=''
 data_user=[]
@@ -63,12 +66,12 @@ class user :
 
                     sending_to_server(s, self.data)
 
-                    wating_form(True)
+                    wating_form(True,"forget_e")
 
                 else:
-                    window.lineEdit.clear()
+
                     QMessageBox.about(window, "recapcha error", "capcha code is not true")
-                    window.lineEdit.clear()
+
                     window.lineEdit.setFocus()
 
 
@@ -110,7 +113,8 @@ class user :
         global window
         window.Username_LE_16.clear()
         window.Username_LE_16.setFocus()
-        wating_form(False)
+        time.sleep(4)
+        wating_form(False,"")
         window.go_to_emailverify_signup()
         data_user = data
         code_g = data[-1]
@@ -129,7 +133,7 @@ class user :
         print(code_g)
         # self.code_enter_box()
         if  window.lineEdit_code_signup.text() == str(code_g):
-            wating_form(True)
+            wating_form(True,"signup_f")
             self.data1 = [int(102)] + data_user
             sending_to_server(s, self.data1)
         else:
@@ -147,6 +151,8 @@ class user :
         global window
         # QMessageBox.about(window, "My box", "hi")
         if data[0]=="welcome to pychat !":
+            time.sleep(10)
+            wating_form(False,"")
             window.Signup_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))
             window.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
             window.Recover_FRM_4.setGeometry(QtCore.QRect(22000, 0, 801, 541))
@@ -154,8 +160,8 @@ class user :
             window.Password_LE.clear()
             window.Username_LE.setFocus()
 
-
-        wating_form(False)
+        time.sleep(1)
+        wating_form(False,"")
         notification(data[0])
 
 
@@ -178,7 +184,7 @@ class user :
             email_changer = self.eemail
             data = [int(101), 'forgot', '_', self.eemail]
             sending_to_server(s, data)
-            wating_form(True)
+            wating_form(True,"forget_e")
         else:
             QMessageBox.about(window, "Invalid Email", "enter valid email")
 
@@ -194,7 +200,7 @@ class user :
         window.Recover_FRM.setGeometry(QtCore.QRect(-3000, 0, 801, 541))
         window.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
         window.Username_LE_4.setText(window.Username_LE_2.text())
-        wating_form(False)
+        wating_form(False,"")
 
         window.Username_LE_3.clear()
         window.Username_LE_3.setFocus()
@@ -208,7 +214,7 @@ class user :
 
             data1 = [int(107), email_changer, pas]
             sending_to_server(s, data1)
-            wating_form(True)
+            wating_form(True,"signup_e")
         else:
             window.Username_LE_5.clear()
             window.Username_LE_5.setFocus()
@@ -240,7 +246,8 @@ class user :
     def password_changed(self,s:socket,data:list):
 
         global window
-        wating_form(False)
+        time.sleep(4)
+        wating_form(False,"")
         window.Recover_FRM_3.setGeometry(QtCore.QRect(4555000, 4000, 801, 541))
         window.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
         window.Username_LE.clear()
@@ -251,19 +258,59 @@ class user :
 
 
 
+
 #--------------other func -------------------------------------------------
-def wating_form(wating_until):
+def wating_form(wating_until,form):
     global window
     if(wating_until):
-        window.label_18.setHidden(False)
-        window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading2.gif')
-        window.label_18.setMovie(movie)
-        movie.start()
+        if cheak_net()== False:
+
+            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
+            window.label_18.setHidden(False)
+            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection2.gif')
+            window.label_18.setMovie(movie)
+            movie.start()
+
+
+
+        elif form=='signin':
+            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
+            window.label_18.setHidden(False)
+            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading2.gif')
+            window.label_18.setMovie(movie)
+            movie.start()
+        elif form == 'signup_e':
+            # window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
+            window.label_18.setHidden(False)
+            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading3.gif')
+            window.label_18.setMovie(movie)
+            movie.start()
+        elif form == 'signup_f':
+            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
+            window.label_18.setHidden(False)
+            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading.gif')
+            window.label_18.setMovie(movie)
+            movie.start()
+        elif form == 'forget_e':
+            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
+            window.label_18.setHidden(False)
+            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading4.gif')
+            window.label_18.setMovie(movie)
+            movie.start()
+
+
+
 
     else:
         time.sleep(1)
+        window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
         window.label_18.setHidden(True)
+
 def regex_chek_email():
     pass
 
@@ -350,10 +397,12 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 def cheak_net():
     conn = httplib.HTTPConnection("www.google.com", timeout=5)
     try:
+
         conn.request("HEAD", "/")
         conn.close()
         return True
     except:
+
         conn.close()
         return False
 
@@ -367,6 +416,8 @@ def notification(messege):
 
 
 #_____________________________________________________________________________________________UI__________________________
+
+
 
 class UI_login(QMainWindow):
 
@@ -410,6 +461,8 @@ class UI_login(QMainWindow):
         self.capcha()
 
 
+        # window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+
         self.label_background = self.findChild(QLabel, "background")
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
         self.label_background = self.findChild(QLabel, "label_3")
@@ -422,6 +475,9 @@ class UI_login(QMainWindow):
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
         self.label_background = self.findChild(QLabel, "label_6")
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
+        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection2.gif')
+        self.label_2.setMovie(movie)
+        movie.start()
         self.label_2.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
         self.label_9.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
         self.label_21.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
@@ -465,18 +521,14 @@ class UI_login(QMainWindow):
         self.Signin_BTN_3.clicked.connect(self.clickedBtn_rigister)
         self.pushButton_2.clicked.connect(self.capcha)
         # self.Forgotpass_BTN_2.clicked.connect(self.clickedBtn_forget)
-        self.pushButton_7.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
-        self.pushButton_8.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
-        self.pushButton_9.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
-        self.pushButton_15.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
-        self.pushButton_16.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
-        self.pushButton_14.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
+        self.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
+
+
+
+        self.pushButton_7.setStyleSheet("background-color: transparent;border: 0px solid white;")
+
         self.pushButton_7.clicked.connect(self.close_win)
-        self.pushButton_8.clicked.connect(self.close_win)
-        self.pushButton_9.clicked.connect(self.close_win)
-        self.pushButton_15.clicked.connect(self.close_win)
-        self.pushButton_16.clicked.connect(self.close_win)
-        self.pushButton_14.clicked.connect(self.close_win)
+
 
 
         self.Signup1_BTN_2.clicked.connect(obj.check_mail_forgotpass)
@@ -485,6 +537,8 @@ class UI_login(QMainWindow):
 
         self.center()
         self.show()
+
+
 
     def close_win(self):
         self.close()
@@ -495,6 +549,8 @@ class UI_login(QMainWindow):
         image.save("Other/random.jpeg")
         self.label_capcha.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/Other/random.jpeg')))
         self.capcha_code = rnd_num
+        self.lineEdit.clear()
+
 
     def center(self):
         # geometry of the main window
@@ -569,9 +625,9 @@ class UI_login(QMainWindow):
     #
     def clickedBtn_login(self):#login page run mishe
 
-        obj.user_want_sign_in(s)
+        obj.user_want_sign_in(s)#dokme login aval
 
-        wating_form(True)
+        wating_form(True,"signin")
     #
     def clickedBtn_rigister(self):#OPEN RIGISTER PAGE
         obj.login(s,self.capcha_code)

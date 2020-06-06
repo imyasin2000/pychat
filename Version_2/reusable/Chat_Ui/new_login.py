@@ -147,7 +147,7 @@ class Window(QMainWindow):
     def clickedBtn_other(self):
         self.user_image = QLabel()
         self.user_image.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/user.png')).scaledToWidth(35))
-        self.messege_user = QLabel("\n   salam mmd"+"\n                                                                                                                               "+datetime.datetime.now().strftime("%H:%M"))
+        self.messege_user = QLabel(" slm mmd")
         self.messege_user.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius: 17px;")
 
         
@@ -155,10 +155,18 @@ class Window(QMainWindow):
             self.formLayout.addRow(QLabel())
             
         self.formLayout.addRow(self.user_image,self.messege_user)
-
+        self.messege_time = QLabel(datetime.datetime.now().strftime("%H:%M"),alignment=Qt.AlignRight)
+        self.messege_time.setStyleSheet("color: black")
+        self.messege_time.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius: 5px;") 
+        self.seen_image = QPushButton()
+        self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/reply.png')))
+        self.seen_image.setStyleSheet("background-color: transparent;border: 3px solid white;border-radius: 10px;") 
+        self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight)
+        self.formLayout.addRow(self.seen_image,self.messege_time)
         self.last_used="other"
 
     def clickedBtn_user(self):
+        self.formLayout.QPushButton.click()
         itm = QListWidgetItem( "\n   Mohammad Hossein Fadavi\n " );
         itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/user.png')));
         self.listWidget.addItem(itm);
@@ -179,11 +187,15 @@ class Window(QMainWindow):
 
         
     def clear_screen(self):
+        #find text in form layout
+        # for i in range(int(self.formLayout.count()/4)): 
+        #     print(self.formLayout.itemAt(i*4+1).widget().text())
         
         
-        for i in reversed(range(self.formLayout.count())): 
-            self.formLayout.itemAt(i).widget().deleteLater()
-        
+        #clear text 
+        # for i in reversed(range(self.formLayout.count())): 
+        #     self.formLayout.itemAt(i).widget().deleteLater()
+        pass
 
 
 App = QApplication(sys.argv)

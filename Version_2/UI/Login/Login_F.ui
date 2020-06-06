@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>786</width>
-    <height>523</height>
+    <width>790</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -162,9 +162,9 @@ background-color: rgb(57, 175, 159);
       <widget class="QLabel" name="label_2">
        <property name="geometry">
         <rect>
-         <x>3</x>
+         <x>-7</x>
          <y>0</y>
-         <width>261</width>
+         <width>271</width>
          <height>431</height>
         </rect>
        </property>
@@ -306,29 +306,6 @@ background-color: rgb(58, 175, 159);
        </property>
       </widget>
      </widget>
-    </widget>
-    <widget class="QPushButton" name="pushButton_7">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>20</y>
-       <width>21</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(transparent)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
-     </property>
     </widget>
    </widget>
    <widget class="QFrame" name="Signup_FRM">
@@ -710,29 +687,6 @@ background-color: rgb(57, 175, 159);
       <zorder>label_12</zorder>
      </widget>
     </widget>
-    <widget class="QPushButton" name="pushButton_8">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>20</y>
-       <width>21</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(transparent)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
-     </property>
-    </widget>
    </widget>
    <widget class="QFrame" name="Recover_FRM">
     <property name="geometry">
@@ -958,29 +912,6 @@ p, li { white-space: pre-wrap; }
      <zorder>label_21</zorder>
      <zorder>label_23</zorder>
      <zorder>label_24</zorder>
-    </widget>
-    <widget class="QPushButton" name="pushButton_9">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>20</y>
-       <width>21</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(transparent)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
-     </property>
     </widget>
    </widget>
    <widget class="QFrame" name="Recover_FRM_2">
@@ -1256,29 +1187,6 @@ background-color: rgb(57, 175, 159);
       <zorder>label_13</zorder>
      </widget>
     </widget>
-    <widget class="QPushButton" name="pushButton_16">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>20</y>
-       <width>21</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(transparent)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
-     </property>
-    </widget>
    </widget>
    <widget class="QFrame" name="Recover_FRM_3">
     <property name="geometry">
@@ -1538,29 +1446,6 @@ background-color: rgb(57, 175, 159);
       <zorder>pushButton_5</zorder>
      </widget>
     </widget>
-    <widget class="QPushButton" name="pushButton_15">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>20</y>
-       <width>21</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(transparent)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
-     </property>
-    </widget>
    </widget>
    <widget class="QFrame" name="Recover_FRM_4">
     <property name="geometry">
@@ -1770,44 +1655,47 @@ background-color: rgb(57, 175, 159);
       <zorder>Signup1_BTN_7</zorder>
      </widget>
     </widget>
-    <widget class="QPushButton" name="pushButton_14">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>20</y>
-       <width>21</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(transparent)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
-     </property>
-    </widget>
    </widget>
    <widget class="QLabel" name="label_18">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>50</y>
-      <width>711</width>
-      <height>431</height>
+      <x>0</x>
+      <y>0</y>
+      <width>791</width>
+      <height>531</height>
      </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>WaitCursor</cursorShape>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>20</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgba(transparent)</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
     </property>
    </widget>
   </widget>
