@@ -22,6 +22,7 @@ import re
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from PyQt5.Qt import Qt
 
 
 q=Queue()
@@ -555,6 +556,12 @@ class UI_login(QMainWindow):
         wating_form(False,"")
 
   
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.close()
+
+
 
     def close_win(self):
         self.close()
