@@ -29,7 +29,7 @@ s=socket.socket()
 
 #Server information
 ## 51.195.19.3
-s.connect(('51.195.19.3',1239))
+s.connect(('0.0.0.0',1239))
 
 email_changer=''
 data_user=[]

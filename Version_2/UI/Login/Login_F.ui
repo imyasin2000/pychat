@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>790</width>
+    <width>789</width>
     <height>529</height>
    </rect>
   </property>
@@ -231,6 +231,9 @@ background-color: rgb(57, 175, 159);
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(244, 248, 247);</string>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
        </property>
        <property name="placeholderText">
         <string> Password</string>
@@ -462,6 +465,9 @@ background-color: rgb(57, 175, 159);
        <property name="styleSheet">
         <string notr="true">background-color: rgb(244, 248, 247);</string>
        </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
+       </property>
        <property name="placeholderText">
         <string> Password</string>
        </property>
@@ -486,6 +492,9 @@ background-color: rgb(57, 175, 159);
        </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
        </property>
        <property name="cursorPosition">
         <number>0</number>
