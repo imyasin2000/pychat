@@ -15,7 +15,7 @@ print("\nThe server was successfully activated.\n")
 #Server information
 ## 51.195.19.3
 ip = '0.0.0.0'
-port = 1239
+port = 1234
 
 
 class Socket:
@@ -114,20 +114,20 @@ def send_email(s:socket,data:list):
     password = [97, 109, 105, 110, 109, 104, 102, 97]
     password=''.join(chr(i) for i in password)
     msg = MIMEMultipart()
-    msg['From'] = "messenger.verify.py@gmail.com"
+    msg['From'] = "PyChat Messenger"
     #message
     msg['To'] = emialaddress
     if data[0] == 'forgot':
-        msg['Subject'] = "forget password"
+        msg['Subject'] = "Forget password"
         import random
         random_number = (random.randint(100000, 1000000))
-        message = (f"\nHi Dear {emialaddress}.\n\n\n your code for change password is : {random_number} .")
+        message = (f"\nHi Dear {data[1]}.\n\n\n your code for change password is : {random_number} .")
         # add in the message body
     else:
         msg['Subject'] = "Subscription"
         import random
         random_number = (random.randint(100000, 1000000))
-        message = (f"\nHi Dear {emialaddress}.\n\n\n welcome to pychat! your verify code is : {random_number} .")
+        message = (f"\nHi Dear {data[1]}.\n\n\n welcome to pychat! your verify code is : {random_number} .")
         # add in the message body
 
 
@@ -135,11 +135,13 @@ def send_email(s:socket,data:list):
     #create server
     server = smtplib.SMTP('smtp.gmail.com: 587')
     server.starttls()
+
     # Login Credentials for sending the mail
-    server.login(msg['From'], password)
+    server.login("pychat.messenger@gmail.com", password)
     # send the message via the server.
 
     server.sendmail(msg['From'], msg['To'], msg.as_string())
+
     server.quit()
     data.append(random_number)
     if data[0] == 'forgot':
@@ -168,16 +170,16 @@ def client_chek_mail(s:socket,data):
 def welcome_email(data:list):
     print(data)
     emialaddress = data[2]
-    print("hi")
+
     print(data[2])
     # setup the parameters of the message
     password = [97, 109, 105, 110, 109, 104, 102, 97]
     password = ''.join(chr(i) for i in password)
     msg = MIMEMultipart()
-    msg['From'] = "messenger.verify.py@gmail.com"
+    msg['From'] = "PyChat Messenger"
     # message
     msg['To'] = emialaddress
-    msg['Subject'] = "Welcome"
+    msg['Subject'] = "Welcome To PyChat"
 
     message = (f"\nHi Dear {data[1]}.\n\n\n welcome to pychat! Thanks for chosing PyChat.")
     # add in the message body
@@ -186,10 +188,10 @@ def welcome_email(data:list):
     server = smtplib.SMTP('smtp.gmail.com: 587')
     server.starttls()
     # Login Credentials for sending the mail
-    server.login(msg['From'], password)
+    server.login("pychat.messenger@gmail.com", password)
     # send the message via the server.
-
     server.sendmail(msg['From'], msg['To'], msg.as_string())
+
     server.quit()
 
     print(data)

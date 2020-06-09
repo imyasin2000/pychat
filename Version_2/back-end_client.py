@@ -101,6 +101,37 @@ class user :
         print(data[0])
         
 
+    def send_voice_messege(self,s:socket,sender,reciver):
+        import pyaudio
+        import wave
+        chunk = 1024
+        FORMAT = pyaudio.paInt16
+        channels = 1
+        sample_rate = 44100
+        p = pyaudio.PyAudio()
+        # time of record
+        record_seconds = 5
+        filename = sender+reciver
+        stream = p.open(format=FORMAT, channels=channels, rate=sample_rate, input=True, output=True,
+                        frames_per_buffer=chunk)
+        frames = []
+        print("Recording...")
+        for i in range(int(44100 / chunk * record_seconds)):
+            data = stream.read(chunk)  # save byte in moteghayer
+            frames.append(data)
+
+        print("Finished recording.")
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+        # save audio file
+        wf = wave.open(filename, "wb")
+        wf.setnchannels(channels)
+        wf.setsampwidth(p.get_sample_size(FORMAT))
+        wf.setframerate(sample_rate)
+        wf.writeframes(b"".join(frames))
+        wf.close()
+
 
     def send_text_message(self,s:socket,sender,reciver):
         message=input("enter text for sending to your friend : ")
@@ -281,4 +312,4 @@ sending_to_server(s,im_online)
 # #obj.forgot_password(s)
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
-obj.send_profilepic(s,'yasin78')
+# obj.send_voice_messege(s,'yasin78','yasin78')

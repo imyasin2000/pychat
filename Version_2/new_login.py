@@ -30,7 +30,7 @@ s=socket.socket()
 
 #Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0',1239))
+s.connect(('0.0.0.0',1234))
 
 email_changer=''
 data_user=[]
@@ -114,7 +114,7 @@ class user :
         global window
         window.Username_LE_16.clear()
         window.Username_LE_16.setFocus()
-        time.sleep(4)
+        time.sleep(2)
         wating_form(False,"")
         window.go_to_emailverify_signup()
         data_user = data
@@ -152,7 +152,7 @@ class user :
         global window
         # QMessageBox.about(window, "My box", "hi")
         if data[0]=="welcome to pychat !":
-            time.sleep(10)
+            time.sleep(8)
             wating_form(False,"")
             window.Signup_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))
             window.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))

@@ -1350,8 +1350,14 @@ p, li { white-space: pre-wrap; }
        <property name="cursor">
         <cursorShape>IBeamCursor</cursorShape>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(244, 248, 247);</string>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
        </property>
        <property name="cursorPosition">
         <number>0</number>
@@ -1417,6 +1423,9 @@ background-color: rgb(57, 175, 159);
        </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="echoMode">
+        <enum>QLineEdit::Password</enum>
        </property>
        <property name="cursorPosition">
         <number>0</number>
