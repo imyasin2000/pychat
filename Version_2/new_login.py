@@ -30,19 +30,15 @@ s=socket.socket()
 
 #Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0',1234))
+s.connect(('0.0.0.0',1236))
 
 email_changer=''
 data_user=[]
 code_g=0
 
 class user :
-
-
     def __init__ (self):
-
         pass
-
     #ersal etelaat karbar jadid be samte server 
     def login(self,s:socket,capcha_code):
         global window
@@ -62,39 +58,22 @@ class user :
                 self.data.append(self.name)
                 self.data.append(self.email)
                 self.data.append(self.password)
-
                 if self.capcha_label==str(capcha_code):
-
                     sending_to_server(s, self.data)
-
                     wating_form(True,"forget_e")
-
                 else:
-
                     QMessageBox.about(window, "recapcha error", "capcha code is not true")
-
                     window.lineEdit.setFocus()
-
-
-
-
-
             else:
                 window.lineEdit.clear()
                 QMessageBox.about(window, "password error", "oh! try agian to enter password because they are not equal!")
                 window.Username_LE_7.clear()
                 window.Username_LE_7.setFocus()
-
-
-
         else:
             QMessageBox.about(window, "Invalid Email","enter valid email")
             window.Usename_LE_3.clear()
             window.Usename_LE_3.setFocus()
             window.lineEdit.clear()
-
-
-
 
     #tabe baraye chek kardan motabegh budan password
     def cheking_password(self,pass1,pass2):
@@ -102,12 +81,6 @@ class user :
             return True
         else:
             return False
-
-        
-
-
-
-
     def get_code_server_rigister(self,s:socket,data:list):
         global code_g
         global data_user
@@ -121,16 +94,10 @@ class user :
         code_g = data[-1]
         print(code_g)
 
-
-
     def email_verify(self):
         global code_g
         global window
         global data_user
-
-
-
-
         print(code_g)
         # self.code_enter_box()
         if  window.lineEdit_code_signup.text() == str(code_g):
@@ -140,9 +107,7 @@ class user :
         else:
             window.Username_LE_16.clear()
             window.Username_LE_16.setFocus()
-
             QMessageBox.about(window, "Invalid Code","Code is not correct")
-
 
 
     #     # pasokh server be inke aya ba movafaghiat user jadid ra
@@ -152,7 +117,7 @@ class user :
         global window
         # QMessageBox.about(window, "My box", "hi")
         if data[0]=="welcome to pychat !":
-            time.sleep(8)
+            time.sleep(7)
             wating_form(False,"")
             window.Signup_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))
             window.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
@@ -160,11 +125,9 @@ class user :
             window.Username_LE.clear()
             window.Password_LE.clear()
             window.Username_LE.setFocus()
-
         time.sleep(1)
         wating_form(False,"")
         notification(data[0])
-
 
     def user_want_sign_in(self,s:socket):
         global window
@@ -174,8 +137,6 @@ class user :
         self.password=window.lineEdit_password.text()
         self.data.append(self.password)
         sending_to_server(s,self.data)
-
-
 
     def forgot_password(self,s:socket):
         global window
@@ -188,7 +149,6 @@ class user :
             wating_form(True,"forget_e")
         else:
             QMessageBox.about(window, "Invalid Email", "enter valid email")
-
             window.Username_LE_2.clear()
             window.Username_LE_2.setFocus()
 
@@ -202,7 +162,6 @@ class user :
         window.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
         window.Username_LE_4.setText(window.Username_LE_2.text())
         wating_form(False,"")
-
         window.Username_LE_3.clear()
         window.Username_LE_3.setFocus()
 
@@ -212,7 +171,6 @@ class user :
         pas = window.lineEdit_forget_pass.text()
         pas2 = window.lineEdit_forget_repass.text()
         if self.cheking_password(pas, pas2) and pas!='':
-
             data1 = [int(107), email_changer, pas]
             sending_to_server(s, data1)
             wating_form(True,"signup_e")
@@ -222,32 +180,25 @@ class user :
             window.Username_LE_6.clear()
             QMessageBox.about(window, "Invalid Pass", "password doesnt match!")
 
-
     def check_mail_forgotpass(self):
         global code_g
         global window
         print("email cheak")
         print(code_g)
-
         if str(code_g) == str(window.lineEdit_forgetcode.text()):
             window.Username_LE_5.clear()
             window.Username_LE_5.setFocus()
             window.Username_LE_6.clear()
             window.Recover_FRM_2.setGeometry(QtCore.QRect(-2000, 0, 801, 541))
             window.Recover_FRM_3.setGeometry(QtCore.QRect(0, 0, 801, 541))
-
-
         else:
             window.Username_LE_3.clear()
             window.Username_LE_3.setFocus()
             QMessageBox.about(window, "Invalid Code","Code is not correct")
 
-
-
     def password_changed(self,s:socket,data:list):
-
         global window
-        time.sleep(4)
+        time.sleep(3)
         wating_form(False,"")
         window.Recover_FRM_3.setGeometry(QtCore.QRect(4555000, 4000, 801, 541))
         window.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
@@ -256,16 +207,11 @@ class user :
         window.Username_LE.setFocus()
         notification(str(data[0]))
 
-
-
-
-
-#--------------other func -------------------------------------------------
+#----------------------------------------------------------------------------------------------other func ------------------
 def wating_form(wating_until,form):
     global window
     if(wating_until):
         if cheak_net()== False:
-
             window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
             window.label_18.setHidden(False)
             window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
@@ -273,10 +219,6 @@ def wating_form(wating_until,form):
             window.label_18.setMovie(movie)
             movie.start()
             threading.Thread(target=window.net_conncted, args=()).start()
-
-
-
-
         elif form=='signin':
             window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
             window.label_18.setHidden(False)
@@ -305,34 +247,20 @@ def wating_form(wating_until,form):
             movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading4.gif')
             window.label_18.setMovie(movie)
             movie.start()
-
-
-
-
     else:
         time.sleep(1)
         window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
         window.label_18.setHidden(True)
 
-def regex_chek_email():
-    pass
-
-
-
 #----------------network connections with Queue--------------------------------
 
 #in tabe tamame dade haye vorude be barname ra misanjad agar daraye etebar bashad 
-#an hara accsept  mikonad 
-
-
-
-
+#an hara accsept  mikonad
 def _accsepting(s:socket):
     data = b''
     while True:
         time.sleep(0.02)
         try:
-
             #do taye dg niaz nabod
             r, _, _ = select([s], [s], [])#baresi mishe vasl hast ya na
             if r:
@@ -349,11 +277,8 @@ def _accsepting(s:socket):
                     else:
                         s.close()
         except:
-
                 print("connection failed ...")
                 return
-
-
 
 #in tabe vorudi haue ghbel pardazesh ke az tabee marhale 
 #ghabl amade ra decode mikonad va zemnan az halat json kharej 
@@ -361,7 +286,6 @@ def _accsepting(s:socket):
 def load_data(data):
     x=(json.loads(data.decode()))
     q.put(x)
- 
 
 #ba farakhani in tabe har data ghbel fahm baraye server ra ersal 
 #mikonim  in tabee khodkar tamame vorudi ash ra be json tablil karde
@@ -370,7 +294,6 @@ def load_data(data):
 def sending_to_server(socket:socket,data):
         data=json.dumps(data)
         socket.send((data.encode()+ b'\0'))
-
 #in tabe kar ha va darkhast hayie ke az samte server amade ra inja ejra mikonad
 def do_work(obj:user,s:socket):
     while True:
@@ -381,19 +304,14 @@ def do_work(obj:user,s:socket):
             obj_work[f"{task}"](s,new_data[1:])
             q.task_done()
 
+
 obj=user()
 obj_work={ 'token':"yasin78",
       '500':obj.get_code_server_rigister,
       '502':obj.server_added_user_to_database,
       '509':obj.get_code_server,
       '504':obj.password_changed,
-
-
-
-
-
       }
-
 
 threading.Thread(target=_accsepting ,args=(s, )).start()
 threading.Thread(target=do_work,args=(obj,s)).start()
@@ -401,12 +319,10 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 def cheak_net():
     conn = httplib.HTTPConnection("www.google.com", timeout=5)
     try:
-
         conn.request("HEAD", "/")
         conn.close()
         return True
     except:
-
         conn.close()
         return False
 
@@ -415,16 +331,10 @@ def notification(messege):
     img =  os.path.abspath(os.getcwd()+'/Other/icon.png')
     subprocess.Popen(["notify-send", "-i", img, "PyChat", messege])
     playsound('Other/notify.mp3')
-
 #sakhte image recapcha
-
-
-#_____________________________________________________________________________________________UI__________________________
-
-
+#_________________________________________________________________________________________________UI_______________
 
 class UI_login(QMainWindow):
-
     def __init__(self):
         global obj
         self.capcha_code = 0
@@ -436,37 +346,25 @@ class UI_login(QMainWindow):
         path.addRoundedRect(QtCore.QRectF(self.rect()), radius, radius)
         mask = QtGui.QRegion(path.toFillPolygon().toPolygon())
         self.setMask(mask)
-
-
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
         # self.button_forget = self.findChild(QPushButton, "forgotpass_b")
         self.lineEdit_username = self.findChild(QLineEdit, "Username_LE")
         self.lineEdit_password = self.findChild(QLineEdit, "Password_LE")
-
-
-
         self.lineEdit_name = self.findChild(QLineEdit, "Password_LE_3")
         self.lineEdit_code_signup = self.findChild(QLineEdit, "Username_LE_16")
-
-
         self.lineEdit_user = self.findChild(QLineEdit, "Usename_LE_4")
         self.lineEdit_email = self.findChild(QLineEdit, "Usename_LE_3")
         self.lineEdit_pass = self.findChild(QLineEdit, "Password_LE_4")
         self.lineEdit_repass = self.findChild(QLineEdit, "Username_LE_7")
         self.lineEdit_capcha = self.findChild(QLineEdit, "lineEdit")
         self.label_capcha= self.findChild(QLabel, "label")
-
         self.lineEdit_forgetemail = self.findChild(QLineEdit, "Username_LE_2")
         self.lineEdit_forgetcode = self.findChild(QLineEdit, "Username_LE_3")
         self.lineEdit_forget_pass = self.findChild(QLineEdit, "Username_LE_5")
         self.lineEdit_forget_repass = self.findChild(QLineEdit, "Username_LE_6")
         self.label_18.setHidden(True)
-
         self.capcha()
-
-
         # window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-
         self.label_background = self.findChild(QLabel, "background")
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
         self.label_background = self.findChild(QLabel, "label_3")
@@ -498,70 +396,47 @@ class UI_login(QMainWindow):
         self.pushButton.clicked.connect(self.Back_from_signup_to_signin)
         self.Forgotpass_BTN_2.clicked.connect(self.Go_to_recovery)
         self.Signin_BTN_2.clicked.connect(self.Go_to_varify)
-
         self.pushButton_6.clicked.connect(self.Back_from_recoverpass_to_signin)
         self.pushButton_4.clicked.connect(self.Back_from_varify_to_recoverpass)
         self.pushButton_5.clicked.connect(self.Back_from_changepass_to_varify)
         self.pushButton_13.clicked.connect(self.Go_to_signup)
-
         self.Signin_BTN_5.clicked.connect(obj.change_pass)
         self.pushButton_5.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
         self.pushButton_4.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
         self.pushButton_13.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
         self.pushButton_6.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
-
         self.Signin_BTN.clicked.connect(self.clickedBtn_login)
         self.Signin_BTN.setStyleSheet("background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:20px;color:white;")
         self.Signup1_BTN.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
         self.Signin_BTN_2.setStyleSheet("background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:15px;color:white;")
         self.Signup1_BTN_7.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
-
         self.Username_LE_3.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
         self.Username_LE_16.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
-
         self.Signin_BTN_4.setStyleSheet("background-color:  rgb(165, 165, 165);border: 1px solid rgb(58, 175, 159);border-radius:20px;color:white;")
         self.pushButton.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
         self.Signin_BTN_3.setStyleSheet("background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:15px;color:white;")
         self.Signup1_BTN_2.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
         self.Signin_BTN_5.setStyleSheet("background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:20px;color:white;")
-
         self.frame_6.setStyleSheet("background-color:  rgb(58, 175, 159);")
         self.Signin_BTN_3.clicked.connect(self.clickedBtn_rigister)
         self.pushButton_2.clicked.connect(self.capcha)
         # self.Forgotpass_BTN_2.clicked.connect(self.clickedBtn_forget)
         self.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
-
-
-
         self.pushButton_7.setStyleSheet("background-color: transparent;border: 0px solid white;")
-
         self.pushButton_7.clicked.connect(self.close_win)
-
-
-
         self.Signup1_BTN_2.clicked.connect(obj.check_mail_forgotpass)
         self.Signup1_BTN_7.clicked.connect(obj.email_verify)
-
-
         self.center()
         self.show()
 
-
     def net_conncted(self):
-
         while (not cheak_net()):
             time.sleep(2)
-
-
         wating_form(False,"")
-
-  
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.close()
-
-
 
     def close_win(self):
         self.close()
@@ -574,27 +449,16 @@ class UI_login(QMainWindow):
         self.capcha_code = rnd_num
         self.lineEdit.clear()
 
-
     def center(self):
-        # geometry of the main window
         qr = self.frameGeometry()
-
-        # center point of screen
         cp = QDesktopWidget().availableGeometry().center()
-
-        # move rectangle's center point to screen's center point
         qr.moveCenter(cp)
-
-        # top left of rectangle becomes top left of window centering it
         self.move(qr.topLeft())
+
     def go_to_emailverify_signup(self):
         self.Recover_FRM_4.setGeometry(QtCore.QRect(0, 0, 801, 541))
 
-
-
-
     def Go_to_signup(self):
-
         self.Signin_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))  # dge nabayad to x=22000 ui bezaram chon mishe zir majmoaash
         self.Signup_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
         self.Password_LE_3.clear()
@@ -605,8 +469,6 @@ class UI_login(QMainWindow):
         self.Recover_FRM_4.setGeometry(QtCore.QRect(22000, 0, 801, 541))
         self.lineEdit.clear()
         self.Password_LE_3.setFocus()
-
-
 
     def Back_from_signup_to_signin(self):
         self.Signup_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))
@@ -621,14 +483,8 @@ class UI_login(QMainWindow):
         self.Username_LE_2.clear()
         self.Username_LE_2.setFocus()
 
-
     def Go_to_varify(self):
         obj.forgot_password(s)
-
-
-
-    # def Go_to_changepass(self):
-    #     ###############################################
 
     def Back_from_recoverpass_to_signin(self):
         self.Recover_FRM.setGeometry(QtCore.QRect(25000, 0, 801, 541))
@@ -645,16 +501,40 @@ class UI_login(QMainWindow):
         self.Recover_FRM_3.setGeometry(QtCore.QRect(4555000, 4000, 801, 541))
         self.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
 
-    #
     def clickedBtn_login(self):#login page run mishe
-
         obj.user_want_sign_in(s)#dokme login aval
-
         wating_form(True,"signin")
-    #
+
     def clickedBtn_rigister(self):#OPEN RIGISTER PAGE
         obj.login(s,self.capcha_code)
         self.capcha()
+
+class UI_Ads(QMainWindow):
+    def __init__(self):
+        super(UI_Ads, self).__init__()
+        uic.loadUi("UI/Ads/Ads.ui", self)
+        self.offset = None
+        radius = 10.0
+        path = QtGui.QPainterPath()
+        img=QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads.png'))
+        self.ads_l.setPixmap(img)
+        self.ads_l.setFixedWidth(img.width())
+        self.ads_l.setFixedHeight(img.height())
+        self.exit_b.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Ads/images/cross.png')))
+        self.exit_b.setStyleSheet("background-color: transparent;border: 0px solid white;")
+        self.exit_b.move(img.width()-32,10)
+        self.exit_b.clicked.connect(self.close)
+        self.setFixedSize(self.ads_l.size())
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
+        path.addRoundedRect(QtCore.QRectF(self.rect()), radius, radius)
+        mask = QtGui.QRegion(path.toFillPolygon().toPolygon())
+        self.setMask(mask)
+        self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
+        self.show()
+
 
 
 
@@ -668,9 +548,5 @@ else:
     app = QApplication(sys.argv)
     window = UI_login()
     app.exec_()
-
-# obj.login(s,self)
-#obj.user_want_sign_in(s)
-#obj.forgot_password(s)
 
 
