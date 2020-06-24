@@ -218,7 +218,7 @@ def edit_password(s:socket,data:list):
     data1 = json.dumps(data1)
     s.send((data1.encode() + b'\0'))
 
-
+# def send_ads()
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,
       '107':edit_password}
 
