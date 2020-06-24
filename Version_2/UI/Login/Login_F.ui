@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>789</width>
-    <height>529</height>
+    <width>790</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -1189,11 +1189,34 @@ background-color: rgb(57, 175, 159);
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QPushButton" name="Forgotpass_BTN_3">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>320</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Scan Qr Code</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
       <zorder>label_25</zorder>
       <zorder>label_15</zorder>
       <zorder>Signup1_BTN_2</zorder>
       <zorder>Username_LE_3</zorder>
       <zorder>label_13</zorder>
+      <zorder>Forgotpass_BTN_3</zorder>
      </widget>
     </widget>
    </widget>
@@ -1666,11 +1689,34 @@ background-color: rgb(57, 175, 159);
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QPushButton" name="Forgotpass_BTN_4">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>320</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Scan Qr Code</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
       <zorder>label_26</zorder>
       <zorder>label_39</zorder>
       <zorder>Username_LE_16</zorder>
       <zorder>label_38</zorder>
       <zorder>Signup1_BTN_7</zorder>
+      <zorder>Forgotpass_BTN_4</zorder>
      </widget>
     </widget>
    </widget>

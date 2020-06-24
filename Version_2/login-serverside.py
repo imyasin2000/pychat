@@ -15,7 +15,7 @@ print("\nThe server was successfully activated.\n")
 #Server information
 ## 51.195.19.3
 ip = '0.0.0.0'
-port = 1236
+port = 1239
 
 
 class Socket:
@@ -94,6 +94,14 @@ def login_chek(s:socket,data):
 #ersal mail baraye kasi ke faramush kade pass ash ra 
 #ya baraye user jadid
 def send_email(s:socket,data:list):
+    import os
+    import pyqrcode
+    import png
+    from pyqrcode import QRCode
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.image import MIMEImage
+    from email.mime.multipart import MIMEMultipart
     print(data)
     emialaddress=data[2]
 # setup the parameters of the message
@@ -103,17 +111,30 @@ def send_email(s:socket,data:list):
     msg['From'] = "PyChat Messenger"
     #message
     msg['To'] = emialaddress
+
     if data[0] == 'forgot':
         msg['Subject'] = "Forget password"
         import random
         random_number = (random.randint(100000, 1000000))
         message = (f"\nHi Dear {data[1]}.\n\n\n your code for change password is : {random_number} .")
+        url = pyqrcode.create(str(random_number))
+        url.png(os.getcwd()+'/Other/myqr.png', scale=10)
+        img_data = open(os.getcwd()+'/Other/myqr.png', 'rb').read()
+        image = MIMEImage(img_data, name=os.path.basename('myqr'))
+        msg.attach(image)
+
         # add in the message body
     else:
         msg['Subject'] = "Subscription"
         import random
         random_number = (random.randint(100000, 1000000))
         message = (f"\nHi Dear {data[1]}.\n\n\n welcome to pychat! your verify code is : {random_number} .")
+        url = pyqrcode.create(str(random_number))
+        url.png(os.getcwd() + '/Other/myqr.png', scale=10)
+        img_data = open(os.getcwd() + '/Other/myqr.png', 'rb').read()
+        image = MIMEImage(img_data, name=os.path.basename('myqr'))
+        msg.attach(image)
+
         # add in the message body
     msg.attach(MIMEText(message, 'plain'))
     #create server

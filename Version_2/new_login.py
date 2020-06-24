@@ -30,7 +30,7 @@ s=socket.socket()
 
 #Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0',1236))
+s.connect(('0.0.0.0',1239))
 
 email_changer=''
 data_user=[]
@@ -196,6 +196,7 @@ class user :
             window.Username_LE_3.setFocus()
             QMessageBox.about(window, "Invalid Code","Code is not correct")
 
+
     def password_changed(self,s:socket,data:list):
         global window
         time.sleep(3)
@@ -333,6 +334,11 @@ def notification(messege):
     playsound('Other/notify.mp3')
 #sakhte image recapcha
 #_________________________________________________________________________________________________UI_______________
+import cv2
+import numpy as np
+import pyzbar.pyzbar as pyzbar
+
+
 
 class UI_login(QMainWindow):
     def __init__(self):
@@ -400,6 +406,11 @@ class UI_login(QMainWindow):
         self.pushButton_4.clicked.connect(self.Back_from_varify_to_recoverpass)
         self.pushButton_5.clicked.connect(self.Back_from_changepass_to_varify)
         self.pushButton_13.clicked.connect(self.Go_to_signup)
+        self.Forgotpass_BTN_3.setStyleSheet("background-color: transparent;color:white;")
+        self.Forgotpass_BTN_4.setStyleSheet("background-color: transparent;color:white;")
+        self.Forgotpass_BTN_3.clicked.connect(self.cheak_qrcode_forget)
+        self.Forgotpass_BTN_4.clicked.connect(self.cheak_qrcode_signup)
+
         self.Signin_BTN_5.clicked.connect(obj.change_pass)
         self.pushButton_5.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
         self.pushButton_4.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
@@ -429,6 +440,48 @@ class UI_login(QMainWindow):
         self.center()
         self.show()
 
+    def cheak_qrcode_forget(self):
+
+        global obj
+        cap = cv2.VideoCapture(0)
+        # font = cv2.FONT_HERSHEY_PLAIN
+        clos_e = True
+        while clos_e:
+            _, frame = cap.read()
+            decodedObjects = pyzbar.decode(frame)
+
+            for data_code in decodedObjects:
+                self.Username_LE_3.setText(data_code.data.decode("utf-8"))
+                obj.check_mail_forgotpass()
+
+                clos_e = False
+                # cv2.putText(frame, str(obj.data), (50, 50), font, 2,(255, 0, 0), 3)
+            cv2.imshow("Frame", frame)
+            key = cv2.waitKey(1)
+            if key == 27:
+
+                break
+        cv2.destroyAllWindows()
+    def cheak_qrcode_signup(self):
+
+        global obj
+        cap = cv2.VideoCapture(0)
+        # font = cv2.FONT_HERSHEY_PLAIN
+        clos_e = True
+        while clos_e:
+            _, frame = cap.read()
+            decodedObjects = pyzbar.decode(frame)
+
+
+            for data_code in decodedObjects:
+                self.Username_LE_16.setText(data_code.data.decode("utf-8"))
+                obj.email_verify()
+                clos_e = False
+            cv2.imshow("Frame", frame)
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
+        cv2.destroyAllWindows()
     def net_conncted(self):
         while (not cheak_net()):
             time.sleep(2)
