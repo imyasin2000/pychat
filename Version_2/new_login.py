@@ -30,7 +30,7 @@ s=socket.socket()
 
 #Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0',1239))
+s.connect(('0.0.0.0',1237))
 
 email_changer=''
 data_user=[]
@@ -451,15 +451,21 @@ class UI_login(QMainWindow):
             decodedObjects = pyzbar.decode(frame)
 
             for data_code in decodedObjects:
-                self.Username_LE_3.setText(data_code.data.decode("utf-8"))
-                obj.check_mail_forgotpass()
+                (x, y, w, h) = data_code.rect
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                cv2.rectangle(gray, (x+2, y+2), (x+2 + w, y+2 + h), (0, 0, 255), 4)
+                cv2.imshow("Frame", gray)
 
+                # time.sleep(3)
+                playsound('Other/beep.mp3')
+                self.Username_LE_3.setText(data_code.data.decode("utf-8"))
+                time.sleep(1)
+                obj.check_mail_forgotpass()
                 clos_e = False
                 # cv2.putText(frame, str(obj.data), (50, 50), font, 2,(255, 0, 0), 3)
             cv2.imshow("Frame", frame)
             key = cv2.waitKey(1)
             if key == 27:
-
                 break
         cv2.destroyAllWindows()
     def cheak_qrcode_signup(self):
@@ -474,9 +480,17 @@ class UI_login(QMainWindow):
 
 
             for data_code in decodedObjects:
+                (x, y, w, h) = data_code.rect
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                cv2.rectangle(gray, (x+2, y+2), (x+2 + w, y+2 + h), (0, 0, 255), 4)
+                cv2.imshow("Frame", gray)
+
+                playsound('Other/beep.mp3')
                 self.Username_LE_16.setText(data_code.data.decode("utf-8"))
+                time.sleep(1)
                 obj.email_verify()
                 clos_e = False
+
             cv2.imshow("Frame", frame)
             key = cv2.waitKey(1)
             if key == 27:
