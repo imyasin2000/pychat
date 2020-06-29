@@ -67,7 +67,7 @@ def face_id_unlock():
             counter += 1
         else:
             counter = 0
-        if counter == 30:
+        if counter == 30 or close_cam==False:
             break
         
        
@@ -93,7 +93,7 @@ def show_next():
 
         
 
-        movie = QtGui.QMovie(os.getcwd() + '/after_unlock.gif')
+        movie = QtGui.QMovie(os.getcwd() + '/after.gif')
         window3.lookingfor_l.setMovie(movie)
         movie.start()
         window3.welcome_l.setText("Hello "+"mohammad hossein"+" !")
@@ -101,6 +101,7 @@ def show_next():
         window3.textEdit.setHidden(True)
         window3.welcome_l.setHidden(False)
         window3.timer = QtCore.QTimer()
+      
         window3.timer.timeout.connect(lambda :window3.close())
         window3.timer.start(3000)
         
@@ -133,17 +134,18 @@ class face_ui(QMainWindow):
         # self.lookingfor_l.setHidden(False)
         self.lookingfor_l.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
 
-        movie = QtGui.QMovie(os.getcwd() + '/befor_unlock.gif')
+        movie = QtGui.QMovie(os.getcwd() + '/befor.gif')
         self.lookingfor_l.setMovie(movie)
         movie.start()
 
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
-
+        self.textEdit.setStyleSheet("background-color:  rgb(247, 247, 247);border: 1px solid rgb(0, 0, 0);border-radius:15px;color:black;")
+        
         self.move(qr.topLeft())
-        self.welcome_l.setStyleSheet('background-color:transparent;color:rgba(9, 120, 239)')
-        self.welcome_l_2.setStyleSheet('background-color:transparent;color:rgba(9, 120, 239)')
+        self.welcome_l.setStyleSheet('background-color:transparent;color:rgba(107, 107, 107)')
+        self.welcome_l_2.setStyleSheet('background-color:transparent;color:rgba(107, 107, 107)')
         threading.Thread(target=face_id_unlock, args=()).start()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(show_next)
@@ -158,6 +160,7 @@ class face_ui(QMainWindow):
         if str(self.textEdit.toPlainText())=='1234' :
             self.welcome_l_2.setHidden(True)
             self.textEdit.setHidden(True)
+            self.close()
             close_cam=False
         
        

@@ -65,14 +65,20 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QLineEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>180</y>
-      <width>321</width>
+      <width>301</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
