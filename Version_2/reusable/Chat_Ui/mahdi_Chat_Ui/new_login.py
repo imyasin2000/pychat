@@ -15,6 +15,7 @@ import os
 import datetime
 import time
 from PyQt5.QtCore import QTimer
+import cv2
 
 
 
@@ -97,11 +98,16 @@ class Window(QMainWindow):
         self.button_other.clicked.connect(self.clickedBtn_other) 
         self.button_clear.clicked.connect(self.clear_screen) 
         self.searchuser_b.clicked.connect(self.click_search) 
-        self.pushButton.clicked.connect(self.back_from_search)  
+        self.pushButton.clicked.connect(self.back_from_search) 
+        self.doc_BTN.clicked.connect(self.openFileNameDialog) 
+        self.attach_b_2.clicked.connect(self.click_attach_2) 
+        self.camera_BTN.clicked.connect(self.click_camera_BTN) 
+        
+        
   
 
         self.button_user.clicked.connect(self.clickedBtn_user)   
-        self.button_attach.clicked.connect(self.openFileNameDialog)
+        self.button_attach.clicked.connect(self.click_attach)
         self.textedit_messegebox.textChanged.connect(self.textChanged_messege_event)
 
         # self.pushButton.
@@ -126,8 +132,19 @@ class Window(QMainWindow):
         # movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading2.gif')
         # window.label_18.setMovie(movie)
         # movie.start()
+        self.label.setHidden(True)
+
+        self.attach_b_2.setHidden(True)
+        self.attach_b_2.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/clip.png')))
 
         
+
+        self.doc_BTN.setHidden(True)
+        self.doc_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/document.png')))
+
+        self.camera_BTN.setHidden(True)
+        self.camera_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/camera.png')))
+
 
         # self.textedit_messegebox.setHidden(True)
 
@@ -148,7 +165,62 @@ class Window(QMainWindow):
         # self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(lambda : movie.stop())
         # self.timer.singleShot(30)
+    def click_camera_BTN(self):
+        cv2.namedWindow("preview")
+        vc = cv2.VideoCapture(0)
+
+        if vc.isOpened(): # try to get the first frame
+            rval, frame = vc.read()
+        else:
+            rval = False
+
+        while rval:
+            cv2.imshow("preview", frame)
+            rval, frame = vc.read()
+            key = cv2.waitKey(20)
+            if key == 27: # exit on ESC
+                break
+        cv2.destroyWindow("preview")        
+
+
+    def click_attach(self):
+        # if self.camera_BTN.setHidden(False):#:\\\\\\\\\\\\\\\\\\\\\\\
+        #     self.camera_BTN.setHidden(True)
+        #     self.doc_BTN.setHidden(True)            
+
+        # else:
+        self.attach_b.setHidden(True)
+        self.attach_b_2.setHidden(False)
+        self.camera_BTN.setHidden(False)
+        self.doc_BTN.setHidden(False)
+
+    def click_attach_2(self):
+        self.attach_b.setHidden(False)
+        self.attach_b_2.setHidden(True)
+        self.camera_BTN.setHidden(True)
+        self.doc_BTN.setHidden(True)        
+
+
+
+
+
+
+
+    # def click_doc_BTN(self):
+
+
+
+
     def click_search(self):
+        self.attach_b.setEnabled(False)
+        self.messegebox_t.setEnabled(False)
+        self.record_b.setEnabled(False)
+
+        self.click_attach_2()
+        self.label.setHidden(False)
+        self.label.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+
+
         self.button_call.setHidden(True)
         self.menu_user_b.setHidden(True)
         self.usernamem_l.setHidden(True)
@@ -172,6 +244,15 @@ class Window(QMainWindow):
 
 
     def back_from_search(self):
+        self.attach_b.setEnabled(True)
+        self.messegebox_t.setEnabled(True)
+        self.record_b.setEnabled(True)
+
+
+        self.label.setHidden(True)
+
+
+
         self.button_call.setHidden(False)
         self.menu_user_b.setHidden(False)
         self.usernamem_l.setHidden(False)
