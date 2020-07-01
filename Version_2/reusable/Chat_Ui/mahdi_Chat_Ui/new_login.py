@@ -50,7 +50,7 @@ class Window(QMainWindow):
         self.button_usersearch= self.findChild(QPushButton, "user_search_b")
         self.label_sidebar = self.findChild(QLabel, "side_bar_l")
         self.label_topchatbar = self.findChild(QLabel, "topchat_bar_l")
-        self.label_bottomchatbar = self.findChild(QLabel, "bottomchat_bar_l")
+        # self.label_bottomchatbar = self.findChild(QLabel, "bottomchat_bar_l")
         
         self.label_usernamem = self.findChild(QLabel, "usernamem_l")
         self.label_lastseen = self.findChild(QLabel, "lastseen_l")
@@ -62,6 +62,7 @@ class Window(QMainWindow):
         self.label_background = self.findChild(QLabel, "background_l")
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/background.png')))
         
+        # self.bottomchat_bar_l.setStyleSheet('background-color:rgba(240, 240, 240, 0.5);')
 
         self.button_menu_user.setStyleSheet("background-color: transparent;border: 1px solid transparent;") 
         self.button_searchuser.setStyleSheet("background-color: transparent;border: 1px transparent;")
@@ -69,17 +70,23 @@ class Window(QMainWindow):
         self.label_lastseen.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
         self.label_usernamem.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
        
-        self.label_bottomchatbar.setStyleSheet("QWidget { background-color: %s}" % QtGui.QColor(255, 255, 255).name())
-        self.label_topchatbar.setStyleSheet("QWidget { background-color: %s}" % QtGui.QColor(255, 255, 255).name())
+        # self.label_bottomchatbar.setStyleSheet("QWidget { background-color: %s}" % QtGui.QColor(255, 255, 255).name())
+        # self.label_topchatbar.setStyleSheet("QWidget { background-color: %s}" % QtGui.QColor(255, 255, 255).name())
         self.label_sidebar.setStyleSheet("QWidget { background-color: %s};border: 1px solid white;" % QtGui.QColor(1, 36, 32).name())
-        self.label_bottomchatbar.setStyleSheet("border: 1px solid lightgray;")
-        self.label_topchatbar.setStyleSheet("border: 1px solid lightgray;")
+        # self.label_bottomchatbar.setStyleSheet("border: 1px solid lightgray;")
+        # self.label_topchatbar.setStyleSheet("border: 1px solid lightgray;")
         
         self.button_menu.setStyleSheet("background-color: white;border: 1px solid white;border-radius:15px;")
+        # self.emoji_BTN.setIcon
+        self.emoji_BTN.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
+        self.clear_b.setWhatsThis("lksdaf;jksnf;j")
+
+
+
 
         self.button_record.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
         self.button_send.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
-        self.button_attach.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
+        self.button_attach.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;") 
         self.textedit_messegebox.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius:15px;") 
         self.button_usersearch.setStyleSheet("background-color: white;border: 1px solid white;") 
         self.textedit_usersearch.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:15px;") 
@@ -116,7 +123,7 @@ class Window(QMainWindow):
         self.pushButton.setHidden(True)
         self.lineEdit.setHidden(True)
 
-
+        self.emoji_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/emoji.png')))
        
         
         self.button_record.setHidden(False)
@@ -262,7 +269,7 @@ class Window(QMainWindow):
 
         self.pushButton.setHidden(True)
         self.lineEdit.setHidden(True)
-        self.searchuser_b.setGeometry(QtCore.QRect(970, 10, 31, 31))
+        self.searchuser_b.setGeometry(QtCore.QRect(930, 10, 31, 31))
 
 
 
@@ -316,7 +323,7 @@ class Window(QMainWindow):
             self.user_image = QLabel()
             self.user_image.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/me.png')).scaledToWidth(35))
             if len(self.textedit_messegebox.toPlainText())<=66:
-                self.messege_user = QLabel("   " + self.textedit_messegebox.toPlainText(),self)
+                self.messege_user = QLabel(" \U0001F60F  " + self.textedit_messegebox.toPlainText(),self)
             else:    
                 i=0
                 while(len(massege_text)-8<=len(self.textedit_messegebox.toPlainText())):
@@ -365,8 +372,8 @@ class Window(QMainWindow):
         self.messege_time.setStyleSheet("color: black")
         self.messege_time.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius: 5px;") 
         self.seen_image = QPushButton()
-        self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/reply.png')))
-        self.seen_image.setStyleSheet("background-color: transparent;border: 3px solid white;border-radius: 10px;") 
+        # self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/reply.png')))
+        self.seen_image.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius: 10px;") 
         self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight)
         self.formLayout.addRow(self.seen_image,self.messege_time)
         self.last_used="other"
