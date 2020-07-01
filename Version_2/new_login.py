@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.Qt import Qt
+import hashlib, uuid
 
 
 q=Queue()
@@ -57,7 +58,9 @@ class user :
                 self.data.append(self.username)
                 self.data.append(self.name)
                 self.data.append(self.email)
-                self.data.append(self.password)
+                hashedpass = hashlib.md5(self.password.encode()).hexdigest()
+                hashedpass=hashedpass[0:-5] + hashedpass[5:-8]
+                self.data.append(hashedpass)
                 if self.capcha_label==str(capcha_code):
                     sending_to_server(s, self.data)
                     wating_form(True,"forget_e")
@@ -135,7 +138,9 @@ class user :
         self.username=window.lineEdit_username.text()
         self.data.append(self.username)
         self.password=window.lineEdit_password.text()
-        self.data.append(self.password)
+        hashedpass = hashlib.md5(self.password.encode()).hexdigest()
+        hashedpass = hashedpass[0:-5] + hashedpass[5:-8]
+        self.data.append(hashedpass)
         sending_to_server(s,self.data)
 
     def forgot_password(self,s:socket):
