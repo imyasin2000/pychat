@@ -63,6 +63,7 @@ def face_id_unlock():
 
         print('\033c')
         print (counter)
+        
         if face_names==known_face_names:
             counter += 1
         else:

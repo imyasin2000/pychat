@@ -6,8 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
+<<<<<<< HEAD
     <width>1051</width>
     <height>556</height>
+=======
+    <width>1048</width>
+    <height>783</height>
+>>>>>>> 46e30c50033aa46e5e56fe0f6386903d87a6bc7e
    </rect>
   </property>
   <property name="windowTitle">
@@ -802,7 +807,52 @@
     <zorder>pv_LBL</zorder>
     <zorder>doc_BTN</zorder>
    </widget>
+<<<<<<< HEAD
    <zorder>mother_FRM</zorder>
+=======
+   <widget class="QLabel" name="setting_FRM">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>110</y>
+      <width>191</width>
+      <height>571</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <zorder>label_2</zorder>
+   <zorder>label_3</zorder>
+   <zorder>background_l</zorder>
+   <zorder>scrollArea</zorder>
+   <zorder>side_bar_l</zorder>
+   <zorder>other_b</zorder>
+   <zorder>clear_b</zorder>
+   <zorder>user_b</zorder>
+   <zorder>menu_b</zorder>
+   <zorder>user_search_t</zorder>
+   <zorder>user_search_b</zorder>
+   <zorder>usernamem_l</zorder>
+   <zorder>lastseen_l</zorder>
+   <zorder>menu_user_b</zorder>
+   <zorder>searchuser_b</zorder>
+   <zorder>call_b</zorder>
+   <zorder>attach_b</zorder>
+   <zorder>messegebox_t</zorder>
+   <zorder>send_b</zorder>
+   <zorder>record_b</zorder>
+   <zorder>listWidget</zorder>
+   <zorder>pushButton</zorder>
+   <zorder>pushButton_2</zorder>
+   <zorder>doc_BTN</zorder>
+   <zorder>camera_BTN</zorder>
+   <zorder>attach_b_2</zorder>
+   <zorder>label</zorder>
+   <zorder>lineEdit</zorder>
+   <zorder>emoji_BTN</zorder>
+>>>>>>> 46e30c50033aa46e5e56fe0f6386903d87a6bc7e
    <zorder>setting_FRM</zorder>
   </widget>
  </widget>

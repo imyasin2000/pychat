@@ -23,6 +23,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.Qt import Qt
+import hashlib, uuid
+from PyQt5.QtCore import QTimer
 
 
 q=Queue()
@@ -57,7 +59,9 @@ class user :
                 self.data.append(self.username)
                 self.data.append(self.name)
                 self.data.append(self.email)
-                self.data.append(self.password)
+                hashedpass = hashlib.md5(self.password.encode()).hexdigest()
+                hashedpass=hashedpass[0:-5] + hashedpass[5:-8]
+                self.data.append(hashedpass)
                 if self.capcha_label==str(capcha_code):
                     sending_to_server(s, self.data)
                     wating_form(True,"forget_e")
@@ -135,7 +139,9 @@ class user :
         self.username=window.lineEdit_username.text()
         self.data.append(self.username)
         self.password=window.lineEdit_password.text()
-        self.data.append(self.password)
+        hashedpass = hashlib.md5(self.password.encode()).hexdigest()
+        hashedpass = hashedpass[0:-5] + hashedpass[5:-8]
+        self.data.append(hashedpass)
         sending_to_server(s,self.data)
 
     def forgot_password(self,s:socket):
@@ -347,7 +353,7 @@ class UI_login(QMainWindow):
         super(UI_login, self).__init__()
         uic.loadUi("UI/Login/Login_F.ui", self)
         self.offset = None
-        radius = 55.0
+        radius = 35.0
         path = QtGui.QPainterPath()
         path.addRoundedRect(QtCore.QRectF(self.rect()), radius, radius)
         mask = QtGui.QRegion(path.toFillPolygon().toPolygon())
@@ -396,6 +402,8 @@ class UI_login(QMainWindow):
         # self.label_22.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
         # self.label_25.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
         # self.label_26.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
+
+
         movie.start()
         self.Username_LE.setFocus()
         self.Signup1_BTN.clicked.connect(self.Go_to_signup)
@@ -416,6 +424,13 @@ class UI_login(QMainWindow):
         self.pushButton_4.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
         self.pushButton_13.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
         self.pushButton_6.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
+        self.pushButton_5.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
+        self.pushButton_4.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
+        self.pushButton_13.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
+        self.pushButton_6.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
+        self.frame_20.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+
+
         self.Signin_BTN.clicked.connect(self.clickedBtn_login)
         self.Signin_BTN.setStyleSheet("background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:20px;color:white;")
         self.Signup1_BTN.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")

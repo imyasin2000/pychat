@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>790</width>
-    <height>525</height>
+    <width>788</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -753,7 +753,7 @@ background-color: rgb(57, 175, 159);
        </rect>
       </property>
       <property name="cursor">
-       <cursorShape>PointingHandCursor</cursorShape>
+       <cursorShape>ArrowCursor</cursorShape>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -831,6 +831,9 @@ background-color: rgb(57, 175, 159);
          <width>21</width>
          <height>21</height>
         </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="text">
         <string/>
@@ -1549,26 +1552,6 @@ background-color: rgb(57, 175, 159);
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QPushButton" name="pushButton_13">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>400</y>
-         <width>21</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>images/back.png</normaloff>images/back.png</iconset>
-       </property>
-      </widget>
      </widget>
      <widget class="QFrame" name="Varify_FRM_7">
       <property name="geometry">
@@ -1711,12 +1694,33 @@ background-color: rgb(57, 175, 159);
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QPushButton" name="pushButton_13">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>400</y>
+         <width>21</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>images/back.png</normaloff>images/back.png</iconset>
+       </property>
+      </widget>
       <zorder>label_26</zorder>
       <zorder>label_39</zorder>
       <zorder>Username_LE_16</zorder>
       <zorder>label_38</zorder>
       <zorder>Signup1_BTN_7</zorder>
       <zorder>Forgotpass_BTN_4</zorder>
+      <zorder>pushButton_13</zorder>
      </widget>
     </widget>
    </widget>
