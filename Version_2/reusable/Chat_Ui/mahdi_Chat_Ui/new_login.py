@@ -88,6 +88,8 @@ class Window(QMainWindow):
         self.button_menu.setStyleSheet("background-color: white;border: 1px solid white;border-radius:15px;")
         # self.emoji_BTN.setIcon
         self.emoji_BTN.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
+        self.emoji_BTN_2.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
+
         self.clear_b.setWhatsThis("lksdaf;jksnf;j")
 
 
@@ -103,6 +105,7 @@ class Window(QMainWindow):
         self.button_menu_user.setIcon(QIcon(os.getcwd()+'/icons/menu_user.png'))
         self.button_searchuser.setIcon(QIcon(os.getcwd()+'/icons/search.png'))
         self.button_call.setIcon(QIcon(os.getcwd()+'/icons/phone.png'))
+        self.emoji_BTN_2.setIcon(QIcon(os.getcwd()+'/icons/emoji.png'))
 
         self.button_usersearch.setIcon(QIcon(os.getcwd()+'/icons/search.png'))
         self.button_menu.setIcon(QIcon(os.getcwd()+'/icons/menu.png'))
@@ -120,6 +123,10 @@ class Window(QMainWindow):
         self.camera_BTN.clicked.connect(self.click_camera_BTN) 
         self.menu_b.clicked.connect(self.start_menu)
         self.menu_bk_BTN.clicked.connect(self.menu_back)
+        self.emoji_BTN.clicked.connect(self.start_emoji_box)
+        self.emoji_BTN_2.clicked.connect(self.exit_emoji_box)
+        
+        
 
 
         
@@ -174,6 +181,13 @@ class Window(QMainWindow):
         self.camera_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/camera.png')))
 
 
+
+        self.emoji_BTN_2.setEnabled(False)
+        self.emoji_BTN_2.setHidden(True)
+        
+
+
+
         # self.textedit_messegebox.setHidden(True)
         # self.label.setHidden(True)
         # self.label.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
@@ -223,7 +237,26 @@ class Window(QMainWindow):
         self.timer.timeout.connect(self.move_ups)
         self.timer.start(.1)
         
+    
+    def start_emoji_box(self):
+        self.emoji_FRM.setGeometry(QtCore.QRect(380, 399, 671, 101))
 
+        self.emoji_BTN.setEnabled(False)
+        self.emoji_BTN.setHidden(True)
+        self.emoji_BTN_2.setEnabled(True)
+        self.emoji_BTN_2.setHidden(False)
+        
+        
+
+    def exit_emoji_box(self):
+        self.emoji_FRM.setGeometry(QtCore.QRect(380, 671, 671, 101))
+
+
+        self.emoji_BTN.setEnabled(True)
+        self.emoji_BTN.setHidden(False)
+        self.emoji_BTN_2.setEnabled(False)
+        self.emoji_BTN_2.setHidden(True)
+        
 
             
 
@@ -393,7 +426,7 @@ class Window(QMainWindow):
             self.user_image = QLabel()
             self.user_image.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/me.png')).scaledToWidth(35))
             if len(self.textedit_messegebox.toPlainText())<=66:
-                self.messege_user = QLabel(" \U0001F60F  " + self.textedit_messegebox.toPlainText(),self)
+                self.messege_user = QLabel("  " + self.textedit_messegebox.toPlainText(),self)
             else:    
                 i=0
                 while(len(massege_text)-8<=len(self.textedit_messegebox.toPlainText())):
