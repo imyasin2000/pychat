@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1048</width>
-    <height>551</height>
+    <height>783</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -605,6 +605,19 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QLabel" name="setting_FRM">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>110</y>
+      <width>191</width>
+      <height>571</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
    <zorder>label_2</zorder>
    <zorder>label_3</zorder>
    <zorder>background_l</zorder>
@@ -634,6 +647,7 @@
    <zorder>label</zorder>
    <zorder>lineEdit</zorder>
    <zorder>emoji_BTN</zorder>
+   <zorder>setting_FRM</zorder>
   </widget>
  </widget>
  <tabstops>
