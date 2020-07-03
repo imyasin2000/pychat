@@ -16,8 +16,17 @@ import datetime
 import time
 from PyQt5.QtCore import QTimer
 import cv2
+# import pygame
+from PyQt5.QtCore import QTimer
+from threading import Thread
 
 
+
+
+# Type a message
+
+
+move_smth=-381
 
 
 class Window(QMainWindow):
@@ -79,10 +88,12 @@ class Window(QMainWindow):
         self.button_menu.setStyleSheet("background-color: white;border: 1px solid white;border-radius:15px;")
         # self.emoji_BTN.setIcon
         self.emoji_BTN.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
+        self.emoji_BTN_2.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
+
         self.clear_b.setWhatsThis("lksdaf;jksnf;j")
 
 
-
+        self.label_5.setStyleSheet("background-color: transparent;")
 
         self.button_record.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
         self.button_send.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
@@ -94,6 +105,7 @@ class Window(QMainWindow):
         self.button_menu_user.setIcon(QIcon(os.getcwd()+'/icons/menu_user.png'))
         self.button_searchuser.setIcon(QIcon(os.getcwd()+'/icons/search.png'))
         self.button_call.setIcon(QIcon(os.getcwd()+'/icons/phone.png'))
+        self.emoji_BTN_2.setIcon(QIcon(os.getcwd()+'/icons/emoji.png'))
 
         self.button_usersearch.setIcon(QIcon(os.getcwd()+'/icons/search.png'))
         self.button_menu.setIcon(QIcon(os.getcwd()+'/icons/menu.png'))
@@ -109,6 +121,14 @@ class Window(QMainWindow):
         self.doc_BTN.clicked.connect(self.openFileNameDialog) 
         self.attach_b_2.clicked.connect(self.click_attach_2) 
         self.camera_BTN.clicked.connect(self.click_camera_BTN) 
+        self.menu_b.clicked.connect(self.start_menu)
+        self.menu_bk_BTN.clicked.connect(self.menu_back)
+        self.emoji_BTN.clicked.connect(self.start_emoji_box)
+        self.emoji_BTN_2.clicked.connect(self.exit_emoji_box)
+        
+        
+
+
         
         
   
@@ -131,7 +151,7 @@ class Window(QMainWindow):
         self.listWidget.currentItemChanged.connect(self.show_user_messege)
         self.listWidget.setStyleSheet("background-color: white;border: 0px solid lightgray;border-radius: 5px;") 
         self.textedit_messegebox.setFocus()
-
+        self.setting_FRM.setStyleSheet("background-color: black;border: 0px solid lightgray;border-radius: 5px;")
 
         # window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
         # window.label_18.setHidden(False)
@@ -143,8 +163,16 @@ class Window(QMainWindow):
 
         self.attach_b_2.setHidden(True)
         self.attach_b_2.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/clip.png')))
+        self.menu_bk_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/arrow.png')))
+        self.menu_bk_BTN.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;") 
 
         
+
+        self.profile_LBL.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/output.png')))
+        self.profile_LBL.setStyleSheet("border: 0px solid gray ;border-radius: 90px;") 
+        self.pv_LBL.setStyleSheet("border: 0px solid gray ;border-radius: 20px;") 
+        self.pv_LBL.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/pv.png')))
+
 
         self.doc_BTN.setHidden(True)
         self.doc_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/document.png')))
@@ -153,12 +181,14 @@ class Window(QMainWindow):
         self.camera_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/camera.png')))
 
 
+
+        self.emoji_BTN_2.setEnabled(False)
+        self.emoji_BTN_2.setHidden(True)
+        
+
+
+
         # self.textedit_messegebox.setHidden(True)
-
-
-        self.center()
-        self.show()
-
         # self.label.setHidden(True)
         # self.label.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
 
@@ -172,6 +202,68 @@ class Window(QMainWindow):
         # self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(lambda : movie.stop())
         # self.timer.singleShot(30)
+
+        self.center()
+        self.show()
+
+    def move_down(self):
+        global move_smth
+        self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
+        move_smth-=1
+        if move_smth ==-382:
+            self.timer.stop()
+            # move_smth=0
+   
+
+
+    def menu_back(self):
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.move_down)
+        self.timer.start(.1)        
+
+
+
+
+    def move_ups(self):
+        global move_smth
+        self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
+        move_smth+=1
+        if move_smth ==1:
+            self.timer.stop()
+
+    def start_menu(self):
+        
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.move_ups)
+        self.timer.start(.1)
+        
+    
+    def start_emoji_box(self):
+        self.emoji_FRM.setGeometry(QtCore.QRect(380, 399, 671, 101))
+
+        self.emoji_BTN.setEnabled(False)
+        self.emoji_BTN.setHidden(True)
+        self.emoji_BTN_2.setEnabled(True)
+        self.emoji_BTN_2.setHidden(False)
+        
+        
+
+    def exit_emoji_box(self):
+        self.emoji_FRM.setGeometry(QtCore.QRect(380, 671, 671, 101))
+
+
+        self.emoji_BTN.setEnabled(True)
+        self.emoji_BTN.setHidden(False)
+        self.emoji_BTN_2.setEnabled(False)
+        self.emoji_BTN_2.setHidden(True)
+        
+
+            
+
+
+
+
+
     def click_camera_BTN(self):
         cv2.namedWindow("preview")
         vc = cv2.VideoCapture(0)
@@ -221,7 +313,12 @@ class Window(QMainWindow):
     def click_search(self):
         self.attach_b.setEnabled(False)
         self.messegebox_t.setEnabled(False)
+        self.emoji_BTN.setEnabled(False)
         self.record_b.setEnabled(False)
+        self.pv_LBL.setHidden(True)
+        self.searchuser_b.setHidden(True)
+        
+        
 
         self.click_attach_2()
         self.label.setHidden(False)
@@ -254,6 +351,12 @@ class Window(QMainWindow):
         self.attach_b.setEnabled(True)
         self.messegebox_t.setEnabled(True)
         self.record_b.setEnabled(True)
+        self.emoji_BTN.setEnabled(True  )
+        self.pv_LBL.setHidden(False)
+        self.searchuser_b.setHidden(False)
+
+
+
 
 
         self.label.setHidden(True)
@@ -279,7 +382,7 @@ class Window(QMainWindow):
     def openFileNameDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"FileDialog", "","All Files (*);;Python Files (*.py)", options=options)
+        fileName, _ = QFileDialog.getOpenFileName(self,"FileDialog", "","All Files ();;Python Files (.py)", options=options)
         if fileName:
             print(fileName)
     
@@ -323,7 +426,7 @@ class Window(QMainWindow):
             self.user_image = QLabel()
             self.user_image.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/me.png')).scaledToWidth(35))
             if len(self.textedit_messegebox.toPlainText())<=66:
-                self.messege_user = QLabel(" \U0001F60F  " + self.textedit_messegebox.toPlainText(),self)
+                self.messege_user = QLabel("  " + self.textedit_messegebox.toPlainText(),self)
             else:    
                 i=0
                 while(len(massege_text)-8<=len(self.textedit_messegebox.toPlainText())):
