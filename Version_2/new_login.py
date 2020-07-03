@@ -185,7 +185,9 @@ class user :
         pas = window.lineEdit_forget_pass.text()
         pas2 = window.lineEdit_forget_repass.text()
         if self.cheking_password(pas, pas2) and pas!='':
-            data1 = [int(107), email_changer, pas]
+            hashedpass = hashlib.md5(pas.encode()).hexdigest()
+            hashedpass = hashedpass[0:-5] + hashedpass[5:-8]
+            data1 = [int(107), email_changer, hashedpass]
             sending_to_server(s, data1)
             wating_form(True,"signup_e")
         else:

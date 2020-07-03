@@ -1871,14 +1871,6 @@ background-color: rgb(57, 175, 159);
       <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
     </property>
    </widget>
-   <zorder>Signin_FRM</zorder>
-   <zorder>Signup_FRM</zorder>
-   <zorder>Recover_FRM</zorder>
-   <zorder>Recover_FRM_2</zorder>
-   <zorder>Recover_FRM_3</zorder>
-   <zorder>Recover_FRM_4</zorder>
-   <zorder>pushButton_7</zorder>
-   <zorder>label_18</zorder>
   </widget>
  </widget>
  <resources/>
