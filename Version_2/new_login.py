@@ -26,6 +26,12 @@ from PyQt5.Qt import Qt
 import hashlib, uuid
 from PyQt5.QtCore import QTimer
 
+from requests import get, post
+import json
+import webbrowser
+import jwt
+import base64
+
 
 q=Queue()
 s=socket.socket()
@@ -389,6 +395,8 @@ class UI_login(QMainWindow):
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
         self.label_background = self.findChild(QLabel, "label_6")
         self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
+
+
         movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/sidebar.gif')
         self.label_2.setMovie(movie)
         self.label_9.setMovie(movie)
@@ -419,10 +427,15 @@ class UI_login(QMainWindow):
         self.Forgotpass_BTN_3.clicked.connect(self.cheak_qrcode_forget)
         self.Forgotpass_BTN_4.clicked.connect(self.cheak_qrcode_signup)
 
+        self.pushButton_3.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/yahoo.png')))
+        self.pushButton_3.setStyleSheet("background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
+        self.pushButton_3.clicked.connect(self.yahoo_signup)
+
+
         self.Signin_BTN_5.clicked.connect(obj.change_pass)
         self.pushButton_5.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
         self.pushButton_4.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
-        self.pushButton_13.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
+        self.pushButton_13.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/iages/back.png')))
         self.pushButton_6.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
         self.pushButton_5.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
         self.pushButton_4.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
@@ -454,6 +467,59 @@ class UI_login(QMainWindow):
         self.Signup1_BTN_7.clicked.connect(obj.email_verify)
         self.center()
         self.show()
+
+
+    def yahoo_signup(self):
+        self.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
+        self.label_18.setHidden(False)
+        self.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+      
+        client_id = 'dj0yJmk9YUc0Z1NNS1VMYzJCJmQ9WVdrOU1IcEZPVmt6TXpnbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTZj'
+        client_secret = '99921476f30c4fa680ba5452549ccc9342253b2d'
+        base_url = 'https://api.login.yahoo.com/'
+        code_url = f'oauth2/request_auth?client_id={client_id}&redirect_uri=oob&response_type=code&language=en-us'
+        webbrowser.open(base_url + code_url)
+        encoded = base64.b64encode((client_id + ':' + client_secret).encode("utf-8"))
+        headers = {
+            'Authorization': f'Basic {encoded.decode("utf-8")}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        text, ok = QInputDialog.getText(self, 'Yahoo!', 'Enter Yahoo Code:')
+        if ok:
+
+            code=str(text)
+        
+            data = {
+                'grant_type': 'authorization_code',
+                'redirect_uri': 'oob',
+                'code': code
+            }
+            response = post(base_url + 'oauth2/get_token', headers=headers, data=data)
+            headers = {
+                'Authorization': f'Bearer {response.json()["access_token"]}',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            
+            response2 = get('https://api.login.yahoo.com/openid/v1/userinfo', headers=headers)
+            if (response2.ok):
+                self.Password_LE_3.setText(response2.json()['name'])
+                self.Usename_LE_4.setText(response2.json()['nickname'])
+                self.Usename_LE_3.setText(response2.json()['email'])
+                image=response2.json()['picture']
+                self.Password_LE_4.setFocus()
+
+                ##############################
+                import urllib.request
+                urllib.request.urlretrieve(image, '%s.jpg'%response2.json()['nickname'])
+            else:
+                QMessageBox.about(self, "recapcha error", "capcha code is not true")
+                self.Password_LE_3.setFocus()
+
+            #####################
+            
+        window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
+        window.label_18.setHidden(True)
 
     def cheak_qrcode_forget(self):
 
