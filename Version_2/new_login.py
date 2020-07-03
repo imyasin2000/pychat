@@ -150,6 +150,8 @@ class user :
         self.data.append(hashedpass)
         sending_to_server(s,self.data)
 
+
+
     def forgot_password(self,s:socket):
         global window
         global email_changer
@@ -445,6 +447,10 @@ class UI_login(QMainWindow):
 
 
         self.Signin_BTN.clicked.connect(self.clickedBtn_login)
+        self.pushButton_8.clicked.connect(self.yahoo_signin)
+        self.pushButton_8.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/yahoo.png')))
+        self.pushButton_8.setStyleSheet(
+            "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
         self.Signin_BTN.setStyleSheet("background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:20px;color:white;")
         self.Signup1_BTN.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
         self.Signin_BTN_2.setStyleSheet("background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:15px;color:white;")
@@ -472,8 +478,11 @@ class UI_login(QMainWindow):
     def yahoo_signup(self):
         self.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
         self.label_18.setHidden(False)
-        self.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-      
+        self.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.2);')
+        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection.gif')
+        self.label_18.setMovie(movie)
+        movie.start()
+      ############################
         client_id = 'dj0yJmk9YUc0Z1NNS1VMYzJCJmQ9WVdrOU1IcEZPVmt6TXpnbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTZj'
         client_secret = '99921476f30c4fa680ba5452549ccc9342253b2d'
         base_url = 'https://api.login.yahoo.com/'
@@ -495,29 +504,97 @@ class UI_login(QMainWindow):
                 'code': code
             }
             response = post(base_url + 'oauth2/get_token', headers=headers, data=data)
-            headers = {
-                'Authorization': f'Bearer {response.json()["access_token"]}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-            
-            response2 = get('https://api.login.yahoo.com/openid/v1/userinfo', headers=headers)
-            if (response2.ok):
-                self.Password_LE_3.setText(response2.json()['name'])
-                self.Usename_LE_4.setText(response2.json()['nickname'])
-                self.Usename_LE_3.setText(response2.json()['email'])
-                image=response2.json()['picture']
-                self.Password_LE_4.setFocus()
+            if (response.ok):
+                headers = {
+                    'Authorization': f'Bearer {response.json()["access_token"]}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
 
-                ##############################
-                import urllib.request
-                urllib.request.urlretrieve(image, '%s.jpg'%response2.json()['nickname'])
+                response2 = get('https://api.login.yahoo.com/openid/v1/userinfo', headers=headers)
+                if (response2.ok):
+                    self.Password_LE_3.setText(response2.json()['name'])
+                    self.Usename_LE_4.setText(response2.json()['nickname'])
+                    self.Usename_LE_3.setText(response2.json()['email'])
+                    image=response2.json()['picture']
+                    self.Password_LE_4.setFocus()
+
+                    ##############################
+                    import urllib.request
+                    urllib.request.urlretrieve(image, '%s.jpg'%response2.json()['nickname'])
+                else:
+                    QMessageBox.about(self, "signup error", "illegal access!")
             else:
-                QMessageBox.about(self, "recapcha error", "capcha code is not true")
+                QMessageBox.about(self, "signup error", "The unexpected error happened!")
                 self.Password_LE_3.setFocus()
 
             #####################
             
+        window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
+        window.label_18.setHidden(True)
+
+    def yahoo_signin(self):
+        self.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
+        self.label_18.setHidden(False)
+        self.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.2);')
+        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection.gif')
+        self.label_18.setMovie(movie)
+        movie.start()
+        ############################
+        client_id = 'dj0yJmk9YUc0Z1NNS1VMYzJCJmQ9WVdrOU1IcEZPVmt6TXpnbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTZj'
+        client_secret = '99921476f30c4fa680ba5452549ccc9342253b2d'
+        base_url = 'https://api.login.yahoo.com/'
+        code_url = f'oauth2/request_auth?client_id={client_id}&redirect_uri=oob&response_type=code&language=en-us'
+        webbrowser.open(base_url + code_url)
+        encoded = base64.b64encode((client_id + ':' + client_secret).encode("utf-8"))
+        headers = {
+            'Authorization': f'Basic {encoded.decode("utf-8")}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        text, ok = QInputDialog.getText(self, 'Yahoo!', 'Enter Yahoo Code:')
+
+        if ok:
+
+            code = str(text)
+
+            data = {
+                'grant_type': 'authorization_code',
+                'redirect_uri': 'oob',
+                'code': code
+            }
+
+            response = post(base_url + 'oauth2/get_token', headers=headers, data=data)
+            if (response.ok):
+                headers = {
+                    'Authorization': f'Bearer {response.json()["access_token"]}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+
+                response2 = get('https://api.login.yahoo.com/openid/v1/userinfo', headers=headers)
+                if (response2.ok):
+                    self.Username_LE.setText(response2.json()['nickname'])
+                    self.Password_LE.setText('3d6c1bd47f109e34c02f08773f8bd47f109e34c02f0877')
+                    self.clickedBtn_login()
+                    self.Username_LE.setText('')
+                    self.Password_LE.setText('')
+                else:
+                    self.Username_LE.setText('')
+                    self.Password_LE.setText('')
+                    QMessageBox.about(self, "signin error", "illegal access!")
+
+
+
+                    ##############################
+
+            else:
+                self.Username_LE.setText('')
+                self.Password_LE.setText('')
+                QMessageBox.about(self, "signin error", "The unexpected error happened!")
+
+
+            #####################
+
         window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
         window.label_18.setHidden(True)
 

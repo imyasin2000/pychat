@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>786</width>
-    <height>529</height>
+    <width>787</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -175,10 +175,63 @@ background-color: rgb(57, 175, 159);
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QPushButton" name="pushButton_8">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>350</y>
+         <width>111</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>  Yahoo</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>images/yahoo.png</normaloff>images/yahoo.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_29">
+       <property name="geometry">
+        <rect>
+         <x>60</x>
+         <y>320</y>
+         <width>141</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: transparent;</string>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;or&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;signup with&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
       <zorder>label_2</zorder>
       <zorder>label_8</zorder>
       <zorder>Signup1_BTN</zorder>
       <zorder>label_7</zorder>
+      <zorder>pushButton_8</zorder>
+      <zorder>label_29</zorder>
      </widget>
      <widget class="QFrame" name="frame_7">
       <property name="geometry">
@@ -693,7 +746,7 @@ background-color: rgb(57, 175, 159);
       <widget class="QPushButton" name="pushButton_3">
        <property name="geometry">
         <rect>
-         <x>70</x>
+         <x>80</x>
          <y>340</y>
          <width>111</width>
          <height>41</height>
@@ -1818,6 +1871,14 @@ background-color: rgb(57, 175, 159);
       <normaloff>images/close2.png</normaloff>images/close2.png</iconset>
     </property>
    </widget>
+   <zorder>Signin_FRM</zorder>
+   <zorder>Signup_FRM</zorder>
+   <zorder>Recover_FRM</zorder>
+   <zorder>Recover_FRM_2</zorder>
+   <zorder>Recover_FRM_3</zorder>
+   <zorder>Recover_FRM_4</zorder>
+   <zorder>pushButton_7</zorder>
+   <zorder>label_18</zorder>
   </widget>
  </widget>
  <resources/>
