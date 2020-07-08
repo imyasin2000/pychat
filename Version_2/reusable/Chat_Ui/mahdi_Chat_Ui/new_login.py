@@ -219,7 +219,7 @@ class Window(QMainWindow):
     def menu_back(self):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.move_down)
-        self.timer.start(.1)        
+        self.timer.start(0.1)        
 
 
 

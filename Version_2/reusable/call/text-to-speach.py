@@ -10,7 +10,9 @@ tts.save(os.getcwd()+'/incoming_call.mp3')
 audio1 = AudioSegment.from_file(os.getcwd()+"/apple-orginal.mp3")
 audio2 = AudioSegment.from_file(os.getcwd()+'/incoming_call.mp3')
 mixed = audio1.overlay(audio2)  
+play(audio2)
 for i in range(0,2):#78 sec
+    play(audio1)
     play(mixed) 
-    play(audio1) 
-os.remove(os.getcwd()+'/incoming_call.mp3') 
+     
+# os.remove(os.getcwd()+'/incoming_call.mp3') 

@@ -31,6 +31,10 @@ import json
 import webbrowser
 import jwt
 import base64
+import cv2
+import numpy as np
+import pyzbar.pyzbar as pyzbar
+import urllib.request
 
 
 q=Queue()
@@ -350,9 +354,7 @@ def notification(messege):
     playsound('Other/notify.mp3')
 #sakhte image recapcha
 #_________________________________________________________________________________________________UI_______________
-import cv2
-import numpy as np
-import pyzbar.pyzbar as pyzbar
+
 
 
 
@@ -522,7 +524,7 @@ class UI_login(QMainWindow):
                     self.Password_LE_4.setFocus()
 
                     ##############################
-                    import urllib.request
+
                     urllib.request.urlretrieve(image, '%s.jpg'%response2.json()['nickname'])
                 else:
                     QMessageBox.about(self, "signup error", "illegal access!")
