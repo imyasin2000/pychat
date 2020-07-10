@@ -1,8 +1,17 @@
-import alsaaudio
 
-m = alsaaudio.Mixer()
-m.setvolume(int(m.getvolume()[0])+10)
-print(m.getvolume())
+# import getch
+# char = getch.getch()
+# print(char)
+# #read from keyboard
 
-####################### volume
+# import pyautogui 
+# pyautogui.write('Hello world!')
+# #write to keyboard
 
+# pyautogui.moveTo(100,100,duration=1.5)
+# #move mouse
+
+# print(pyautogui.position())
+# #read mouse position    
+
+    

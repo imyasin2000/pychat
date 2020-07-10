@@ -58,9 +58,7 @@ class window_r(QMainWindow):
     def start_e(self):
         while True:
             img = ImageGrab.grab()
-            img.save("rec.jpg")
-
-            
+            img.save(os.path.abspath(os.getcwd()+"/rec.jpg"))
             self.show_r_l.setPixmap(QPixmap(os.path.abspath(os.getcwd()+"/rec.jpg")))
             app.processEvents()
 

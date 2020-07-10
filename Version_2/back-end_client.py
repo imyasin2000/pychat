@@ -167,18 +167,8 @@ class user :
                 data = [int(108), sender, str(x), ext, b"end".hex()]
                 sending_to_server(s, data)
                 print("sended")
-
                 break
 
-
-
-    
-    
-
-
-
-
-        
 
 
 
@@ -192,23 +182,17 @@ def recive_text_message(s:socket,data:list):
         status.store_messages(i)
 
 def receve_file(s:socket,data:list):
-    # global f
-    # print(data)
-    # recived_f = '0aFile_' + "2" + data[3]
-    # if bytes.fromhex(data[4])==b"start":
-    #     f = open(recived_f, "wb")
-    #
-    # elif bytes.fromhex(data[4])==b"end":
-    #     print("hi")
-    #     f.close()
-    # else:
-    #
-    #     f.write(bytes.fromhex(data[4]))
-    pass
+    global f
+    print(data)
+    recived_f = '0aFile_' + "2" + data[3]
+    if bytes.fromhex(data[4])==b"start":
+        f = open(recived_f, "wb")
+    elif bytes.fromhex(data[4])==b"end":
+        print("hi")
+        f.close()
+    else:
+        f.write(bytes.fromhex(data[4]))
     
-
-    
-
 
 #----------------network connections with Queue--------------------------------
 
@@ -304,8 +288,8 @@ sending_to_server(s,im_online)
 
 
 
-#obj.login(s)
-#obj.user_want_sign_in(s)
+# obj.login(s)
+# obj.user_want_sign_in(s)
 # obj.forgot_password(s)
 # while True:
 #     obj.send_text_message(s,'yasin78','yasin78')
@@ -313,3 +297,4 @@ sending_to_server(s,im_online)
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
 # obj.send_voice_messege(s,'yasin78','yasin78')
+
