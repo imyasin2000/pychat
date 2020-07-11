@@ -120,11 +120,17 @@ def send_email(s: socket, data: list):
         
         random_number = (random.randint(100000, 1000000))
         message = (f"\nHi Dear {data[1]}.\n\n\n your code for change password is : {random_number} .")
+        print("0")
         url = pyqrcode.create(str(random_number))
+        print("1")
         url.png(os.getcwd() + '/Other/myqr.png', scale=10)
+        print("2")
         img_data = open(os.getcwd() + '/Other/myqr.png', 'rb').read()
+        print("3")
         image = MIMEImage(img_data, name=os.path.basename('myqr'))
+        print("4")
         msg.attach(image)
+        print("5")
 
         # add in the message body
     else:
