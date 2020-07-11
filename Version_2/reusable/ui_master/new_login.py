@@ -20,6 +20,10 @@ import cv2
 from PyQt5.QtCore import QTimer
 from threading import Thread
 import emoji
+#####
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu
+import sys
 
 
 
@@ -29,7 +33,7 @@ import emoji
 rec_sec=0
 rec_min=0
 move_smth=-381
-move_smth1=550
+zoom_smth=52
 
 
 class Window(QMainWindow):
@@ -133,7 +137,7 @@ class Window(QMainWindow):
         self.label_5.setStyleSheet("background-color: transparent;")
 
         self.button_record.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
-        self.button_send.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
+        self.button_send.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;") 
         self.button_attach.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;") 
         self.textedit_messegebox.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius:15px;font-size: 18px;") 
         self.button_usersearch.setStyleSheet("background-color: white;border: 1px solid white;") 
@@ -206,7 +210,6 @@ class Window(QMainWindow):
 
 
         self.scrollArea.verticalScrollBar().setStyleSheet("border: none;background: lightgray;height: 26px;margin: 0px 26px 0 26px;")
-        self.listWidget.verticalScrollBar().setStyleSheet("border: none;background: lightgray;height: 26px;margin: 0px 26px 0 26px;")
         
 
         self.profile_LBL.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/output.png')))
@@ -216,7 +219,7 @@ class Window(QMainWindow):
         self.pv_LBL.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/pv.png')))
         self.label_7.setStyleSheet("background-color: transparent;") 
         self.label_6.setStyleSheet("background-color: transparent;") 
-        # self.emoji_FRM.setHidden(True)
+        self.emoji_FRM.setHidden(True)
         self.doc_BTN.setHidden(True)
         self.doc_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/document.png')))
 
@@ -227,6 +230,9 @@ class Window(QMainWindow):
         self.record_b.setCheckable(True)
         self.record_b.toggle()
         self.record_b.clicked.connect(self.rec_voice)
+
+        self.menu_user_b.clicked.connect(self.contex_menu)
+        
 
         self.emoji_BTN_2.setEnabled(False)
         self.emoji_BTN_2.setHidden(True)
@@ -264,7 +270,16 @@ class Window(QMainWindow):
         pass
    
    
-
+    def move_down(self):
+        global move_smth,zoom_smth
+        self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
+        move_smth-=3
+        zoom_smth-=1
+        self.profile_LBL.resize(zoom_smth, zoom_smth)
+        self.profile_LBL.setStyleSheet("border: 0px solid gray ;border-radius: %dpx;"% int(zoom_smth/2))
+        if move_smth ==-384:
+            self.timer.stop()
+            # move_smth=0
    
     def rec_sec(self):
         global rec_sec
@@ -313,16 +328,20 @@ class Window(QMainWindow):
             self.timer.timeout.connect(self.rec_sec)
             self.timer.start(1000) 
 
-
-
-
-    def move_down(self):
-        global move_smth
-        self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
-        move_smth-=1
-        if move_smth ==-382:
-            self.timer.stop()
            
+    def contex_menu(self):
+        menu = QMenu(self)
+        info=newAct = menu.addAction("info")
+        mute=menu.addAction("mute")
+        clear_messages=menu.addAction("clear messages")
+        Delete_Chat=menu.addAction("Delete Chat")
+        info.triggered.connect(lambda:print("d0"))
+        mute.triggered.connect(lambda:print("d1"))
+        clear_messages.triggered.connect(lambda:print("d2"))
+        Delete_Chat.triggered.connect(lambda:print("d3"))
+        menu.exec_(QCursor.pos())
+        
+        
 
     def menu_back(self):
         self.timer = QtCore.QTimer()
@@ -332,11 +351,17 @@ class Window(QMainWindow):
 
 
     def move_ups(self):
-        global move_smth
+        global move_smth,zoom_smth
         self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
-        move_smth+=1
-        if move_smth ==1:
+        move_smth+=3
+        zoom_smth+=1
+        self.profile_LBL.resize(zoom_smth, zoom_smth)
+        self.profile_LBL.setStyleSheet("border: 0px solid gray ;border-radius: %dpx;"% int(zoom_smth/2))
+        if move_smth ==3:
             self.timer.stop()
+    
+
+
 
     def start_menu(self):
         
@@ -345,55 +370,25 @@ class Window(QMainWindow):
         self.timer.start(1)
 
 
-
-
-
-
-
-
-
-
-    def move_ups_emoji_box(self):
-        global move_smth1
-        self.emoji_FRM.setGeometry(QtCore.QRect(390, move_smth1, 211, 91))
-        move_smth1-=1
-        if move_smth1 ==401:
-            self.timer.stop()
     
     def start_emoji_box(self):
+        self.emoji_FRM.setHidden(False)
+
         self.emoji_BTN.setEnabled(False)
         self.emoji_BTN.setHidden(True)
         self.emoji_BTN_2.setEnabled(True)
         self.emoji_BTN_2.setHidden(False)
+            
 
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.move_ups_emoji_box)
-        self.timer.start(1)
-
-    
-    def move_down_emoji_box(self):
-        global move_smth1
-        self.emoji_FRM.setGeometry(QtCore.QRect(390, move_smth1, 211, 91))
-        move_smth1+=1
-        if move_smth1 ==551:
-            self.timer.stop()
-
-        
     def exit_emoji_box(self):
+        self.emoji_FRM.setHidden(True)
+
+
         self.emoji_BTN.setEnabled(True)
         self.emoji_BTN.setHidden(False)
         self.emoji_BTN_2.setEnabled(False)
         self.emoji_BTN_2.setHidden(True)
-
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.move_down_emoji_box)
-        self.timer.start(1)
-
-
-
-
-
-
+        
 
     def click_camera_BTN(self):
         cv2.namedWindow("preview")
@@ -665,6 +660,8 @@ class Window(QMainWindow):
 
     def voice_mess_me(self):
         pass
+  
+  
     def clickedBtn_user(self):
         # self.formLayout.QPushButton.click()
         itm = QListWidgetItem( "\n   Mohammad Hossein Fadavi\n " )
