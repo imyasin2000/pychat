@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1051</width>
-    <height>800</height>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,10 +26,10 @@
    <widget class="QFrame" name="setting_FRM">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>-50</x>
       <y>600</y>
       <width>381</width>
-      <height>591</height>
+      <height>581</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -87,7 +87,7 @@
      <property name="geometry">
       <rect>
        <x>98</x>
-       <y>135</y>
+       <y>140</y>
        <width>180</width>
        <height>180</height>
       </rect>
@@ -96,7 +96,7 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string/>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -106,9 +106,9 @@
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>-10</y>
+       <y>0</y>
        <width>382</width>
-       <height>121</height>
+       <height>111</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -826,11 +826,7 @@
      <property name="geometry">
       <rect>
        <x>390</x>
-<<<<<<< HEAD
-       <y>390</y>
-=======
-       <y>550</y>
->>>>>>> 6fbd1897b6ae871624e031162131f58ff5f89aca
+       <y>400</y>
        <width>211</width>
        <height>91</height>
       </rect>
