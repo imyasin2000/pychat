@@ -29,6 +29,7 @@ import emoji
 rec_sec=0
 rec_min=0
 move_smth=-381
+move_smth1=550
 
 
 class Window(QMainWindow):
@@ -205,6 +206,7 @@ class Window(QMainWindow):
 
 
         self.scrollArea.verticalScrollBar().setStyleSheet("border: none;background: lightgray;height: 26px;margin: 0px 26px 0 26px;")
+        self.listWidget.verticalScrollBar().setStyleSheet("border: none;background: lightgray;height: 26px;margin: 0px 26px 0 26px;")
         
 
         self.profile_LBL.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/output.png')))
@@ -214,7 +216,7 @@ class Window(QMainWindow):
         self.pv_LBL.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/pv.png')))
         self.label_7.setStyleSheet("background-color: transparent;") 
         self.label_6.setStyleSheet("background-color: transparent;") 
-        self.emoji_FRM.setHidden(True)
+        # self.emoji_FRM.setHidden(True)
         self.doc_BTN.setHidden(True)
         self.doc_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/document.png')))
 
@@ -262,13 +264,7 @@ class Window(QMainWindow):
         pass
    
    
-    def move_down(self):
-        global move_smth
-        self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
-        move_smth-=1
-        if move_smth ==-382:
-            self.timer.stop()
-            # move_smth=0
+
    
     def rec_sec(self):
         global rec_sec
@@ -317,6 +313,15 @@ class Window(QMainWindow):
             self.timer.timeout.connect(self.rec_sec)
             self.timer.start(1000) 
 
+
+
+
+    def move_down(self):
+        global move_smth
+        self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
+        move_smth-=1
+        if move_smth ==-382:
+            self.timer.stop()
            
 
     def menu_back(self):
@@ -333,8 +338,6 @@ class Window(QMainWindow):
         if move_smth ==1:
             self.timer.stop()
 
-
-
     def start_menu(self):
         
         self.timer = QtCore.QTimer()
@@ -342,25 +345,55 @@ class Window(QMainWindow):
         self.timer.start(1)
 
 
+
+
+
+
+
+
+
+
+    def move_ups_emoji_box(self):
+        global move_smth1
+        self.emoji_FRM.setGeometry(QtCore.QRect(390, move_smth1, 211, 91))
+        move_smth1-=1
+        if move_smth1 ==401:
+            self.timer.stop()
     
     def start_emoji_box(self):
-        self.emoji_FRM.setHidden(False)
-
         self.emoji_BTN.setEnabled(False)
         self.emoji_BTN.setHidden(True)
         self.emoji_BTN_2.setEnabled(True)
         self.emoji_BTN_2.setHidden(False)
-            
 
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.move_ups_emoji_box)
+        self.timer.start(1)
+
+    
+    def move_down_emoji_box(self):
+        global move_smth1
+        self.emoji_FRM.setGeometry(QtCore.QRect(390, move_smth1, 211, 91))
+        move_smth1+=1
+        if move_smth1 ==551:
+            self.timer.stop()
+
+        
     def exit_emoji_box(self):
-        self.emoji_FRM.setHidden(True)
-
-
         self.emoji_BTN.setEnabled(True)
         self.emoji_BTN.setHidden(False)
         self.emoji_BTN_2.setEnabled(False)
         self.emoji_BTN_2.setHidden(True)
-        
+
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.move_down_emoji_box)
+        self.timer.start(1)
+
+
+
+
+
+
 
     def click_camera_BTN(self):
         cv2.namedWindow("preview")
