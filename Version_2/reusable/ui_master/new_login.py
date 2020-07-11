@@ -35,6 +35,7 @@ rec_min=0
 move_smth=-381
 zoom_smth=52
 move_smth1=550
+move_smth2=571
 
 
 class Window(QMainWindow):
@@ -296,10 +297,15 @@ class Window(QMainWindow):
 
 
     def rec_voice(self):
-        self.exit_emoji_box()
+
+        # self.exit_emoji_box()
         if self.record_b.isChecked():
+            self.messegebox_t.setStyleSheet("background-color:White;border: 1px solid lightgray;border-radius:15px;font-size: 18px;")
+
             global rec_min
             global rec_sec
+            self.exit_emoji_box()
+
             rec_min = 0
             rec_sec=0
             self.timer.stop() 
@@ -308,19 +314,39 @@ class Window(QMainWindow):
             self.messegebox_t.setEnabled(True)
             self.label_6.setHidden(True)
             self.label_7.setHidden(True)
-            self.messegebox_t.resize(571, 31)
+
+
+            # self.messegebox_t.resize(571, 31)
+
+            self.timer5 = QtCore.QTimer()
+            self.timer5.timeout.connect(self.resize_up_msgbox)
+            self.timer5.start(1.5)
+
             movie = QtGui.QMovie(os.getcwd() + '/icons/rec_button.gif')
             self.label_7.setMovie(movie)
             movie.stop()
             print ("button pressed")
         else:
+            self.exit_emoji_box()
+            # self.messegebox_t.setStyleSheet("background-color:rgba(248, 248, 248);border: 1px solid lightgray;border-radius:15px;font-size: 18px;")
+            # self.messegebox_t.setEnabled(False)
             self.label_6.setText("00:00")
             self.label_6.setStyleSheet("background-color: transparent;border: 0px solid transparent;font-size: 20px;")
             self.emoji_BTN.setEnabled(False)
             self.messegebox_t.setEnabled(False)
             self.label_6.setHidden(False)
             self.label_7.setHidden(False)
-            self.messegebox_t.resize(461, 31)
+
+
+
+            # self.messegebox_t.resize(461, 31)
+            self.timer4 = QtCore.QTimer()
+            self.timer4.timeout.connect(self.resize_bk_msgbox)
+            self.timer4.start(1)
+
+
+
+
             movie = QtGui.QMovie(os.getcwd() + '/icons/rec_button.gif')
             self.label_7.setMovie(movie)
             movie.start()
@@ -329,6 +355,21 @@ class Window(QMainWindow):
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.rec_sec)
             self.timer.start(1000) 
+
+    def resize_bk_msgbox(self):
+        global move_smth2
+        self.messegebox_t.resize(move_smth2, 31)
+        move_smth2-=1
+        if move_smth2 ==461:
+            self.timer4.stop()    
+
+    def resize_up_msgbox(self):
+        global move_smth2
+        self.messegebox_t.resize(move_smth2, 31)
+        move_smth2+=1
+        if move_smth2 ==571:
+            self.timer5.stop()             
+    
 
            
     def contex_menu(self):
@@ -397,7 +438,7 @@ class Window(QMainWindow):
             self.emoji_FRM.setHidden(False)
         if move_smth1 <=401:
 
-            self.timer.stop()
+            self.timer2.stop()
     
     def start_emoji_box(self):
         self.emoji_BTN.setEnabled(False)
@@ -405,9 +446,9 @@ class Window(QMainWindow):
         self.emoji_BTN_2.setEnabled(True)
         self.emoji_BTN_2.setHidden(False)
 
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.move_ups_emoji_box)
-        self.timer.start(1)
+        self.timer2 = QtCore.QTimer()
+        self.timer2.timeout.connect(self.move_ups_emoji_box)
+        self.timer2.start(1)
 
     
     def move_down_emoji_box(self):
@@ -435,7 +476,7 @@ class Window(QMainWindow):
         
         if move_smth1 >=551:
             
-            self.timer.stop()
+            self.timer2.stop()
            
 
         
@@ -445,9 +486,9 @@ class Window(QMainWindow):
         self.emoji_BTN_2.setEnabled(False)
         self.emoji_BTN_2.setHidden(True)
 
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.move_down_emoji_box)
-        self.timer.start(1)
+        self.timer2 = QtCore.QTimer()
+        self.timer2.timeout.connect(self.move_down_emoji_box)
+        self.timer2.start(1)
         
 
     def click_camera_BTN(self):
