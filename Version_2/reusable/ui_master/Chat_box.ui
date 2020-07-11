@@ -173,8 +173,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>20</width>
-       <height>20</height>
+       <width>25</width>
+       <height>25</height>
       </size>
      </property>
     </widget>
@@ -389,8 +389,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>31</width>
-       <height>31</height>
+       <width>25</width>
+       <height>25</height>
       </size>
      </property>
      <property name="flat">
@@ -684,6 +684,12 @@
       <iconset>
        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
     </widget>
     <widget class="QFrame" name="frame">
      <property name="geometry">
@@ -781,6 +787,257 @@
       </size>
      </property>
     </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>920</x>
+       <y>510</y>
+       <width>71</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>895</x>
+       <y>510</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QFrame" name="emoji_FRM">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>400</y>
+       <width>211</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QPushButton" name="send_b_2">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>10</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>🙏</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_3">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>10</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>😬</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_4">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>10</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>👋</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_5">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>10</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>💪</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_6">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>🌹</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_7">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>50</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>🖐🏻</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_8">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>50</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>🥰</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_9">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>50</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>👌</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_10">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>👍</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="send_b_12">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>50</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="text">
+       <string>💋</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+      </property>
+     </widget>
+    </widget>
     <zorder>label_2</zorder>
     <zorder>label_3</zorder>
     <zorder>record_b</zorder>
@@ -810,238 +1067,9 @@
     <zorder>frame</zorder>
     <zorder>doc_BTN</zorder>
     <zorder>pv_LBL</zorder>
-   </widget>
-   <widget class="QFrame" name="emoji_FRM">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>590</y>
-      <width>671</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QLabel" name="emoji_bg_LBL">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>671</width>
-       <height>101</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(240, 240, 240);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_2">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_3">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_4">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_5">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_6">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_7">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_8">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_9">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_10">
-     <property name="geometry">
-      <rect>
-       <x>210</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="send_b_12">
-     <property name="geometry">
-      <rect>
-       <x>370</x>
-       <y>10</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
-     </property>
-    </widget>
+    <zorder>label_6</zorder>
+    <zorder>label_7</zorder>
+    <zorder>emoji_FRM</zorder>
    </widget>
    <widget class="QPushButton" name="emoji_BTN_2">
     <property name="geometry">
@@ -1064,14 +1092,13 @@
     </property>
     <property name="iconSize">
      <size>
-      <width>31</width>
-      <height>31</height>
+      <width>25</width>
+      <height>25</height>
      </size>
     </property>
    </widget>
    <zorder>mother_FRM</zorder>
    <zorder>setting_FRM</zorder>
-   <zorder>emoji_FRM</zorder>
    <zorder>emoji_BTN_2</zorder>
   </widget>
  </widget>

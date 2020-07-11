@@ -19,18 +19,21 @@ import cv2
 # import pygame
 from PyQt5.QtCore import QTimer
 from threading import Thread
+import emoji
 
 
 
 
 # Type a message
 
-
+rec_sec=0
+rec_min=0
 move_smth=-381
 
 
 class Window(QMainWindow):
     last_used = ""
+    
     def __init__(self):
         super().__init__()
 
@@ -47,8 +50,35 @@ class Window(QMainWindow):
         # self.label = self.findChild(QLabel, "label")
 
         self.listWidget = self.findChild(QListWidget, "listWidget")
-        
+        self.label_6.setHidden(True)
+        self.label_7.setHidden(True)
 
+        self.send_b_6.clicked.connect(lambda: self.emoji_v(":rose:"))
+        self.send_b_3.clicked.connect(lambda: self.emoji_v(":grimacing_face:"))
+        self.send_b_2.clicked.connect(lambda: self.emoji_v(":folded_hands:"))
+        self.send_b_5.clicked.connect(lambda: self.emoji_v(":flexed_biceps:"))
+        self.send_b_4.clicked.connect(lambda: self.emoji_v(":waving_hand:"))
+
+        self.send_b_10.clicked.connect(lambda: self.emoji_v(":thumbs_up:"))
+        self.send_b_9.clicked.connect(lambda: self.emoji_v(":OK_hand:"))
+        self.send_b_8.clicked.connect(lambda: self.emoji_v(":smiling_face_with_3_hearts:"))
+        self.send_b_7.clicked.connect(lambda: self.emoji_v(":hand_with_fingers_splayed:"))
+        self.send_b_12.clicked.connect(lambda: self.emoji_v(":kiss_mark:"))
+
+        self.send_b_6.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.send_b_3.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.send_b_2.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.send_b_5.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.send_b_4.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+
+        self.send_b_10.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.send_b_9.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.send_b_8.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.send_b_7.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.send_b_12.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.emoji_FRM.setStyleSheet("background-color: rgba(255, 255, 255, .7);border: 0px solid gray;font-size: 25px;border-radius:10px;")
+
+        
         self.button_user = self.findChild(QPushButton, "user_b")
         self.button_send = self.findChild(QPushButton, "send_b")
         self.button_other = self.findChild(QPushButton, "other_b")
@@ -104,14 +134,15 @@ class Window(QMainWindow):
         self.button_record.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
         self.button_send.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
         self.button_attach.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;") 
-        self.textedit_messegebox.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius:15px;") 
+        self.textedit_messegebox.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius:15px;font-size: 18px;") 
         self.button_usersearch.setStyleSheet("background-color: white;border: 1px solid white;") 
         self.textedit_usersearch.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:15px;") 
         
         self.button_menu_user.setIcon(QIcon(os.getcwd()+'/icons/menu_user.png'))
         self.button_searchuser.setIcon(QIcon(os.getcwd()+'/icons/search.png'))
         self.button_call.setIcon(QIcon(os.getcwd()+'/icons/phone.png'))
-        self.emoji_BTN_2.setIcon(QIcon(os.getcwd()+'/icons/emoji.png'))
+        self.emoji_BTN_2.setIcon(QIcon(os.getcwd()+'/icons/laugh2.png'))
+        self.emoji_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/laugh.png')))
 
         self.button_usersearch.setIcon(QIcon(os.getcwd()+'/icons/search.png'))
         self.button_menu.setIcon(QIcon(os.getcwd()+'/icons/menu.png'))
@@ -149,7 +180,7 @@ class Window(QMainWindow):
         self.pushButton.setHidden(True)
         self.lineEdit.setHidden(True)
 
-        self.emoji_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/emoji.png')))
+        
        
         
         self.button_record.setHidden(False)
@@ -181,15 +212,19 @@ class Window(QMainWindow):
 
         self.pv_LBL.setStyleSheet("background-color: transparent;border: 0px solid gray ;border-radius: 20px;") 
         self.pv_LBL.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/pv.png')))
-
-
+        self.label_7.setStyleSheet("background-color: transparent;") 
+        self.label_6.setStyleSheet("background-color: transparent;") 
+        self.emoji_FRM.setHidden(True)
         self.doc_BTN.setHidden(True)
         self.doc_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/document.png')))
 
         self.camera_BTN.setHidden(True)
         self.camera_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/camera.png')))
 
-
+        self.record_b.setStyleSheet("background-color: transparent;border: 0px solid gray ;border-radius: 20px;") 
+        self.record_b.setCheckable(True)
+        self.record_b.toggle()
+        self.record_b.clicked.connect(self.rec_voice)
 
         self.emoji_BTN_2.setEnabled(False)
         self.emoji_BTN_2.setHidden(True)
@@ -214,7 +249,10 @@ class Window(QMainWindow):
 
         self.center()
         self.show()
-
+    
+    def emoji_v(self,from_f):
+        self.messegebox_t.setText(self.messegebox_t.toPlainText()+emoji.emojize(from_f))
+       
     def scrol_down(self):
         self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
         
@@ -222,6 +260,8 @@ class Window(QMainWindow):
         # if (self.scrollArea.verticalScrollBar().value==self.scrollArea.verticalScrollBar().maximum())
         print("d")
         pass
+   
+   
     def move_down(self):
         global move_smth
         self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
@@ -230,7 +270,54 @@ class Window(QMainWindow):
             self.timer.stop()
             # move_smth=0
    
+    def rec_sec(self):
+        global rec_sec
+        global rec_min
+        rec_sec+=1
+        
+        if rec_sec==60:
+            rec_min+=1
+            rec_sec=0
+        self.label_6.setText("%02d:%02d"%(rec_min,rec_sec))
+        self.label_6.setStyleSheet("background-color: transparent;border: 0px solid transparent;font-size: 20px;")
 
+
+    def rec_voice(self):
+        self.exit_emoji_box()
+        if self.record_b.isChecked():
+            global rec_min
+            global rec_sec
+            rec_min = 0
+            rec_sec=0
+            self.timer.stop() 
+            self.record_b.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/radio.png'))))
+            self.emoji_BTN.setEnabled(True)
+            self.messegebox_t.setEnabled(True)
+            self.label_6.setHidden(True)
+            self.label_7.setHidden(True)
+            self.messegebox_t.resize(571, 31)
+            movie = QtGui.QMovie(os.getcwd() + '/icons/rec_button.gif')
+            self.label_7.setMovie(movie)
+            movie.stop()
+            print ("button pressed")
+        else:
+            self.label_6.setText("00:00")
+            self.label_6.setStyleSheet("background-color: transparent;border: 0px solid transparent;font-size: 20px;")
+            self.emoji_BTN.setEnabled(False)
+            self.messegebox_t.setEnabled(False)
+            self.label_6.setHidden(False)
+            self.label_7.setHidden(False)
+            self.messegebox_t.resize(461, 31)
+            movie = QtGui.QMovie(os.getcwd() + '/icons/rec_button.gif')
+            self.label_7.setMovie(movie)
+            movie.start()
+            self.record_b.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/mic_send.png'))))
+            print ("button released")
+            self.timer = QtCore.QTimer()
+            self.timer.timeout.connect(self.rec_sec)
+            self.timer.start(1000) 
+
+           
 
     def menu_back(self):
         self.timer = QtCore.QTimer()
@@ -257,7 +344,7 @@ class Window(QMainWindow):
 
     
     def start_emoji_box(self):
-        self.emoji_FRM.setGeometry(QtCore.QRect(380, 399, 671, 101))
+        self.emoji_FRM.setHidden(False)
 
         self.emoji_BTN.setEnabled(False)
         self.emoji_BTN.setHidden(True)
@@ -266,7 +353,7 @@ class Window(QMainWindow):
             
 
     def exit_emoji_box(self):
-        self.emoji_FRM.setGeometry(QtCore.QRect(380, 671, 671, 101))
+        self.emoji_FRM.setHidden(True)
 
 
         self.emoji_BTN.setEnabled(True)
@@ -414,6 +501,7 @@ class Window(QMainWindow):
 
 
     def clickedBtn_send(self):
+        self.exit_emoji_box()
         if self.scrollArea.verticalScrollBar().value()==self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         if self.textedit_messegebox.toPlainText().strip() :
@@ -436,7 +524,7 @@ class Window(QMainWindow):
 
             
             
-            self.messege_user.setStyleSheet("background-color: #D7FAB3;border: 0px solid lightgray;border-radius: 17px;") 
+            self.messege_user.setStyleSheet("background-color: #D7FAB3;border: 0px solid lightgray;border-radius: 17px;font-size: 20px;") 
             if self.last_used == "other" :
                 self.formLayout.addRow(QLabel())
                 
@@ -451,7 +539,7 @@ class Window(QMainWindow):
 
             self.messege_time = QLabel(" 12:54 ",alignment=Qt.AlignRight)
             self.messege_time.setStyleSheet("color: black")
-            self.messege_time.setStyleSheet("background-color: white;border: 0px solid lightgray;border-radius: 5px;") 
+            self.messege_time.setStyleSheet("background-color: white;border: 0px solid lightgray;border-radius: 5px;font-size: 14px;") 
             self.seen_image = QLabel()
             self.seen_image.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/not_seen.png')).scaledToWidth(20))
             self.formLayout.addRow(self.messege_time,self.seen_image)
@@ -459,6 +547,7 @@ class Window(QMainWindow):
 
 
     def clickedBtn_other(self):
+        
         if self.scrollArea.verticalScrollBar().value()==self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
@@ -466,7 +555,7 @@ class Window(QMainWindow):
         self.user_image.setIconSize(QSize(35,35))
         # self.user_image.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/user.png')).scaledToWidth(35))
         self.messege_user = QLabel(" slm mmd")
-        self.messege_user.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius: 17px;")
+        self.messege_user.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius: 17px;font-size: 20px;")
         if self.last_used == "me" :
             self.formLayout.addRow(QLabel())  
         self.formLayout.addRow(self.user_image,self.messege_user)
@@ -478,7 +567,7 @@ class Window(QMainWindow):
         
         self.messege_time = QLabel(datetime.datetime.now().strftime("%H:%M"),alignment=Qt.AlignRight)
         self.messege_time.setStyleSheet("color: black")
-        self.messege_time.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius: 5px;") 
+        self.messege_time.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius: 5px;font-size: 14px;") 
         self.seen_image = QPushButton()
         # self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/reply.png')))
         self.seen_image.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius: 10px;") 
@@ -499,21 +588,25 @@ class Window(QMainWindow):
         self.user_image.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/user.png')))
         self.user_image.setIconSize(QSize(35,35))
         if self.last_used == "me" :
-            self.formLayout.addRow(QLabel())  
-        self.voice = QSlider(Qt.Horizontal)
-
-        self.voice.setMinimum(10)
-        self.voice.setMaximum(30)
-        self.formLayout.addRow(self.user_image,self.voice)
+            self.formLayout.addRow(QLabel())
+        self.seen_image = QPushButton()
+        self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/google-play.png')))
+        self.seen_image.setStyleSheet("background-color: white;border: 3px solid white;border-radius: 10px;")   
+        
+        self.formLayout.addRow(self.user_image,self.seen_image)
         self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(self.clickedBtn_user)
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
 
             
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-    
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().clicked.connect(self.clickedBtn_user)
+        
 
-        self.formLayout.itemAt(self.formLayout.count()-1).widget().sliderReleased.connect(self.clickedBtn_user)
+            
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+
+        
         
 
 
@@ -521,18 +614,17 @@ class Window(QMainWindow):
     
         self.messege_time = QLabel(datetime.datetime.now().strftime("%H:%M"),alignment=Qt.AlignRight)
         self.messege_time.setStyleSheet("color: black")
-        self.messege_time.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius: 5px;") 
-        self.seen_image = QPushButton()
-        self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/google-play.png')))
-        self.seen_image.setStyleSheet("background-color: white;border: 3px solid white;border-radius: 10px;") 
-        self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight)
-        self.formLayout.addRow(self.messege_time,self.seen_image)
-
-        self.formLayout.itemAt(self.formLayout.count()-1).widget().clicked.connect(self.clickedBtn_user)
+        self.messege_time.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius: 5px;font-size: 14px;") 
         
+        self.voice = QSlider(Qt.Horizontal)
 
-            
-        self.formLayout.itemAt(self.formLayout.count()-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.voice.setMinimum(10)
+        self.voice.setMaximum(30)
+        ##
+        self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight)
+        self.formLayout.addRow(self.messege_time,self.voice)
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().sliderReleased.connect(self.clickedBtn_user)
+        
         self.formLayout.addRow(QLabel())
         self.formLayout.addRow(QLabel())
         self.last_used="other"
