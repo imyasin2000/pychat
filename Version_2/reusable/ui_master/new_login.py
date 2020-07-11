@@ -239,7 +239,7 @@ class Window(QMainWindow):
         self.emoji_BTN_2.setEnabled(False)
         self.emoji_BTN_2.setHidden(True)
         
-
+        self.emoji_FRM.setHidden(True)
 
 
         # self.textedit_messegebox.setHidden(True)
@@ -377,7 +377,26 @@ class Window(QMainWindow):
         global move_smth1
         self.emoji_FRM.setGeometry(QtCore.QRect(390, move_smth1, 211, 91))
         move_smth1-=1
-        if move_smth1 ==401:
+        
+        resize = int(abs((move_smth1-401)/6-25))
+       
+        self.send_b_6.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_3.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_2.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_5.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_4.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_10.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_9.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_8.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_8.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_7.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_12.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        
+        self.emoji_FRM.setStyleSheet("background-color: rgba(255, 255, 255, %.2f);border: 0px solid gray;font-size: 1px;border-radius:10px;"%(resize/25))
+        if move_smth1==470: 
+            self.emoji_FRM.setHidden(False)
+        if move_smth1 <=401:
+
             self.timer.stop()
     
     def start_emoji_box(self):
@@ -395,8 +414,29 @@ class Window(QMainWindow):
         global move_smth1
         self.emoji_FRM.setGeometry(QtCore.QRect(390, move_smth1, 211, 91))
         move_smth1+=1
-        if move_smth1 ==551:
+        resize = int(abs((move_smth1-401)/6-25))
+       
+        self.send_b_6.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_3.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_2.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_5.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_4.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_10.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_9.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_8.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_8.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_7.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        self.send_b_12.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
+        
+        self.emoji_FRM.setStyleSheet("background-color: rgba(255, 255, 255, %.2f);border: 0px solid gray;font-size: 1px;border-radius:10px;"%(resize/25))
+        if move_smth1==470:
+
+            self.emoji_FRM.setHidden(True)
+        
+        if move_smth1 >=551:
+            
             self.timer.stop()
+           
 
         
     def exit_emoji_box(self):
