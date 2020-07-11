@@ -146,15 +146,22 @@ def send_email(s: socket, data: list):
 
         # add in the message body
     msg.attach(MIMEText(message, 'plain'))
+    print("6")
     # create server
     server = smtplib.SMTP('smtp.gmail.com: 587')
+    print("7")
     server.starttls()
+    print("8")
     # Login Credentials for sending the mail
     server.login("pychat.messenger@gmail.com", password)
+    print("9")
     # send the message via the server.
     server.sendmail(msg['From'], msg['To'], msg.as_string())
+    print("10")
     server.quit()
+    print("11")
     data.append(random_number)
+    print("12")
     if data[0] == 'forgot':
         data1 = [int(509)] + data  # email_verify
         data1 = json.dumps(data1)  # etelaat daryafti avalie + code random
