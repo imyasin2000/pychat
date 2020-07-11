@@ -7,12 +7,21 @@ import sqlite3
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
+import os
+import pyqrcode
+import png
+import random
+from pyqrcode import QRCode
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 
 print("\nThe server was successfully activated.\n")
 
 # Server information
 ## 51.195.19.3
-ip = '0.0.0.0'
+ip = '51.195.53.142'
 port = 1256
 
 
@@ -95,14 +104,7 @@ def login_chek(s: socket, data):
 # ersal mail baraye kasi ke faramush kade pass ash ra
 # ya baraye user jadid
 def send_email(s: socket, data: list):
-    import os
-    import pyqrcode
-    import png
-    from pyqrcode import QRCode
-    import smtplib
-    from email.mime.text import MIMEText
-    from email.mime.image import MIMEImage
-    from email.mime.multipart import MIMEMultipart
+
     print(data)
     emialaddress = data[2]
     # setup the parameters of the message
@@ -115,7 +117,7 @@ def send_email(s: socket, data: list):
 
     if data[0] == 'forgot':
         msg['Subject'] = "Forget password"
-        import random
+        
         random_number = (random.randint(100000, 1000000))
         message = (f"\nHi Dear {data[1]}.\n\n\n your code for change password is : {random_number} .")
         url = pyqrcode.create(str(random_number))
@@ -127,7 +129,7 @@ def send_email(s: socket, data: list):
         # add in the message body
     else:
         msg['Subject'] = "Subscription"
-        import random
+       
         random_number = (random.randint(100000, 1000000))
         message = (f"\nHi Dear {data[1]}.\n\n\n welcome to pychat! your verify code is : {random_number} .")
         url = pyqrcode.create(str(random_number))
