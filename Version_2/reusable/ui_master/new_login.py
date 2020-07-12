@@ -34,6 +34,8 @@ rec_sec=0
 rec_min=0
 move_smth=-381
 zoom_smth=52
+zoom_smth2=0
+zoom_smth3=0
 move_smth1=550
 move_smth2=571
 
@@ -59,6 +61,7 @@ class Window(QMainWindow):
         self.listWidget = self.findChild(QListWidget, "listWidget")
         self.label_6.setHidden(True)
         self.label_7.setHidden(True)
+        
 
         self.send_b_6.clicked.connect(lambda: self.emoji_v(":rose:"))
         self.send_b_3.clicked.connect(lambda: self.emoji_v(":grimacing_face:"))
@@ -73,6 +76,7 @@ class Window(QMainWindow):
         self.send_b_12.clicked.connect(lambda: self.emoji_v(":kiss_mark:"))
 
         self.send_b_6.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+
         self.send_b_3.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
         self.send_b_2.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
         self.send_b_5.setStyleSheet("background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
@@ -95,7 +99,7 @@ class Window(QMainWindow):
         self.button_menu = self.findChild(QPushButton, "menu_b")
         self.button_usersearch= self.findChild(QPushButton, "user_search_b")
         self.label_sidebar = self.findChild(QLabel, "side_bar_l")
-        self.label_topchatbar = self.findChild(QLabel, "topchat_bar_l")
+        # self.label_topchatbar = self.findChild(QLabel, "topchat_bar_l")
         # self.label_bottomchatbar = self.findChild(QLabel, "bottomchat_bar_l")
         
         self.label_usernamem = self.findChild(QLabel, "usernamem_l")
@@ -140,8 +144,13 @@ class Window(QMainWindow):
 
         self.button_record.setStyleSheet("background-color: transparent;border: 1px solid white;border-radius:15px;") 
         self.button_send.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;") 
+
+        self.send_b_11.setStyleSheet("background-color: white;border: 0px solid white;border-radius:20px;") 
+
+        self.send_b_11.setIcon(QIcon(os.getcwd()+'/icons/up-chevron.png'))
+        self.send_b_11.setHidden(True)
         self.button_attach.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;") 
-        self.textedit_messegebox.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius:15px;font-size: 18px;") 
+        self.textedit_messegebox.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius:18px;font-size: 20px;") 
         self.button_usersearch.setStyleSheet("background-color: white;border: 1px solid white;") 
         self.textedit_usersearch.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:15px;") 
         
@@ -170,6 +179,10 @@ class Window(QMainWindow):
         self.emoji_BTN.clicked.connect(self.start_emoji_box)
         self.emoji_BTN_2.clicked.connect(self.exit_emoji_box)
         
+        self.send_b_11.clicked.connect(self.scrol_down)
+
+
+        self.scrollArea.setMouseTracking(True)
         
 
 
@@ -230,6 +243,15 @@ class Window(QMainWindow):
         self.camera_BTN.setIcon(QIcon(os.path.abspath(os.getcwd() + '/icons/camera.png')))
 
         self.record_b.setStyleSheet("background-color: transparent;border: 0px solid gray ;border-radius: 20px;") 
+        self.record_b.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/radio.png'))))
+        
+
+        self.send_b_13.setStyleSheet("background-color: transparent;border: 0px solid gray ;border-radius: 20px;") 
+        self.send_b_13.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/close (1).png'))))
+        self.send_b_13.setHidden(True)
+        self.send_b_13.clicked.connect(self.stop_rec)
+
+
         self.record_b.setCheckable(True)
         self.record_b.toggle()
         self.record_b.clicked.connect(self.rec_voice)
@@ -241,7 +263,7 @@ class Window(QMainWindow):
         self.emoji_BTN_2.setHidden(True)
         
         self.emoji_FRM.setHidden(True)
-
+        self.label_8.setHidden(True)
 
         # self.textedit_messegebox.setHidden(True)
         # self.label.setHidden(True)
@@ -257,7 +279,9 @@ class Window(QMainWindow):
         # self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(lambda : movie.stop())
         # self.timer.singleShot(30)
-
+        self.timer10 = QtCore.QTimer()
+        self.timer10.timeout.connect(self.move_down_wheel)
+        self.timer10.start(500)
         self.center()
         self.show()
     
@@ -266,13 +290,46 @@ class Window(QMainWindow):
        
     def scrol_down(self):
         self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
+        self.move_d_zout()
+    
+
+    def move_down_wheel(self):
+       
+        if self.scrollArea.verticalScrollBar().value()!=self.scrollArea.verticalScrollBar().maximum():
+                self.timer11 = QtCore.QTimer()
+                self.timer11.timeout.connect(self.move_d_zin)
+                self.timer11.start(4)
+                self.send_b_11.setHidden(False)
+        else:
+            
+            self.timer11 = QtCore.QTimer()
+            self.timer11.timeout.connect(self.move_d_zout)
+            self.timer11.start(4)
+                # QTimer.singleShot(50, lambda:print(self.scrollArea.verticalScrollBar().value()))
+   
+
+    def move_d_zin(self):
+        global zoom_smth2
+        zoom_smth2+=1
         
-    def wheelEvent(self,event):
-        # if (self.scrollArea.verticalScrollBar().value==self.scrollArea.verticalScrollBar().maximum())
-        # print("d")
-        pass
-   
-   
+        self.send_b_11.resize(zoom_smth2, zoom_smth2)
+        self.send_b_11.setIconSize(QSize(int(zoom_smth2/2+5), int(zoom_smth2/2+5)))
+        self.send_b_11.setStyleSheet("background-color: rgba(255, 255, 255, 1);border: 0px solid white;border-radius:%dpx;"%int(zoom_smth2/2)) 
+        if zoom_smth2 >= 41:
+            zoom_smth2=41
+            self.timer11.stop()
+    
+    def move_d_zout(self):
+        global zoom_smth2
+        zoom_smth2-=1
+        self.send_b_11.resize(zoom_smth2, zoom_smth2)
+        self.send_b_11.setIconSize(QSize(int(zoom_smth2/2+5), int(zoom_smth2/2+5)))
+        self.send_b_11.setStyleSheet("background-color: rgba(255, 255, 255, 1);border: 0px solid white;border-radius:%dpx;"%int(zoom_smth2/2)) 
+        if zoom_smth2 <= 0:
+            zoom_smth2=0
+            self.send_b_11.setHidden(True)
+            self.timer11.stop()
+
     def move_down(self):
         global move_smth,zoom_smth
         self.setting_FRM.setGeometry(QtCore.QRect(move_smth, 0, 381, 581))
@@ -294,14 +351,21 @@ class Window(QMainWindow):
             rec_sec=0
         self.label_6.setText("%02d:%02d"%(rec_min,rec_sec))
         self.label_6.setStyleSheet("background-color: transparent;border: 0px solid transparent;font-size: 20px;")
-
-
-    def rec_voice(self):
-
-        # self.exit_emoji_box()
-        if self.record_b.isChecked():
-            self.messegebox_t.setStyleSheet("background-color:White;border: 1px solid lightgray;border-radius:15px;font-size: 18px;")
-
+    
+    def deleting_gif(self):
+            movie = QtGui.QMovie(os.getcwd() + '/icons/rec_button.gif')
+            self.record_b.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/radio.png'))))
+            self.label_7.setMovie(movie)
+            movie.stop()
+            self.label_6.setHidden(True)
+            self.label_7.setHidden(True)
+            self.timer4 = QtCore.QTimer()
+            self.timer4.timeout.connect(self.resize_up_msgbox)
+            self.timer4.start(2)
+            
+    def stop_rec(self):
+            self.record_b.setChecked(True)
+            self.messegebox_t.setStyleSheet("background-color:rgba(255, 255, 255,1);border: 1px solid lightgray;border-radius:15px;font-size: 18px;")
             global rec_min
             global rec_sec
             self.exit_emoji_box()
@@ -309,66 +373,92 @@ class Window(QMainWindow):
             rec_min = 0
             rec_sec=0
             self.timer.stop() 
+            
+            self.emoji_BTN.setEnabled(True)
+            self.messegebox_t.setEnabled(True)
+            self.label_8.setHidden(False)
+
+            movie = QtGui.QMovie(os.getcwd() + '/icons/ezgif.com-gif-maker (5).gif')
+            self.label_8.setMovie(movie)
+            movie.start()
+            QTimer.singleShot(2000, lambda:self.label_8.setHidden(True))
+            QTimer.singleShot(2000, self.deleting_gif)
+            # self.messegebox_t.resize(571, 31)
+
+
+            self.send_b_13.setHidden(True)
+
+
+    def rec_voice(self):
+
+        # self.exit_emoji_box()
+        if self.record_b.isChecked():
+
+            self.messegebox_t.setStyleSheet("background-color:rgba(255, 255, 255,1);border: 1px solid lightgray;border-radius:15px;font-size: 18px;")
+            global rec_min
+            global rec_sec
+            self.exit_emoji_box()
+            self.label_6.setHidden(True)
+            self.label_7.setHidden(True)
+            rec_min = 0
+            rec_sec=0
+            self.timer.stop() 
             self.record_b.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/radio.png'))))
             self.emoji_BTN.setEnabled(True)
             self.messegebox_t.setEnabled(True)
-            self.label_6.setHidden(True)
-            self.label_7.setHidden(True)
-
 
             # self.messegebox_t.resize(571, 31)
 
-            self.timer5 = QtCore.QTimer()
-            self.timer5.timeout.connect(self.resize_up_msgbox)
-            self.timer5.start(1.5)
-
+            self.timer4 = QtCore.QTimer()
+            self.timer4.timeout.connect(self.resize_up_msgbox)
+            self.timer4.start(2)
+            self.send_b_13.setHidden(True)
             movie = QtGui.QMovie(os.getcwd() + '/icons/rec_button.gif')
             self.label_7.setMovie(movie)
             movie.stop()
-            print ("button pressed")
+           
         else:
             self.exit_emoji_box()
-            # self.messegebox_t.setStyleSheet("background-color:rgba(248, 248, 248);border: 1px solid lightgray;border-radius:15px;font-size: 18px;")
+            self.messegebox_t.setStyleSheet("background-color:rgba(248, 248, 248,.7);border: 1px solid lightgray;border-radius:15px;font-size: 18px;")
             # self.messegebox_t.setEnabled(False)
             self.label_6.setText("00:00")
             self.label_6.setStyleSheet("background-color: transparent;border: 0px solid transparent;font-size: 20px;")
+            
+            
             self.emoji_BTN.setEnabled(False)
             self.messegebox_t.setEnabled(False)
-            self.label_6.setHidden(False)
-            self.label_7.setHidden(False)
-
-
-
             # self.messegebox_t.resize(461, 31)
             self.timer4 = QtCore.QTimer()
             self.timer4.timeout.connect(self.resize_bk_msgbox)
-            self.timer4.start(1)
-
-
-
-
+            self.timer4.start(2)
             movie = QtGui.QMovie(os.getcwd() + '/icons/rec_button.gif')
             self.label_7.setMovie(movie)
             movie.start()
-            self.record_b.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/mic_send.png'))))
-            print ("button released")
+            
+           
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.rec_sec)
             self.timer.start(1000) 
 
     def resize_bk_msgbox(self):
         global move_smth2
-        self.messegebox_t.resize(move_smth2, 31)
+        self.messegebox_t.resize(move_smth2, 41)
         move_smth2-=1
-        if move_smth2 ==461:
+        if move_smth2 ==401:
+            self.record_b.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/correct.png'))))
+            self.label_6.setHidden(False)
+            self.label_7.setHidden(False)
+            self.send_b_13.setHidden(False)
+            
             self.timer4.stop()    
 
     def resize_up_msgbox(self):
+      
         global move_smth2
-        self.messegebox_t.resize(move_smth2, 31)
+        self.messegebox_t.resize(move_smth2, 41)
         move_smth2+=1
         if move_smth2 ==571:
-            self.timer5.stop()             
+            self.timer4.stop()             
     
 
            
@@ -380,8 +470,9 @@ class Window(QMainWindow):
         Delete_Chat=menu.addAction("Delete Chat")
         info.triggered.connect(lambda:print("d0"))
         mute.triggered.connect(lambda:print("d1"))
-        clear_messages.triggered.connect(lambda:print("d2"))
-        Delete_Chat.triggered.connect(lambda:print("d3"))
+        clear_messages.triggered.connect(self.clear_screen)
+        Delete_Chat.triggered.connect(self.clear_screen)
+        
         menu.exec_(QCursor.pos())
         
         
@@ -432,7 +523,7 @@ class Window(QMainWindow):
         self.send_b_8.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
         self.send_b_7.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
         self.send_b_12.setStyleSheet("background-color: rgba(255, 255, 255, 0);border: 0px solid gray;font-size: %dpx;border-radius:10px;"%(resize+1))
-        
+        self.send_b_11.resize(zoom_smth2, zoom_smth2)
         self.emoji_FRM.setStyleSheet("background-color: rgba(255, 255, 255, %.2f);border: 0px solid gray;font-size: 1px;border-radius:10px;"%(resize/25))
         if move_smth1==470: 
             self.emoji_FRM.setHidden(False)
@@ -440,6 +531,7 @@ class Window(QMainWindow):
 
             self.timer2.stop()
     
+
     def start_emoji_box(self):
         self.emoji_BTN.setEnabled(False)
         self.emoji_BTN.setHidden(True)
@@ -474,7 +566,7 @@ class Window(QMainWindow):
 
             self.emoji_FRM.setHidden(True)
         
-        if move_smth1 >=551:
+        if move_smth1 >=472:
             
             self.timer2.stop()
            
@@ -510,13 +602,13 @@ class Window(QMainWindow):
 
 
     def click_attach(self):
-        # if self.camera_BTN.setHidden(False):#:\\\\\\\\\\\\\\\\\\\\\\\
-        #     self.camera_BTN.setHidden(True)
-        #     self.doc_BTN.setHidden(True)            
 
-        # else:
         self.attach_b.setHidden(True)
         self.attach_b_2.setHidden(False)
+
+        self.timer12 = QtCore.QTimer()
+        self.timer12.timeout.connect(self.doc_moveup)
+        self.timer12.start(5)
         self.camera_BTN.setHidden(False)
         self.doc_BTN.setHidden(False)
 
@@ -525,9 +617,41 @@ class Window(QMainWindow):
     def click_attach_2(self):
         self.attach_b.setHidden(False)
         self.attach_b_2.setHidden(True)
-        self.camera_BTN.setHidden(True)
-        self.doc_BTN.setHidden(True)        
+        self.timer12 = QtCore.QTimer()
+        self.timer12.timeout.connect(self.doc_movedown)
+        self.timer12.start(5)     
 
+    def doc_moveup(self):
+        global zoom_smth3
+        zoom_smth3+=1
+        
+        self.doc_BTN.setIconSize(QSize(zoom_smth3, zoom_smth3))
+        self.camera_BTN.setIconSize(QSize(zoom_smth3, zoom_smth3))
+        self.doc_BTN.resize(zoom_smth3, zoom_smth3)
+        self.doc_BTN.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:%dpx;"%int(zoom_smth3/2)) 
+        self.camera_BTN.resize(zoom_smth3, zoom_smth3)
+        
+        self.camera_BTN.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:%dpx;"%int(zoom_smth3/2)) 
+
+        if zoom_smth3 >= 51:
+            zoom_smth3=51
+            self.timer12.stop()
+
+    def doc_movedown(self):
+        global zoom_smth3
+        zoom_smth3-=1
+        self.doc_BTN.setIconSize(QSize(zoom_smth3, zoom_smth3))
+        self.camera_BTN.setIconSize(QSize(zoom_smth3, zoom_smth3))
+        self.doc_BTN.resize(zoom_smth3, zoom_smth3)
+        self.doc_BTN.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:%dpx;"%int(zoom_smth3/2)) 
+        self.camera_BTN.resize(zoom_smth3, zoom_smth3)
+        self.camera_BTN.setStyleSheet("background-color: rtransparent;border: 0px solid white;border-radius:%dpx;"%int(zoom_smth3/2)) 
+        
+        if zoom_smth3 <= 0:
+            zoom_smth3=0
+            self.camera_BTN.setHidden(True)
+            self.doc_BTN.setHidden(True)   
+            self.timer12.stop()
 
     def click_search(self):
         self.attach_b.setEnabled(False)
@@ -783,15 +907,9 @@ class Window(QMainWindow):
 
         
     def clear_screen(self):
-        # find text in form layout
-        # for i in range(int(self.formLayout.count()/4)): 
-        #     print(self.formLayout.itemAt(i*4+1).widget().text())
-        
-        
-        # clear text 
         for i in reversed(range(self.formLayout.count())): 
             self.formLayout.itemAt(i).widget().deleteLater()
-        # pass
+      
 
 
 App = QApplication(sys.argv)

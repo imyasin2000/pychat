@@ -159,7 +159,7 @@
      <property name="geometry">
       <rect>
        <x>1010</x>
-       <y>510</y>
+       <y>515</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -426,8 +426,8 @@
     <widget class="QPushButton" name="camera_BTN">
      <property name="geometry">
       <rect>
-       <x>970</x>
-       <y>136</y>
+       <x>960</x>
+       <y>156</y>
        <width>41</width>
        <height>41</height>
       </rect>
@@ -443,8 +443,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>55</width>
-       <height>55</height>
+       <width>51</width>
+       <height>51</height>
       </size>
      </property>
      <property name="flat">
@@ -652,7 +652,7 @@
        <x>430</x>
        <y>510</y>
        <width>571</width>
-       <height>31</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="verticalScrollBarPolicy">
@@ -675,7 +675,7 @@
      <property name="geometry">
       <rect>
        <x>1010</x>
-       <y>510</y>
+       <y>515</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -749,7 +749,7 @@
     <widget class="QPushButton" name="doc_BTN">
      <property name="geometry">
       <rect>
-       <x>970</x>
+       <x>960</x>
        <y>70</y>
        <width>41</width>
        <height>41</height>
@@ -763,8 +763,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>49</width>
-       <height>49</height>
+       <width>51</width>
+       <height>51</height>
       </size>
      </property>
      <property name="flat">
@@ -775,7 +775,7 @@
      <property name="geometry">
       <rect>
        <x>390</x>
-       <y>0</y>
+       <y>5</y>
        <width>41</width>
        <height>41</height>
       </rect>
@@ -797,13 +797,13 @@
      <property name="geometry">
       <rect>
        <x>920</x>
-       <y>510</y>
+       <y>515</y>
        <width>71</width>
        <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;00:00&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -813,7 +813,7 @@
      <property name="geometry">
       <rect>
        <x>895</x>
-       <y>510</y>
+       <y>515</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -1044,6 +1044,77 @@
       </property>
      </widget>
     </widget>
+    <widget class="QPushButton" name="send_b_11">
+     <property name="geometry">
+      <rect>
+       <x>990</x>
+       <y>440</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="send_b_13">
+     <property name="geometry">
+      <rect>
+       <x>850</x>
+       <y>515</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../../icons/send2.png</normaloff>../../icons/send2.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>851</x>
+       <y>505</y>
+       <width>31</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>icons/ezgif.com-crop (2).gif</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
     <zorder>label_2</zorder>
     <zorder>label_3</zorder>
     <zorder>record_b</zorder>
@@ -1057,7 +1128,6 @@
     <zorder>user_b</zorder>
     <zorder>emoji_BTN</zorder>
     <zorder>user_search_b</zorder>
-    <zorder>camera_BTN</zorder>
     <zorder>searchuser_b</zorder>
     <zorder>pushButton_2</zorder>
     <zorder>lastseen_l</zorder>
@@ -1076,6 +1146,10 @@
     <zorder>label_6</zorder>
     <zorder>label_7</zorder>
     <zorder>emoji_FRM</zorder>
+    <zorder>send_b_11</zorder>
+    <zorder>camera_BTN</zorder>
+    <zorder>send_b_13</zorder>
+    <zorder>label_8</zorder>
    </widget>
    <widget class="QPushButton" name="emoji_BTN_2">
     <property name="geometry">
