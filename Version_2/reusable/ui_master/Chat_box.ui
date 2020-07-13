@@ -292,9 +292,9 @@
      <property name="geometry">
       <rect>
        <x>380</x>
-       <y>60</y>
+       <y>50</y>
        <width>661</width>
-       <height>441</height>
+       <height>451</height>
       </rect>
      </property>
      <property name="tabletTracking">
@@ -324,7 +324,7 @@
         <x>0</x>
         <y>0</y>
         <width>657</width>
-        <height>437</height>
+        <height>447</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -1086,7 +1086,7 @@
     <widget class="QLabel" name="label_8">
      <property name="geometry">
       <rect>
-       <x>851</x>
+       <x>850</x>
        <y>505</y>
        <width>31</width>
        <height>41</height>
@@ -1116,6 +1116,25 @@
      </property>
      <property name="text">
       <string>file</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>1010</x>
+       <y>510</y>
+       <width>31</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>icons/ezgif.com-crop (2).gif</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
      </property>
     </widget>
     <zorder>label_2</zorder>
@@ -1153,6 +1172,7 @@
     <zorder>send_b_13</zorder>
     <zorder>label_8</zorder>
     <zorder>clear_b_2</zorder>
+    <zorder>label_9</zorder>
    </widget>
    <widget class="QPushButton" name="emoji_BTN_2">
     <property name="geometry">
