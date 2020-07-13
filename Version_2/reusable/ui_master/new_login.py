@@ -522,7 +522,7 @@ class Window(QMainWindow):
         for i in range(int(44100 / chunk * 10)):
             data = stream.read(chunk)#save byte in moteghayer
             # data1 = [int(108), sender, recever,data]
-            stream.write(data)
+            # stream.write(data)
             # frames.append(data)
 
         print("Finished recording.")
