@@ -5,14 +5,14 @@ import threading
 import time
 from select import select
 import datetime
-import status
+# import status
 from tkinter import filedialog
 from tkinter import *
 import os
 
 q=Queue()
 s=socket.socket()
-s.connect(('0.0.0.0',1236))
+s.connect(('192.168.109.1',14200))
 
 
 
@@ -137,19 +137,24 @@ class user :
         message=input("enter text for sending to your friend : ")
         message_time=str(datetime.datetime.now())
         message_id=str(time.time())
-        message_id=message_id[:-3]+obj_work['token']
-        data=[int(106),sender,reciver,message,message_time,message_id]
+        message_id=str(sender)+str(reciver)+message_id[:-3]
+        data=[int(106),sender,reciver,message,message_time,message_id,'t']
         sending_to_server(s,data)
 
-    def send_profilepic(self, s: socket, sender):
+    def send_profilepic(self, s: socket,sender,reciver,usage):
         root = Tk()
         root.resizable(0, 0)
-        root.filename = filedialog.askopenfilename(initialdir="/home/mhfa1380/Desktop/", title="Select file",filetypes=( ("all files", "*.*"),("jpeg files", "*.jpg"),("ppng files", "*.png")))
+        root.filename = filedialog.askopenfilename(initialdir="/", title="Select file",filetypes=( ("all files", "*.*"),("jpeg files", "*.jpg"),("ppng files", "*.png")))
         name, ext = os.path.splitext(root.filename)
-        x = os.path.getsize(root.filename)
+        x = os.path.getsize(root.filename) #size
+        send_time=str(datetime.datetime.now())[:-4]
+        media_id=str(sender)+str(reciver)+send_time
+        media_id=media_id.replace(":","-")
+        media_id=media_id.replace(' ','-')
+        media_id=media_id.replace('.','-')
         root.destroy()
         down=0
-        data = [int(108), sender, str(x), ext, b"start".hex()]  # pasvand file + size file
+        data = [int(108), sender,reciver,str(x),ext,b'start'.hex(),media_id,usage]  # pasvand file + size file
         sending_to_server(s, data)
         f = open(root.filename, 'rb')
         while True:
@@ -159,15 +164,18 @@ class user :
                 # f"{str(x)}{ext}{l}".encode()
                 down = down + 1024
                 percent = (100 * float(down) / float(x))-0.03
-                print("{:.2f} %".format(percent),end="\n")
-                data = [int(108), sender, str(x), ext, l.hex()]  # pasvand file + size file
+                print("{:.2f} %".format(percent),end="--")
+                data = [int(108), sender,reciver,str(x),ext,l.hex(),media_id,usage,send_time]  # pasvand file + size file
                 sending_to_server(s, data)
                 l = f.read(1024)
             if not l:
-                data = [int(108), sender, str(x), ext, b"end".hex()]
+                data = [int(108), sender,reciver,str(x),ext,b'end'.hex(),media_id,usage,send_time]
                 sending_to_server(s, data)
                 print("sended")
                 break
+
+    def profile_changed(self,s:socket,data:list):
+        print('your profile changed :)')
 
 
 
@@ -176,10 +184,10 @@ class user :
 
 def recive_text_message(s:socket,data:list):
     number_of_message=len(data)
-    print(f'\n{number_of_message}new message!')
+    print(f'\n{number_of_message} new message!')
     for i in data:
         print(f'{i[0]} : {i[2]} ({i[3]})')
-        status.store_messages(i)
+        # status.store_messages(i)
 
 def receve_file(s:socket,data:list):
     global f
@@ -269,8 +277,8 @@ obj_work={ 'token':"yasin78",
       '509':obj.check_mail_forgotpass,
       '504':obj.password_changed,
       '503':recive_text_message,
-           '505':receve_file,
-      
+        '505':receve_file,
+        '509':obj.profile_changed,
  
       }
 
@@ -283,8 +291,10 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 #online zakhire konad #TODO #in tike ro bayad behtar konam 
 
 token='yasin78'
-im_online=[int(105),token]
-sending_to_server(s,im_online)
+# im_online=[int(105),token]
+# sending_to_server(s,im_online)
+obj.send_profilepic(s,token,'mhfa1380','p')
+
 
 
 
@@ -292,8 +302,8 @@ sending_to_server(s,im_online)
 # obj.user_want_sign_in(s)
 # obj.forgot_password(s)
 # while True:
-#     obj.send_text_message(s,'yasin78','yasin78')
-# #obj.forgot_password(s)
+#     obj.send_text_message(s,'yasin78','mfa1380')
+#obj.forgot_password(s)
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
 # obj.send_voice_messege(s,'yasin78','yasin78')

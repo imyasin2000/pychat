@@ -15,21 +15,24 @@ print("\nThe server was successfully activated.\n")
 
 #Server information
 
-ip = '0.0.0.0'
-port = 1236
+ip = '192.168.109.1'
+port = 14200
 f=""
 #-------------------------------connection-------------------------------------------------------
 class Socket:
     size = 4096 #Size of information sent and received
     user_info = ""
 
-    def __init__(self, host="192.168.1.107", port=14200): #first run
+    def __init__(self, host="192.168.109.1", port=14200): #first run
         self.socket = socket() #socket.socket()
         self.socket.bind((host, port))
         self.socket.listen(1) #Open the port and wait for the new user
-
-        while True:          # trade two function            #connect to client
-            threading.Thread(target=self._wait_recv, args=self.socket.accept()).start() #2ta khorji conn,addr ghabli
+        while True: 
+            try:
+                     # trade two function            #connect to client
+                threading.Thread(target=self._wait_recv, args=self.socket.accept()).start() #2ta khorji conn,addr ghabli
+            except:
+                print(" one client disconected...")
 
     def _wait_recv(self, conn: socket, addr):#waiting for new messege or conect or diconnect
         data = b''#byte format
@@ -213,7 +216,7 @@ def edit_password(s:socket,data:list):
 
 def adding_new_client_to_online(s:socket,data:list):
     #-------add to online------------------------------------------------------
-    print(data[0]+' connect shod!')
+    print(data[0]+' connected!')
     online=data[0]
     online_users.update({s:data[0]})
     # print(online_users)
@@ -231,9 +234,28 @@ def adding_new_client_to_online(s:socket,data:list):
         s.send((data.encode() + b'\0'))
         print("sending pm finished")
         for i in r :
-            cursor.execute("INSERT INTO sent VALUES (?,?,?,?,?)", (i[0], i[1], i[2], i[3],i[4]))
+            if str(i[0])>str(i[1]):
+                tabale=str(i[0]+str(i[1]))
+            else:
+                tabale=str(i[1]+str(i[0]))
+
+            sql=f"""
+                CREATE TABLE IF NOT EXISTS {tabale}(
+                sender VARCHAR (48),
+                reciver VARCHAR(48),
+                message VARCHAR (600),
+                message_time DATETIME (60),
+                message_id VARCHAR (60),
+                message_type VARCHAR (3)
+                );
+            """
+            cursor.execute(sql)
+            connection.commit()
+
+            cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (i[0], i[1], i[2], i[3],i[4],i[5]))
             connection.commit()
         connection.close()
+        print(f'messages from {r[0][0]} to {r[1][1]} stored in our database ')
 
     else:
         connection.commit()
@@ -241,39 +263,111 @@ def adding_new_client_to_online(s:socket,data:list):
 
 #ersal payam haye daryafti be fard online va dar gheir in surat zakhire an ha 
 #dar data base unsend
+#---> data= [sender,reciver,message,message_time,message_id,'t']
 def sending_messages(s:socket,data:list):
     print(data)
     for key, value in online_users.items(): 
         if data[1] == value: 
-            data1=[int(503),(data[0],data[1],data[2],data[3],data[4])]
+            data1=[int(503),(data[0],data[1],data[2],data[3],data[4],data[5])]
             data1 = json.dumps(data1)
             key.send((data1.encode() + b'\0'))
-            connection = sqlite3.connect("./messages.db")
+            connection = sqlite3.connect("./database.db")
             cur = connection.cursor()
-            cur.execute("INSERT INTO sent VALUES (?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4]))
+
+            if str(data[0])>str(data[1]):
+                tabale=str(data[0]+str(data[1]))
+            else:
+                tabale=str(data[1]+str(data[0]))
+
+            sql=f"""
+                CREATE TABLE IF NOT EXISTS {tabale}(
+                sender VARCHAR (48),
+                reciver VARCHAR(48),
+                message VARCHAR (600),
+                message_time DATETIME (60),
+                message_id VARCHAR (60),
+                message_type VARCHAR (3)
+                );
+            """
+            cur.execute(sql)
+            cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
             connection.commit()
             connection.close()
         else:
-            connection = sqlite3.connect("./messages.db")
+            connection = sqlite3.connect("./database.db")
             cur = connection.cursor()
-            cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4]))
+            cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
             connection.commit()
             connection.close()
 
+#[sender(0),reciver(1),str(x)  (2),ext(3),bf"{usage}".hex()  (4),media_id (5),usage (6), time(7)]
 
 def add_picprofile(s:socket,data:list):
     global f
 
-    recived_f = data[0]  + data[2]
-    if bytes.fromhex(data[3]) == b"start":
+    recived_f = data[5]+data[3]
+
+    if bytes.fromhex(data[4]) == b"start":
         f = open(recived_f, "wb")
 
-    elif bytes.fromhex(data[3]) == b"end":
-        print("recived")
+
+    elif bytes.fromhex(data[4]) ==b"end":
+        print(f"file from {data[0]} recived")
+        print(data[-1])
+
         f.close()
+
+        if data[-2]=='p':
+            connection=sqlite3.connect("./database.db")
+            cursor=connection.cursor()
+            cursor.execute("UPDATE users SET profile=? WHERE user_id=?", (recived_f,data[0]))
+            connection.commit()
+            connection.close()
+            data1=[int(509)]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
+        
+        else:
+            for key, value in online_users.items(): 
+                if data[1] == value: 
+                    data1=[int(503),(data[0], data[1],recived_f, data[-1],data[5],data[-2])]
+                    data1 = json.dumps(data1)
+                    key.send((data1.encode() + b'\0'))
+                    connection = sqlite3.connect("./database.db")
+                    cur = connection.cursor()
+
+                    if str(data[0])>str(data[1]):
+                        tabale=str(data[0]+str(data[1]))
+                    else:
+                        tabale=str(data[1]+str(data[0]))
+
+                    sql=f"""
+                        CREATE TABLE IF NOT EXISTS {tabale}(
+                        sender VARCHAR (48),
+                        reciver VARCHAR(48),
+                        message VARCHAR (600),
+                        message_time DATETIME (60),
+                        message_id VARCHAR (60),
+                        message_type VARCHAR (3)
+                        );
+                    """
+                    cur.execute(sql)
+                    cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
+                    connection.commit()
+                    connection.close()
+                else:
+                    connection = sqlite3.connect("./database.db")
+                    cur = connection.cursor()
+                    cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
+                    connection.commit()
+                    connection.close()
+
+
+
+
     else:
 
-        f.write(bytes.fromhex(data[3]))
+        f.write(bytes.fromhex(data[4]))
 
 
 
