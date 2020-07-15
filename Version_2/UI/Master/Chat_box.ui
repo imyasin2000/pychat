@@ -26,7 +26,7 @@
    <widget class="QFrame" name="setting_FRM">
     <property name="geometry">
      <rect>
-      <x>-500</x>
+      <x>100</x>
       <y>600</y>
       <width>381</width>
       <height>581</height>
@@ -724,19 +724,6 @@
       <string>Mohammad Hossein Fadavi</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="other_b">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>520</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>messege</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="menu_user_b">
      <property name="geometry">
       <rect>
@@ -1319,7 +1306,6 @@
     <zorder>user_search_t</zorder>
     <zorder>pushButton</zorder>
     <zorder>usernamem_l</zorder>
-    <zorder>other_b</zorder>
     <zorder>menu_user_b</zorder>
     <zorder>messegebox_t</zorder>
     <zorder>send_b</zorder>

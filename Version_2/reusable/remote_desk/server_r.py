@@ -26,6 +26,8 @@ from PyQt5.QtCore import QTimer
 import cv2
 # import pygame
 from PyQt5.QtCore import QTimer
+
+
 ####
 
 class window_r(QMainWindow):
@@ -56,12 +58,23 @@ class window_r(QMainWindow):
                         
 
     def start_e(self):
+        counter = 0
         while True:
+            counter+=1
+            print(counter,datetime.datetime.now())
             img = ImageGrab.grab()
-            img.save(os.path.abspath(os.getcwd()+"/rec.jpg"))
-          
+    
+            
+            
+            img.save(os.path.abspath(os.getcwd()+"/rec.jpg"),quality=50)
+
+         
+
             self.show_r_l.setPixmap(QPixmap(os.path.abspath(os.getcwd()+"/rec.jpg")))
             app.processEvents()
+            if counter == 20:
+                break
+        input()
 
 app = QApplication(sys.argv)
 window = window_r()

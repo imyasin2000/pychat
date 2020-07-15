@@ -98,8 +98,8 @@ class Window(QMainWindow):
         self.label.setStyleSheet("background-color: white;border: 0px solid gray;font-size: 25px;border-radius:10px;")
         self.label_10.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 193, 165);font-size: 15px;")
         self.label_13.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 193, 165);font-size: 15px;")
-        self.label_11.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 13px;")
-        self.label_12.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 13px;")
+        self.label_11.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 14px;")
+        self.label_12.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 14px;")
         
         self.line.setStyleSheet("background-color: rgb(240, 240, 240);")
         
@@ -147,8 +147,12 @@ class Window(QMainWindow):
         self.button_call = self.findChild(QPushButton, "call_b")
 
         self.label_background = self.findChild(QLabel, "background_l")
-        self.label_background.setPixmap(
-            QPixmap(os.path.abspath(os.getcwd()+'/icons/background.png')))
+        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/background.png')))
+
+        self.wating_l.setPixmap(QPixmap(os.path.abspath(os.getcwd()+'/icons/background.png')))
+        
+        self.label_14.setStyleSheet("background-color: rgba(0,0,0,.4);border:1px rgb(0,0,0);border-radius:15px;color:white")
+        
 
         # self.bottomchat_bar_l.setStyleSheet('background-color:rgba(240, 240, 240, 0.5);')
 
@@ -209,6 +213,13 @@ class Window(QMainWindow):
             "background-color: white;border: 1px solid white;")
         self.textedit_usersearch.setStyleSheet(
             "background-color: white;border: 1px solid gray;border-radius:15px;")
+
+
+
+        self.usernamem_l.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius:1px;font-size: 15px;")
+        self.lastseen_l.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius:1px;font-size: 12px;")
+        
+        
 
         self.button_menu_user.setIcon(
             QIcon(os.getcwd()+'/icons/menu_user.png'))
@@ -294,7 +305,7 @@ class Window(QMainWindow):
         self.pv_LBL.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
         self.pv_LBL.setIcon(
-            QIcon(os.path.abspath(os.getcwd()+'/icons/pv.png')))
+            QIcon(os.path.abspath(os.path.abspath(os.getcwd() + '/Files/profile/person.png'))))
         self.label_7.setStyleSheet("background-color: transparent;")
         self.label_6.setStyleSheet("background-color: transparent;")
         # self.emoji_FRM.setHidden(True)
@@ -342,12 +353,16 @@ class Window(QMainWindow):
         self.menu_b.setToolTip("<font color=black>%s</font>" % 'Menu'.replace("\n", "<br/>"))
         self.menu_bk_BTN.setToolTip("<font color=white>%s</font>" % 'Go Back'.replace("\n", "<br/>"))
 
-        
-        
-        
-        
-        
-        
+        self.send_b_6.setToolTip("<font color=white>%s</font>" % '🌹'.replace("\n", "<br/>"))
+        self.send_b_3.setToolTip("<font color=white>%s</font>" % '😬'.replace("\n", "<br/>"))
+        self.send_b_2.setToolTip("<font color=white>%s</font>" % '🙏'.replace("\n", "<br/>"))
+        self.send_b_5.setToolTip("<font color=white>%s</font>" % '💪'.replace("\n", "<br/>"))
+        self.send_b_4.setToolTip("<font color=white>%s</font>" % '👋'.replace("\n", "<br/>"))
+        self.send_b_10.setToolTip("<font color=white>%s</font>" % '👍'.replace("\n", "<br/>"))
+        self.send_b_9.setToolTip("<font color=white>%s</font>" % '👌'.replace("\n", "<br/>"))
+        self.send_b_8.setToolTip("<font color=white>%s</font>" % '🥰'.replace("\n", "<br/>"))
+        self.send_b_7.setToolTip("<font color=white>%s</font>" % '🖐'.replace("\n", "<br/>"))
+        self.send_b_12.setToolTip("<font color=white>%s</font>" % '💋'.replace("\n", "<br/>"))
         
         
 
@@ -355,6 +370,7 @@ class Window(QMainWindow):
 
         self.emoji_BTN_2.setEnabled(True)
         self.emoji_BTN_2.setHidden(True)
+            
 
         self.emoji_FRM.setHidden(True)
         self.label_8.setHidden(True)
@@ -385,7 +401,12 @@ class Window(QMainWindow):
 
 
     def user_list_click(self,item):
-        print(item.whatsThis())
+        self.pv_LBL.setIcon(item.icon())
+       
+        self.usernamem_l.setText(item.text().strip('\n').lstrip())
+        # print(item.whatsThis())
+        self.wating_l.setHidden(True)
+        self.label_14.setHidden(True)
  
     def contex_change_profile(self):
         menu = QMenu(self)
@@ -424,7 +445,6 @@ class Window(QMainWindow):
             img.show()
             
 
-    
 
     def choose_profile_pic(self):
         fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"Image files (*.jpg *.png)")
@@ -715,8 +735,6 @@ class Window(QMainWindow):
         
         # print(mediainfo(os.getcwd()+'/Files/'+voice_id)['duration'])
         
-
-
 
     def rec_voice(self):
         global record_until
@@ -1297,15 +1315,18 @@ class Window(QMainWindow):
 
     def clickedBtn_user(self):
     
-        itm = QListWidgetItem("\n Mohammad Hossein Fadavi\n")
+        itm = QListWidgetItem("\n Mehdi Hamedi \n")
         itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/user.png')))
         self.listWidget.insertItem(0,itm)
-        itm = QListWidgetItem("\n Mohammad h\n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/user.png')))
+        itm = QListWidgetItem("\n Yasin Khamar \n")
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/me.png')))
         self.listWidget.insertItem(1,itm)
-        itm = QListWidgetItem("\n Mohammad Hossein\n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/user.png')))
+        itm = QListWidgetItem("\n Mohammad Hossein Fadavi \n")
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/person.png')))
         self.listWidget.insertItem(2,itm)
+        itm = QListWidgetItem("\n Mostafa Bastam \n")
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/woman.png')))
+        self.listWidget.insertItem(3,itm)
         
         self.listWidget.item(0).setWhatsThis('0')
         self.listWidget.item(1).setWhatsThis('1')

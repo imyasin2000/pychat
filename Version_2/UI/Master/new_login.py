@@ -1,41 +1,3 @@
-import socket
-import subprocess
-import json
-from queue import Queue
-import threading
-from PyQt5 import QtCore, QtGui, QtWidgets  # works for pyqt5
-import time
-from select import select
-from PyQt5.QtWidgets import *  # UI
-from PyQt5 import QtWidgets
-from PyQt5.QtGui import QIcon, QPixmap
-from captcha.image import ImageCaptcha
-from PyQt5 import uic
-import sys
-import os
-from os import path
-import random
-import http.client as httplib
-from playsound import playsound
-from PyQt5 import QtCore
-import re
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.Qt import Qt
-import hashlib, uuid
-from PyQt5.QtCore import QTimer
-
-from requests import get, post
-import json
-import webbrowser
-import jwt
-import base64
-
-import cv2
-import numpy as np
-import pyzbar.pyzbar as pyzbar
-
 import pyaudio
 import wave
 import threading
@@ -77,16 +39,8 @@ from pydub.utils import mediainfo
 
 
 
-q = Queue()
-s = socket.socket()
 
-# Server information
-## 51.195.19.3
-s.connect(('0.0.0.0', 1425))
-
-email_changer = ''
-data_user = []
-code_g = 0
+# Type a message
 
 record_until = True
 rec_sec = 0
@@ -100,818 +54,11 @@ move_smth1 = 550
 move_smth2 = 571
 mic_port=True
 
-new_messeg = []
-
-# token='yasin78'
-# reciver='mhfa1380'
-token='mhfa1380'
-reciver='yasin78'
-
-class user:
-    def __init__(self):
-        pass
-
-    # ersal etelaat karbar jadid be samte server
-    def login(self, s: socket, capcha_code):
-        global window
-        self.data = [int(100)]
-        self.username = window.lineEdit_user.text()
-        self.name = window.lineEdit_name.text()
-        self.email = window.lineEdit_email.text()
-        # cheak email is valid
-
-        if (re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', self.email)):
-
-            self.password = window.lineEdit_pass.text()
-            self.capcha_label = window.lineEdit_capcha.text()
-            to_chek_password = window.lineEdit_repass.text()
-            if self.cheking_password(self.password, to_chek_password):
-                self.data.append(self.username)
-                self.data.append(self.name)
-                self.data.append(self.email)
-                hashedpass = hashlib.md5(self.password.encode()).hexdigest()
-                hashedpass = hashedpass[0:-5] + hashedpass[5:-8]
-                self.data.append(hashedpass)
-                if self.capcha_label == str(capcha_code):
-                    sending_to_server(s, self.data)
-                    wating_form(True, "forget_e")
-                else:
-                    QMessageBox.about(window, "recapcha error", "capcha code is not true")
-                    window.lineEdit.setFocus()
-            else:
-                window.lineEdit.clear()
-                QMessageBox.about(window, "password error",
-                                  "oh! try agian to enter password because they are not equal!")
-                window.Username_LE_7.clear()
-                window.Username_LE_7.setFocus()
-        else:
-            QMessageBox.about(window, "Invalid Email", "enter valid email")
-            window.Usename_LE_3.clear()
-            window.Usename_LE_3.setFocus()
-            window.lineEdit.clear()
-
-    # tabe baraye chek kardan motabegh budan password
-    def cheking_password(self, pass1, pass2):
-        if pass1 == pass2:
-            return True
-        else:
-            return False
-
-    def get_code_server_rigister(self, s: socket, data: list):
-        global code_g
-        global data_user
-        global window
-        window.Username_LE_16.clear()
-        window.Username_LE_16.setFocus()
-        time.sleep(2)
-        wating_form(False, "")
-        window.go_to_emailverify_signup()
-        data_user = data
-        code_g = data[-1]
-        print(code_g)
-
-    def email_verify(self):
-        global code_g
-        global window
-        global data_user
-        print(code_g)
-        # self.code_enter_box()
-        if window.lineEdit_code_signup.text() == str(code_g):
-            wating_form(True, "signup_f")
-            self.data1 = [int(102)] + data_user
-            sending_to_server(s, self.data1)
-        else:
-            window.Username_LE_16.clear()
-            window.Username_LE_16.setFocus()
-            QMessageBox.about(window, "Invalid Code", "Code is not correct")
-
-    #     # pasokh server be inke aya ba movafaghiat user jadid ra
-    #     # be data base ezafe karde ya kheir
-    def server_added_user_to_database(self, s: socket, data: list):
-        # self.meesege_box(data[0])
-        global window
-        # QMessageBox.about(window, "My box", "hi")
-        if data[0] == "welcome to pychat !":
-            time.sleep(7)
-            wating_form(False, "")
-            window.Signup_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))
-            window.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
-            window.Recover_FRM_4.setGeometry(QtCore.QRect(22000, 0, 801, 541))
-            window.Username_LE.clear()
-            window.Password_LE.clear()
-            window.Username_LE.setFocus()
-        elif data[0] == 'Error While Sending Email !':
-            wating_form(False,'')
-            wating_form(True,'no_response')
-            
-        time.sleep(1)
-        wating_form(False, "")
-        notification(data[0])
-
-    def user_want_sign_in(self, s: socket):
-        global window
-        self.data = [int(103)]
-        self.username = window.lineEdit_username.text()
-        self.data.append(self.username)
-        self.password = window.lineEdit_password.text()
-        hashedpass = hashlib.md5(self.password.encode()).hexdigest()
-        hashedpass = hashedpass[0:-5] + hashedpass[5:-8]
-        self.data.append(hashedpass)
-        sending_to_server(s, self.data)
-
-    def forgot_password(self, s: socket):
-        global window
-        global email_changer
-        self.eemail = window.lineEdit_forgetemail.text()
-        if (re.search('^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', self.eemail)):
-            email_changer = self.eemail
-            data = [int(101), 'forgot', '_', self.eemail]
-            sending_to_server(s, data)
-            wating_form(True, "forget_e")
-        else:
-            QMessageBox.about(window, "Invalid Email", "enter valid email")
-            window.Username_LE_2.clear()
-            window.Username_LE_2.setFocus()
-
-    def get_code_server(self, s: socket, data: list):
-        global code_g
-        global window
-        code_g = data[-1]
-        print(code_g)
-        window.Recover_FRM.setGeometry(QtCore.QRect(-3000, 0, 801, 541))
-        window.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
-        window.Username_LE_4.setText(window.Username_LE_2.text())
-        wating_form(False, "")
-        window.Username_LE_3.clear()
-        window.Username_LE_3.setFocus()
-
-    def change_pass(self):
-        global window
-        global email_changer
-
-        pas = window.lineEdit_forget_pass.text()
-        pas2 = window.lineEdit_forget_repass.text()
-        if self.cheking_password(pas, pas2) and pas != '':
-            hashedpass = hashlib.md5(pas.encode()).hexdigest()
-            hashedpass = hashedpass[0:-5] + hashedpass[5:-8]
-            data1 = [int(107), email_changer, hashedpass]
-            sending_to_server(s, data1)
-            wating_form(True, "signup_e")
-        else:
-            window.Username_LE_5.clear()
-            window.Username_LE_5.setFocus()
-            window.Username_LE_6.clear()
-            QMessageBox.about(window, "Invalid Pass", "password doesnt match!")
-
-    def check_mail_forgotpass(self):
-        global code_g
-        global window
-        print("email cheak")
-        print(code_g)
-        if str(code_g) == str(window.lineEdit_forgetcode.text()):
-            window.Username_LE_5.clear()
-            window.Username_LE_5.setFocus()
-            window.Username_LE_6.clear()
-            window.Recover_FRM_2.setGeometry(QtCore.QRect(-2000, 0, 801, 541))
-            window.Recover_FRM_3.setGeometry(QtCore.QRect(0, 0, 801, 541))
-        else:
-            window.Username_LE_3.clear()
-            window.Username_LE_3.setFocus()
-            QMessageBox.about(window, "Invalid Code", "Code is not correct")
-
-    def password_changed(self, s: socket, data: list):
-        global window
-        time.sleep(3)
-        wating_form(False, "")
-        window.Recover_FRM_3.setGeometry(QtCore.QRect(4555000, 4000, 801, 541))
-        window.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
-        window.Username_LE.clear()
-        window.Password_LE.clear()
-        window.Username_LE.setFocus()
-        notification(str(data[0]))
-
-    def send_text_message(self,s:socket,sender,reciver,message):
-        
-        message_time=str(datetime.datetime.now())
-        message_id=str(time.time())
-        message_id=str(sender)+str(reciver)+message_id[:-3]
-        data=[int(106),sender,reciver,message,message_time,message_id,'t']
-        sending_to_server(s,data)
-
-
-
-def recive_message(s:socket,data:list):
-    global reciver,new_messeg
-    # notification(f'{len(data)} new message!')
-   
-    for mes in data:
-        if mes[-1]=="t":
-            
-            if reciver == mes[0] and token != mes[0]:
-                new_mes2 = []
-                new_mes2.append(mes[2])
-                new_mes2.append(mes[3])
-                new_messeg = new_mes2
-                
-                
-                pass
-                
-                
-        elif mes[-1]=='v':
-            print(f"voice message from {mes[0]} ---> address in our server is {mes[2]}")
-            key=input("do you want to download this file?  enter Y or N ")
-            if key=='Y':
-                sending_to_server(s,[int(120),mes[2]])
-            else:
-                continue
-
-        elif mes[-1]=='m':
-            print(f"media from  {mes[0]} address in our server is {mes[2]}")
-            key=input("do you want to download this file?  (enter Y or N )")
-            if key=='Y':
-                sending_to_server(s,[int(120),mes[2]])
-            else:
-                continue
-
-
-# ----------------------------------------------------------------------------------------------other func ------------------
-def wating_form(wating_until, form):
-    global window
-    if (wating_until):
-        if cheak_net() == False:
-            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
-            window.label_18.setHidden(False)
-            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection2.gif')
-            window.label_18.setMovie(movie)
-            movie.start()
-            threading.Thread(target=window.net_conncted, args=()).start()
-        elif form == 'no_response':
-            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
-            window.label_18.setHidden(False)
-            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection2.gif')
-            window.label_18.setMovie(movie)
-            movie.start()
-
-        elif form == 'signin':
-            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
-            window.label_18.setHidden(False)
-            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading2.gif')
-            window.label_18.setMovie(movie)
-            movie.start()
-        elif form == 'signup_e':
-            # window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
-            window.label_18.setHidden(False)
-            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading3.gif')
-            window.label_18.setMovie(movie)
-            movie.start()
-        elif form == 'signup_f':
-            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
-            window.label_18.setHidden(False)
-            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading.gif')
-            window.label_18.setMovie(movie)
-            movie.start()
-        elif form == 'forget_e':
-            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
-            window.label_18.setHidden(False)
-            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/loading4.gif')
-            window.label_18.setMovie(movie)
-            movie.start()
-    else:
-        time.sleep(1)
-        window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
-        window.label_18.setHidden(True)
-
-
-# ----------------network connections with Queue--------------------------------
-
-# in tabe tamame dade haye vorude be barname ra misanjad agar daraye etebar bashad
-# an hara accsept  mikonad
-def _accsepting(s: socket):
-    data = b''
-    while True:
-        time.sleep(0.02)
-        try:
-            # do taye dg niaz nabod
-            r, _, _ = select([s], [s], [])  # baresi mishe vasl hast ya na
-            if r:
-                d = s.recv(4096)
-                data += d
-                if len(d) < 4096:
-                    if data:
-                        d = data.split(b'\0')
-                        # extera baraye dycrypt ezafe beshe
-                        # load_data(decrypt(d[i]))
-                        for i in range(len(d) - 1):
-                            load_data(d[i])
-                            data = d[-1]
-                    else:
-                        s.close()
-        except Exception as inst:
-            print(inst)
-            return
-
-
-# in tabe vorudi haue ghbel pardazesh ke az tabee marhale
-# ghabl amade ra decode mikonad va zemnan az halat json kharej
-# mikonad va an ha ra darun q put mikonad
-def load_data(data):
-    x = (json.loads(data.decode()))
-    q.put(x)
-
-
-# ba farakhani in tabe har data ghbel fahm baraye server ra ersal
-# mikonim  in tabee khodkar tamame vorudi ash ra be json tablil karde
-# va baad an ra ra encode mikond va ersal be server
-# vorudi in tabe sheye s hast ke bala az ruye socket sakhtim
-def sending_to_server(socket: socket, data):
-    data = json.dumps(data)
-    socket.send((data.encode() + b'\0'))
-
-
-# in tabe kar ha va darkhast hayie ke az samte server amade ra inja ejra mikonad
-def do_work(obj: user, s: socket):
-    while True:
-        time.sleep(0.03)
-        if not q.empty():
-            new_data = q.get()
-            task = new_data[0]
-            obj_work[f"{task}"](s, new_data[1:])
-            q.task_done()
-
-
-obj = user()
-obj_work={ 'token':"yasin78",
-      '500':obj.email_verify,
-      '502':obj.server_added_user_to_database,
-      '509':obj.check_mail_forgotpass,
-      '504':obj.password_changed,
-      '503':recive_message,
-    #   '509':obj.profile_changed,
-    #   '510':receve_file,
-
- 
-      }
-
-threading.Thread(target=_accsepting, args=(s,)).start()
-threading.Thread(target=do_work, args=(obj, s)).start()
-
-
-# cheak network
-def cheak_net():
-    conn = httplib.HTTPConnection("www.google.com", timeout=5)
-    try:
-        conn.request("HEAD", "/")
-        conn.close()
-        return True
-    except:
-        conn.close()
-        return False
-
-
-# PopUP Notification namayesh midahad
-def notification(messege):
-    img = os.path.abspath(os.getcwd() + '/Other/icon.png')
-    subprocess.Popen(["notify-send", "-i", img, "PyChat", messege])
-    playsound('Other/notify.mp3')
-
-
-# sakhte image recapcha
-# _________________________________________________________________________________________________UI_______________
-
-
-class UI_login(QMainWindow):
-    def __init__(self):
-        global obj
-        self.capcha_code = 0
-        super(UI_login, self).__init__()
-        uic.loadUi("UI/Login/Login_F.ui", self)
-        self.offset = None
-        radius = 35.0
-        path = QtGui.QPainterPath()
-        path.addRoundedRect(QtCore.QRectF(self.rect()), radius, radius)
-        mask = QtGui.QRegion(path.toFillPolygon().toPolygon())
-        self.setMask(mask)
-        self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
-        # self.button_forget = self.findChild(QPushButton, "forgotpass_b")
-        self.lineEdit_username = self.findChild(QLineEdit, "Username_LE")
-        self.lineEdit_password = self.findChild(QLineEdit, "Password_LE")
-        self.lineEdit_name = self.findChild(QLineEdit, "Password_LE_3")
-        self.lineEdit_code_signup = self.findChild(QLineEdit, "Username_LE_16")
-        self.lineEdit_user = self.findChild(QLineEdit, "Usename_LE_4")
-        self.lineEdit_email = self.findChild(QLineEdit, "Usename_LE_3")
-        self.lineEdit_pass = self.findChild(QLineEdit, "Password_LE_4")
-        self.lineEdit_repass = self.findChild(QLineEdit, "Username_LE_7")
-        self.lineEdit_capcha = self.findChild(QLineEdit, "lineEdit")
-        self.label_capcha = self.findChild(QLabel, "label")
-        self.lineEdit_forgetemail = self.findChild(QLineEdit, "Username_LE_2")
-        self.lineEdit_forgetcode = self.findChild(QLineEdit, "Username_LE_3")
-        self.lineEdit_forget_pass = self.findChild(QLineEdit, "Username_LE_5")
-        self.lineEdit_forget_repass = self.findChild(QLineEdit, "Username_LE_6")
-        self.label_18.setHidden(True)
-        self.capcha()
-        # window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-        self.label_background = self.findChild(QLabel, "background")
-        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
-        self.label_background = self.findChild(QLabel, "label_3")
-        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
-        self.label_background = self.findChild(QLabel, "label_4")
-        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
-        self.label_background = self.findChild(QLabel, "label_5")
-        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
-        self.label_background = self.findChild(QLabel, "label_5")
-        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
-        self.label_background = self.findChild(QLabel, "label_6")
-        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/background.jpg')))
-
-        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/sidebar.gif')
-        self.label_2.setMovie(movie)
-        self.label_9.setMovie(movie)
-        self.label_21.setMovie(movie)
-        self.label_22.setMovie(movie)
-        self.label_25.setMovie(movie)
-        self.label_26.setMovie(movie)
-        # self.label_2.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        # self.label_9.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        # self.label_21.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        # self.label_22.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        # self.label_25.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-        # self.label_26.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/UI/Login/images/sidebar.png')))
-
-        movie.start()
-        self.Username_LE.setFocus()
-        self.Signup1_BTN.clicked.connect(self.Go_to_signup)
-        self.pushButton.clicked.connect(self.Back_from_signup_to_signin)
-        self.Forgotpass_BTN_2.clicked.connect(self.Go_to_recovery)
-        self.Signin_BTN_2.clicked.connect(self.Go_to_varify)
-        self.pushButton_6.clicked.connect(self.Back_from_recoverpass_to_signin)
-        self.pushButton_4.clicked.connect(self.Back_from_varify_to_recoverpass)
-        self.pushButton_5.clicked.connect(self.Back_from_changepass_to_varify)
-        self.pushButton_13.clicked.connect(self.Go_to_signup)
-        self.Forgotpass_BTN_3.setStyleSheet("background-color: transparent;color:white;")
-        self.Forgotpass_BTN_4.setStyleSheet("background-color: transparent;color:white;")
-        self.Forgotpass_BTN_3.clicked.connect(self.cheak_qrcode_forget)
-        self.Forgotpass_BTN_4.clicked.connect(self.cheak_qrcode_signup)
-
-        self.pushButton_3.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/yahoo.png')))
-        self.pushButton_3.setStyleSheet(
-            "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
-        self.pushButton_3.clicked.connect(self.yahoo_signup)
-
-        self.Signin_BTN_5.clicked.connect(obj.change_pass)
-        self.pushButton_5.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
-        self.pushButton_4.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
-        self.pushButton_13.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/iages/back.png')))
-        self.pushButton_6.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/back.png')))
-        self.pushButton_5.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
-        self.pushButton_4.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
-        self.pushButton_13.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
-        self.pushButton_6.setStyleSheet("background-color:transparent;border: 0px solid black;border-radius:10px;")
-        self.frame_20.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-
-        self.Signin_BTN.clicked.connect(self.clickedBtn_login)
-        self.pushButton_8.clicked.connect(self.yahoo_signin)
-        self.pushButton_8.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/yahoo.png')))
-        self.pushButton_8.setStyleSheet(
-            "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
-        self.Signin_BTN.setStyleSheet(
-            "background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:20px;color:white;")
-        self.Signup1_BTN.setStyleSheet(
-            "background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
-        self.Signin_BTN_2.setStyleSheet(
-            "background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:15px;color:white;")
-        self.Signup1_BTN_7.setStyleSheet(
-            "background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
-        self.Username_LE_3.setStyleSheet(
-            "background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
-        self.Username_LE_16.setStyleSheet(
-            "background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
-        self.Signin_BTN_4.setStyleSheet(
-            "background-color:  rgb(165, 165, 165);border: 1px solid rgb(58, 175, 159);border-radius:20px;color:white;")
-        self.pushButton.setStyleSheet(
-            "background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
-        self.Signin_BTN_3.setStyleSheet(
-            "background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:15px;color:white;")
-        self.Signup1_BTN_2.setStyleSheet(
-            "background-color: transparent;border: 1px solid white;border-radius:20px;color:white;")
-        self.Signin_BTN_5.setStyleSheet(
-            "background-color:  rgb(58, 175, 159);border: 1px solid rgb(58, 175, 159);border-radius:20px;color:white;")
-        self.frame_6.setStyleSheet("background-color:  rgb(58, 175, 159);")
-        self.Signin_BTN_3.clicked.connect(self.clickedBtn_rigister)
-        self.pushButton_2.clicked.connect(self.capcha)
-        # self.Forgotpass_BTN_2.clicked.connect(self.clickedBtn_forget)
-        self.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
-        self.pushButton_7.setStyleSheet("background-color: transparent;border: 0px solid white;")
-        self.pushButton_7.clicked.connect(self.close_win)
-        self.Signup1_BTN_2.clicked.connect(obj.check_mail_forgotpass)
-        self.Signup1_BTN_7.clicked.connect(obj.email_verify)
-        self.center()
-        self.show()
-
-    def yahoo_signup(self):
-        self.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
-        self.label_18.setHidden(False)
-        self.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.2);')
-        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection.gif')
-        self.label_18.setMovie(movie)
-        movie.start()
-        ############################
-        client_id = 'dj0yJmk9YUc0Z1NNS1VMYzJCJmQ9WVdrOU1IcEZPVmt6TXpnbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTZj'
-        client_secret = '99921476f30c4fa680ba5452549ccc9342253b2d'
-        base_url = 'https://api.login.yahoo.com/'
-        code_url = f'oauth2/request_auth?client_id={client_id}&redirect_uri=oob&response_type=code&language=en-us'
-        webbrowser.open(base_url + code_url)
-        encoded = base64.b64encode((client_id + ':' + client_secret).encode("utf-8"))
-        headers = {
-            'Authorization': f'Basic {encoded.decode("utf-8")}',
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-        text, ok = QInputDialog.getText(self, 'Yahoo!', 'Enter Yahoo Code:')
-        if ok:
-
-            code = str(text)
-
-            data = {
-                'grant_type': 'authorization_code',
-                'redirect_uri': 'oob',
-                'code': code
-            }
-            response = post(base_url + 'oauth2/get_token', headers=headers, data=data)
-            if (response.ok):
-                headers = {
-                    'Authorization': f'Bearer {response.json()["access_token"]}',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-
-                response2 = get('https://api.login.yahoo.com/openid/v1/userinfo', headers=headers)
-                if (response2.ok):
-                    self.Password_LE_3.setText(response2.json()['name'])
-                    self.Usename_LE_4.setText(response2.json()['nickname'])
-                    self.Usename_LE_3.setText(response2.json()['email'])
-                    image = response2.json()['picture']
-                    self.Password_LE_4.setFocus()
-
-                    ##############################
-                    import urllib.request
-                    urllib.request.urlretrieve(image, '%s.jpg' % response2.json()['nickname'])
-                else:
-                    QMessageBox.about(self, "signup error", "illegal access!")
-            else:
-                QMessageBox.about(self, "signup error", "The unexpected error happened!")
-                self.Password_LE_3.setFocus()
-
-            #####################
-
-        window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
-        window.label_18.setHidden(True)
-
-    def yahoo_signin(self):
-        self.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
-        self.label_18.setHidden(False)
-        self.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.2);')
-        movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection.gif')
-        self.label_18.setMovie(movie)
-        movie.start()
-        ############################
-        client_id = 'dj0yJmk9YUc0Z1NNS1VMYzJCJmQ9WVdrOU1IcEZPVmt6TXpnbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTZj'
-        client_secret = '99921476f30c4fa680ba5452549ccc9342253b2d'
-        base_url = 'https://api.login.yahoo.com/'
-        code_url = f'oauth2/request_auth?client_id={client_id}&redirect_uri=oob&response_type=code&language=en-us'
-        webbrowser.open(base_url + code_url)
-        encoded = base64.b64encode((client_id + ':' + client_secret).encode("utf-8"))
-        headers = {
-            'Authorization': f'Basic {encoded.decode("utf-8")}',
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-        text, ok = QInputDialog.getText(self, 'Yahoo!', 'Enter Yahoo Code:')
-
-        if ok:
-
-            code = str(text)
-
-            data = {
-                'grant_type': 'authorization_code',
-                'redirect_uri': 'oob',
-                'code': code
-            }
-
-            response = post(base_url + 'oauth2/get_token', headers=headers, data=data)
-            if (response.ok):
-                headers = {
-                    'Authorization': f'Bearer {response.json()["access_token"]}',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-
-                response2 = get('https://api.login.yahoo.com/openid/v1/userinfo', headers=headers)
-                if (response2.ok):
-                    self.Username_LE.setText(response2.json()['nickname'])
-                    self.Password_LE.setText('3d6c1bd47f109e34c02f08773f8bd47f109e34c02f0877')
-                    self.clickedBtn_login()
-                    self.Username_LE.setText('')
-                    self.Password_LE.setText('')
-                else:
-                    self.Username_LE.setText('')
-                    self.Password_LE.setText('')
-                    QMessageBox.about(self, "signin error", "illegal access!")
-
-                    ##############################
-
-            else:
-                self.Username_LE.setText('')
-                self.Password_LE.setText('')
-                QMessageBox.about(self, "signin error", "The unexpected error happened!")
-
-            #####################
-
-        window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/cross.png')))
-        window.label_18.setHidden(True)
-
-    def cheak_qrcode_forget(self):
-
-        global obj
-        cap = cv2.VideoCapture(0)
-        # font = cv2.FONT_HERSHEY_PLAIN
-        clos_e = True
-        while clos_e:
-            _, frame = cap.read()
-            decodedObjects = pyzbar.decode(frame)
-
-            for data_code in decodedObjects:
-                (x, y, w, h) = data_code.rect
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                cv2.rectangle(gray, (x + 2, y + 2), (x + 2 + w, y + 2 + h), (0, 0, 255), 4)
-                cv2.imshow("Frame", gray)
-
-                # time.sleep(3)
-                playsound('Other/beep.mp3')
-                self.Username_LE_3.setText(data_code.data.decode("utf-8"))
-                time.sleep(1)
-                obj.check_mail_forgotpass()
-                clos_e = False
-                # cv2.putText(frame, str(obj.data), (50, 50), font, 2,(255, 0, 0), 3)
-            cv2.imshow("Frame", frame)
-            key = cv2.waitKey(1)
-            if key == 27:
-                break
-        cv2.destroyAllWindows()
-
-    def cheak_qrcode_signup(self):
-
-        global obj
-        cap = cv2.VideoCapture(0)
-        # font = cv2.FONT_HERSHEY_PLAIN
-        clos_e = True
-        while clos_e:
-            _, frame = cap.read()
-            decodedObjects = pyzbar.decode(frame)
-
-            for data_code in decodedObjects:
-                (x, y, w, h) = data_code.rect
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                cv2.rectangle(gray, (x + 2, y + 2), (x + 2 + w, y + 2 + h), (0, 0, 255), 4)
-                cv2.imshow("Frame", gray)
-
-                playsound('Other/beep.mp3')
-                self.Username_LE_16.setText(data_code.data.decode("utf-8"))
-                time.sleep(1)
-                obj.email_verify()
-                clos_e = False
-
-            cv2.imshow("Frame", frame)
-            key = cv2.waitKey(1)
-            if key == 27:
-                break
-        cv2.destroyAllWindows()
-
-    def net_conncted(self):
-        while (not cheak_net()):
-            time.sleep(2)
-        wating_form(False, "")
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.close()
-
-    def close_win(self):
-        self.close()
-
-    def capcha(self):
-        img = ImageCaptcha()
-        rnd_num = random.randint(10000, 100000)
-        image = img.generate_image(str(rnd_num))
-        image.save("Other/random.jpeg")
-        self.label_capcha.setPixmap(QPixmap(os.path.abspath(os.getcwd() + '/Other/random.jpeg')))
-        self.capcha_code = rnd_num
-        self.lineEdit.clear()
-
-    def center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-
-    def go_to_emailverify_signup(self):
-        self.Recover_FRM_4.setGeometry(QtCore.QRect(0, 0, 801, 541))
-
-    def Go_to_signup(self):
-        self.Signin_FRM.setGeometry(
-            QtCore.QRect(22000, 0, 801, 541))  # dge nabayad to x=22000 ui bezaram chon mishe zir majmoaash
-        self.Signup_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
-        self.Password_LE_3.clear()
-        self.Usename_LE_4.clear()
-        self.Usename_LE_3.clear()
-        self.Password_LE_4.clear()
-        self.Username_LE_7.clear()
-        self.Recover_FRM_4.setGeometry(QtCore.QRect(22000, 0, 801, 541))
-        self.lineEdit.clear()
-        self.Password_LE_3.setFocus()
-
-    def Back_from_signup_to_signin(self):
-        self.Signup_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))
-        self.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
-        self.Username_LE.clear()
-        self.Password_LE.clear()
-        self.Username_LE.setFocus()
-
-    def Go_to_recovery(self):
-        self.Signin_FRM.setGeometry(QtCore.QRect(-1000, 0, 801, 541))
-        self.Recover_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
-        self.Username_LE_2.clear()
-        self.Username_LE_2.setFocus()
-
-    def Go_to_varify(self):
-        obj.forgot_password(s)
-
-    def Back_from_recoverpass_to_signin(self):
-        self.Recover_FRM.setGeometry(QtCore.QRect(25000, 0, 801, 541))
-        self.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
-        self.Username_LE.clear()
-        self.Password_LE.clear()
-        self.Username_LE.setFocus()
-
-    def Back_from_varify_to_recoverpass(self):
-        self.Recover_FRM_2.setGeometry(QtCore.QRect(35000, 0, 801, 541))
-        self.Recover_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
-
-    def Back_from_changepass_to_varify(self):
-        self.Recover_FRM_3.setGeometry(QtCore.QRect(4555000, 4000, 801, 541))
-        self.Recover_FRM_2.setGeometry(QtCore.QRect(0, 0, 801, 541))
-
-    def clickedBtn_login(self):  # login page run mishe
-        obj.user_want_sign_in(s)  # dokme login aval
-        wating_form(True, "signin")
-
-    def clickedBtn_rigister(self):  # OPEN RIGISTER PAGE
-        obj.login(s, self.capcha_code)
-        self.capcha()
-
-
-class UI_Ads(QMainWindow):
-    def __init__(self):
-        super(UI_Ads, self).__init__()
-        uic.loadUi("UI/Ads/Ads.ui", self)
-        self.offset = None
-        radius = 10.0
-        path = QtGui.QPainterPath()
-        img = QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads.png'))
-        self.ads_l.setPixmap(img)
-        self.ads_l.setFixedWidth(img.width())
-        self.ads_l.setFixedHeight(img.height())
-        self.exit_b.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Ads/images/cross.png')))
-        self.exit_b.setStyleSheet("background-color: transparent;border: 0px solid white;")
-        self.exit_b.move(img.width() - 32, 10)
-        self.exit_b.clicked.connect(self.close)
-        self.setFixedSize(self.ads_l.size())
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-        path.addRoundedRect(QtCore.QRectF(self.rect()), radius, radius)
-        mask = QtGui.QRegion(path.toFillPolygon().toPolygon())
-        self.setMask(mask)
-        self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
-        self.show()
-
-
-
-
-
 class UI_Master(QMainWindow):
     last_used = ""
 
     def __init__(self):
         super().__init__()
-        uic.loadUi(os.path.abspath(os.getcwd() + "/UI/Master/Chat_box.ui"), self)
-        global token,s
-        im_online=[int(105),token]
-        sending_to_server(s,im_online)
 
         # with open("theme.txt") as file: # Use file to refer to the file object
         #     data = file.read()
@@ -920,7 +67,7 @@ class UI_Master(QMainWindow):
         self.setFixedSize(1051, 560)
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint |
                             QtCore.Qt.WindowMinimizeButtonHint)
-        
+        uic.loadUi("Chat_box.ui", self)
         self.setStyleSheet("QWidget { background-color: %s}" %
                            QtGui.QColor(252, 255, 253).name())
         self.textedit_messegebox = self.findChild(QTextEdit, "messegebox_t")
@@ -983,7 +130,7 @@ class UI_Master(QMainWindow):
 
         self.button_user = self.findChild(QPushButton, "user_b")
         self.button_send = self.findChild(QPushButton, "send_b")
-        
+        self.button_other = self.findChild(QPushButton, "other_b")
         self.button_clear = self.findChild(QPushButton, "clear_b")
         self.button_attach = self.findChild(QPushButton, "attach_b")
         self.button_record = self.findChild(QPushButton, "record_b")
@@ -1000,9 +147,9 @@ class UI_Master(QMainWindow):
         self.button_call = self.findChild(QPushButton, "call_b")
 
         self.label_background = self.findChild(QLabel, "background_l")
-        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/background.png')))
+        self.label_background.setPixmap(QPixmap(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/background.png')))
 
-        self.wating_l.setPixmap(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/background.png')))
+        self.wating_l.setPixmap(QPixmap(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/background.png')))
         
         self.label_14.setStyleSheet("background-color: rgba(0,0,0,.4);border:1px rgb(0,0,0);border-radius:15px;color:white")
         
@@ -1056,7 +203,7 @@ class UI_Master(QMainWindow):
         self.send_b_11.setStyleSheet(
             "background-color: light gray;border: 0px solid white;border-radius:20px;")
 
-        self.send_b_11.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/up-chevron.png'))
+        self.send_b_11.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/up-chevron.png'))
         self.send_b_11.setHidden(True)
         self.button_attach.setStyleSheet(
             "background-color: transparent;border: 0px solid white;border-radius:15px;")
@@ -1075,21 +222,21 @@ class UI_Master(QMainWindow):
         
 
         self.button_menu_user.setIcon(
-            QIcon(os.getcwd() + "/UI/Master"  +'/icons/menu_user.png'))
-        self.button_searchuser.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/search.png'))
-        self.button_call.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/phone.png'))
-        self.emoji_BTN_2.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/laugh2.png'))
+            QIcon(os.getcwd() + "UI/Master" +'/icons/menu_user.png'))
+        self.button_searchuser.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/search.png'))
+        self.button_call.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/phone.png'))
+        self.emoji_BTN_2.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/laugh2.png'))
         self.emoji_BTN.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/laugh.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/laugh.png')))
 
-        self.button_usersearch.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/search.png'))
-        self.button_menu.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/menu.png'))
-        self.button_record.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/radio.png'))
-        self.button_attach.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/clip.png'))
-        self.button_send.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/send.png'))
+        self.button_usersearch.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/search.png'))
+        self.button_menu.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/menu.png'))
+        self.button_record.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/radio.png'))
+        self.button_attach.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/clip.png'))
+        self.button_send.setIcon(QIcon(os.getcwd() + "UI/Master" +'/icons/send.png'))
 
         self.button_send.clicked.connect(self.clickedBtn_send)
-    
+        self.button_other.clicked.connect(self.clickedBtn_other)
         self.button_clear.clicked.connect(self.voice_mess_other)
         self.searchuser_b.clicked.connect(self.click_search)
         self.pushButton.clicked.connect(self.back_from_search)
@@ -1130,18 +277,18 @@ class UI_Master(QMainWindow):
         self.setting_FRM.setStyleSheet(
             "background-color: black;border: 0px solid lightgray;border-radius: 5px;")
 
-        # window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/UI/Login/images/error.png')))
+        # window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/UI/Login/images/error.png')))
         # window.label_18.setHidden(False)
         # window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
-        # movie = QtGui.QMovie(os.getcwd() + "/UI/Master"   + '/UI/Login/images/loading2.gif')
+        # movie = QtGui.QMovie(os.getcwd() + "UI/Master"  + '/UI/Login/images/loading2.gif')
         # window.label_18.setMovie(movie)
         # movie.start()
 
         self.attach_b_2.setHidden(True)
         self.attach_b_2.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/clip.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/clip.png')))
         self.menu_bk_BTN.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/arrow.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/arrow.png')))
         self.menu_bk_BTN.setStyleSheet(
             "background-color: transparent;border: 0px solid white;border-radius:15px;")
 
@@ -1150,7 +297,7 @@ class UI_Master(QMainWindow):
         self.listWidget.verticalScrollBar().setStyleSheet(
             "border: none;background: lightgray;height: 26px;margin: 0px 26px 0 26px;")
 
-        self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
+        self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/output.png')))
         self.profile_LBL.clicked.connect(self.contex_change_profile)
 
         self.profile_LBL.setStyleSheet("border: 0px solid gray ;border-radius: 90px;")
@@ -1158,27 +305,27 @@ class UI_Master(QMainWindow):
         self.pv_LBL.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
         self.pv_LBL.setIcon(
-            QIcon(os.path.abspath(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/person.png'))))
+            QIcon(os.path.abspath(os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/person.png'))))
         self.label_7.setStyleSheet("background-color: transparent;")
         self.label_6.setStyleSheet("background-color: transparent;")
         # self.emoji_FRM.setHidden(True)
         self.doc_BTN.setHidden(True)
         self.doc_BTN.setIcon(QIcon(os.path.abspath(
-            os.getcwd() + "/UI/Master"   + '/icons/document.png')))
+            os.getcwd() + "UI/Master"  + '/icons/document.png')))
 
         self.camera_BTN.setHidden(True)
         self.camera_BTN.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/camera.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/camera.png')))
 
         self.record_b.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
         self.record_b.setIcon(
-            QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/radio.png'))))
+            QIcon(QPixmap(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/radio.png'))))
 
         self.send_b_13.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
         self.send_b_13.setIcon(
-            QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/close (1).png'))))
+            QIcon(QPixmap(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/close (1).png'))))
         self.send_b_13.setHidden(True)
         self.send_b_13.clicked.connect(self.stop_rec)
         self.call_b.clicked.connect(lambda : QMessageBox.about(self, "do not worry", "The ability to make calls will be added soon !!"))
@@ -1233,8 +380,8 @@ class UI_Master(QMainWindow):
         # self.label.setHidden(True)
         # self.label.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
 
-        # movie = QtGui.QMovie(os.getcwd() + "/UI/Master"   + '/icons/floding.gif')
-        # print(os.getcwd() + "/UI/Master"   + '/icons/floading.gif')
+        # movie = QtGui.QMovie(os.getcwd() + "UI/Master"  + '/icons/floding.gif')
+        # print(os.getcwd() + "UI/Master"  + '/icons/floading.gif')
         # self.label.setMovie(movie)
         # movie.start()
         # time.sleep(2)
@@ -1246,14 +393,6 @@ class UI_Master(QMainWindow):
         self.timer10 = QtCore.QTimer()
         self.timer10.timeout.connect(self.move_down_wheel)
         self.timer10.start(500)
-        global new_messeg
-
-        self.timer19 = QtCore.QTimer()
-        self.timer19.timeout.connect(lambda : self.clickedBtn_other(new_messeg))
-        self.timer19.start(1)
-        
-        # 
-   
         self.center()
 
         
@@ -1262,10 +401,8 @@ class UI_Master(QMainWindow):
 
 
     def user_list_click(self,item):
-        global reciver
-        reciver = item.text().strip('\n').lstrip()
         self.pv_LBL.setIcon(item.icon())
-
+       
         self.usernamem_l.setText(item.text().strip('\n').lstrip())
         # print(item.whatsThis())
         self.wating_l.setHidden(True)
@@ -1276,56 +413,30 @@ class UI_Master(QMainWindow):
         View = newAct = menu.addAction("View photo")
         Take = menu.addAction("Take photo")
         Upload = menu.addAction("Upload photo")
-        avatar = menu.addAction("choose avatar")
         Remove = menu.addAction("Remove photo")
-        
 
         View.triggered.connect(self.show_profile_pic)
         Take.triggered.connect(self.capture_pic_profile)
         Upload.triggered.connect(self.choose_profile_pic)
-        avatar.triggered.connect(self.avatar)
         Remove.triggered.connect(self.delete_profile_pic)
         menu.exec_(QCursor.pos())
     
-
-    def avatar (self):
-        try:
-            fname = QFileDialog.getOpenFileName(self, 'Open file', os.path.abspath(os.getcwd() + "/UI/Master/Files/avatar//") ,"Image files (*.jpg *.png)")
-        except FileNotFoundError:
-            print("c")
-            return
-        dst = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')
-       
-        shutil.copy(fname[0], dst)
-        #circle pic
-        size = (500, 500)
-        mask = Image.new('L', size, 0)
-        draw = ImageDraw.Draw(mask)
-        draw.ellipse((0, 0) + size, fill=255)
-        from PIL import ImageFilter
-        im = Image.open(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
-        output = ImageOps.fit(im, mask.size, centering=(0.5, 0.5))
-        output.putalpha(mask)
-        output.save(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
-
-        self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
-
     def delete_profile_pic(self):
         qm = QMessageBox()
         ret = qm.question(self,'warning!', "Are you sure you want to delete your profile picture?", qm.Yes | qm.No)
         if ret == qm.Yes:
-            src = os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/output.png')
-            dst = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')
+            src = os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/output.png')
+            dst = os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/output.png')
             shutil.copy(src, dst)
-            self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
+            self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/output.png')))
         else:
             pass
         
     def show_profile_pic(self):
         
 
-        img = Image.open(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png'))
-        defult = Image.open(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/output.png'))
+        img = Image.open(os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/output.png'))
+        defult = Image.open(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/output.png'))
 
         if defult.histogram() == img.histogram(): 
             QMessageBox.about(self, "PyChat", "You do not have a profile picture to display")
@@ -1336,11 +447,8 @@ class UI_Master(QMainWindow):
 
 
     def choose_profile_pic(self):
-        try:
-            fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"Image files (*.jpg *.png)")
-        except FileNotFoundError:
-            return
-        dst = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')
+        fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"Image files (*.jpg *.png)")
+        dst = os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/output.png')
        
         shutil.copy(fname[0], dst)
         #circle pic
@@ -1349,12 +457,12 @@ class UI_Master(QMainWindow):
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0) + size, fill=255)
         from PIL import ImageFilter
-        im = Image.open(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
+        im = Image.open(os.path.abspath(os.getcwd() + "UI/Master" +'/Files/profile/output.png'))
         output = ImageOps.fit(im, mask.size, centering=(0.5, 0.5))
         output.putalpha(mask)
-        output.save(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
+        output.save(os.path.abspath(os.getcwd() + "UI/Master" +'/Files/profile/output.png'))
 
-        self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
+        self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/output.png')))
         
     def capture_pic_profile(self):
         QMessageBox.about(self, "Hint", "press space to capture picture or esc to quit")
@@ -1371,7 +479,7 @@ class UI_Master(QMainWindow):
                 break
             elif k%256 == 32:
                 # SPACE pressed
-                img_name = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')
+                img_name = os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/output.png')
                 cv2.imwrite(img_name, frame)
                 
                 #circle pic
@@ -1380,13 +488,13 @@ class UI_Master(QMainWindow):
                 draw = ImageDraw.Draw(mask)
                 draw.ellipse((0, 0) + size, fill=255)
                 from PIL import ImageFilter
-                im = Image.open(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
+                im = Image.open(os.path.abspath(os.getcwd() + "UI/Master" +'/Files/profile/output.png'))
                 output = ImageOps.fit(im, mask.size, centering=(0.5, 0.5))
                 output.putalpha(mask)
-                output.save(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
+                output.save(os.path.abspath(os.getcwd() + "UI/Master" +'/Files/profile/output.png'))
                 cam.release()
                 cv2.destroyAllWindows()
-                self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
+                self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/Files/profile/output.png')))
 
 
                
@@ -1400,12 +508,12 @@ class UI_Master(QMainWindow):
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
         self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/user.png')))
         self.user_image.setIconSize(QSize(35, 35))
 
         self.messege_user = QPushButton()
         self.messege_user.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/download.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/download.png')))
         self.messege_user.setIconSize(QSize(400, 300))
 
         # self.messege_user.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius: 17px;font-size: 20px;")
@@ -1433,7 +541,7 @@ class UI_Master(QMainWindow):
         self.messege_time.setStyleSheet(
             "background-color: transparent;border: 0px solid lightgray;border-radius: 5px;font-size: 14px;")
         self.id = QLabel('')
-        # self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/reply.png')))
+        # self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/reply.png')))
         self.id.setStyleSheet(
             "background-color: transparent;border: 0px none;border-radius: 10px;font-size: 1px;")
 
@@ -1448,14 +556,12 @@ class UI_Master(QMainWindow):
             self.messegebox_t.toPlainText()+emoji.emojize(from_f))
 
     def scrol_down(self):
-        
-        
         self.scrollArea.verticalScrollBar().setValue(
             self.scrollArea.verticalScrollBar().maximum())
         self.move_d_zout()
 
     def move_down_wheel(self):
-        
+
         if self.scrollArea.verticalScrollBar().value() != self.scrollArea.verticalScrollBar().maximum():
             self.timer11 = QtCore.QTimer()
             self.timer11.timeout.connect(self.move_d_zin)
@@ -1519,9 +625,9 @@ class UI_Master(QMainWindow):
             "background-color: transparent;border: 0px solid transparent;font-size: 20px;")
 
     def deleting_gif(self):
-        movie = QtGui.QMovie(os.getcwd() + "/UI/Master"   + '/icons/rec_button.gif')
+        movie = QtGui.QMovie(os.getcwd() + "UI/Master"  + '/icons/rec_button.gif')
         self.record_b.setIcon(
-            QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/radio.png'))))
+            QIcon(QPixmap(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/radio.png'))))
         self.label_7.setMovie(movie)
         movie.stop()
         self.emoji_BTN.setEnabled(True)
@@ -1555,7 +661,7 @@ class UI_Master(QMainWindow):
         self.label_8.setHidden(False)
 
         movie = QtGui.QMovie(
-            os.getcwd() + "/UI/Master"   + '/icons/ezgif.com-gif-maker (5).gif')
+            os.getcwd() + "UI/Master"  + '/icons/ezgif.com-gif-maker (5).gif')
         self.label_8.setMovie(movie)
         movie.start()
         QTimer.singleShot(2000, lambda: self.label_8.setHidden(True))
@@ -1566,7 +672,7 @@ class UI_Master(QMainWindow):
 
     def start_rec_voice(self):
        
-        filename = os.getcwd() + "/UI/Master"  +'/Files/'+'1.wav'
+        filename = os.getcwd() + "UI/Master" +'/Files/'+'1.wav'
         # global record_until
         chunk = 1024
         FORMAT = pyaudio.paInt16
@@ -1620,14 +726,14 @@ class UI_Master(QMainWindow):
             
     def play_voice(self, voice_id,itm,play_t):
       
-        thread = threading.Thread(target=lambda : playsound(os.getcwd() + "/UI/Master"  +'/Files/'+voice_id) )
+        thread = threading.Thread(target=lambda : playsound(os.getcwd() + "UI/Master" +'/Files/'+voice_id) )
         thread.start()
     
         self.timer50 = QtCore.QTimer()
         self.timer50.timeout.connect(lambda : self.slider_over(itm,play_t))
         self.timer50.start(1000)
         
-        # print(mediainfo(os.getcwd() + "/UI/Master"  +'/Files/'+voice_id)['duration'])
+        # print(mediainfo(os.getcwd() + "UI/Master" +'/Files/'+voice_id)['duration'])
         
 
     def rec_voice(self):
@@ -1638,7 +744,7 @@ class UI_Master(QMainWindow):
             record_until = False
             self.voice_mess_me("1.wav")
             self.label_9.setHidden(False)
-            movie = QtGui.QMovie(os.getcwd() + "/UI/Master"   + '/icons/sendmic.gif')
+            movie = QtGui.QMovie(os.getcwd() + "UI/Master"  + '/icons/sendmic.gif')
             self.label_9.setMovie(movie)
             movie.start()
             self.messegebox_t.setStyleSheet(
@@ -1653,7 +759,7 @@ class UI_Master(QMainWindow):
             rec_sec = 0
             self.timer.stop()
             self.record_b.setIcon(
-                QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/radio.png'))))
+                QIcon(QPixmap(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/radio.png'))))
             self.emoji_BTN.setEnabled(True)
             self.messegebox_t.setEnabled(True)
 
@@ -1668,7 +774,7 @@ class UI_Master(QMainWindow):
             self.timer4.start(2)
 
             self.send_b_13.setHidden(True)
-            movie = QtGui.QMovie(os.getcwd() + "/UI/Master"   + '/icons/rec_button.gif')
+            movie = QtGui.QMovie(os.getcwd() + "UI/Master"  + '/icons/rec_button.gif')
             self.label_7.setMovie(movie)
             movie.stop()
 
@@ -1689,7 +795,7 @@ class UI_Master(QMainWindow):
             self.timer4 = QtCore.QTimer()
             self.timer4.timeout.connect(self.resize_bk_msgbox)
             self.timer4.start(2)
-            movie = QtGui.QMovie(os.getcwd() + "/UI/Master"   + '/icons/rec_button.gif')
+            movie = QtGui.QMovie(os.getcwd() + "UI/Master"  + '/icons/rec_button.gif')
             self.label_7.setMovie(movie)
             movie.start()
 
@@ -1718,7 +824,7 @@ class UI_Master(QMainWindow):
         move_smth2 -= 1
         if move_smth2 == 401:
             self.record_b.setIcon(
-                QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/correct.png'))))
+                QIcon(QPixmap(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/correct.png'))))
             self.label_6.setHidden(False)
             self.label_7.setHidden(False)
             self.send_b_13.setHidden(False)
@@ -1956,11 +1062,11 @@ class UI_Master(QMainWindow):
         # self.searchuser_b.setGeometry(QtCore.QRect(1010, 10, 31, 31))
         self.pushButton_2.setHidden(False)
         self.pushButton_2.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/search.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/search.png')))
 
         self.pushButton.setHidden(False)
         self.pushButton.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/back.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master"  + '/icons/back.png')))
 
         self.lineEdit.setHidden(False)
         self.lineEdit.setFocus()
@@ -2023,16 +1129,14 @@ class UI_Master(QMainWindow):
         self.clear_screen()
 
     def clickedBtn_send(self):
-        global token,reciver
         self.exit_emoji_box()
-        obj.send_text_message(s,token,reciver,self.textedit_messegebox.toPlainText().strip())
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         if self.textedit_messegebox.toPlainText().strip():
             massege_text = "\n   "
             self.user_image = QPushButton()
             self.user_image.setIcon(
-                QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+                QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/me.png')))
             self.user_image.setIconSize(QSize(35, 35))
 
             if len(self.textedit_messegebox.toPlainText()) <= 66:
@@ -2068,31 +1172,20 @@ class UI_Master(QMainWindow):
                 "background-color: white;border: 0px solid lightgray;border-radius: 5px;font-size: 14px;")
             self.seen_image = QLabel()
             self.seen_image.setPixmap(QPixmap(os.path.abspath(
-                os.getcwd() + "/UI/Master"  +'/icons/not_seen.png')).scaledToWidth(20))
+                os.getcwd() + "UI/Master" +'/icons/not_seen.png')).scaledToWidth(20))
             self.formLayout.addRow(self.messege_time, self.seen_image)
             self.last_used = "me"
-            
-            
 
-    def clickedBtn_other(self,data):
-
-        global new_messeg
-       
-        if data == []:
-            return
-        
-        time_2 = data[1]
-        time_2=time_2[11:16]
-        messege = data[0]
+    def clickedBtn_other(self):
 
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
         self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/user.png')))
         self.user_image.setIconSize(QSize(35, 35))
-        # self.user_image.setPixmap(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')).scaledToWidth(35))
-        self.messege_user = QLabel(messege)
+        # self.user_image.setPixmap(QPixmap(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/user.png')).scaledToWidth(35))
+        self.messege_user = QLabel(" slm mmd")
         self.messege_user.setStyleSheet(
             "background-color: white;border: 1px solid lightgray;border-radius: 17px;font-size: 20px;")
         if self.last_used == "me":
@@ -2106,18 +1199,18 @@ class UI_Master(QMainWindow):
         self.formLayout.itemAt(self.formLayout.count(
         )-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
-        self.messege_time = QLabel(time_2, alignment=Qt.AlignRight)
+        self.messege_time = QLabel(datetime.datetime.now().strftime(
+            "%H:%M"), alignment=Qt.AlignRight)
         self.messege_time.setStyleSheet("color: black")
         self.messege_time.setStyleSheet(
             "background-color: transparent;border: 0px solid lightgray;border-radius: 5px;font-size: 14px;")
         self.seen_image = QPushButton()
-        # self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/reply.png')))
+        # self.seen_image.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/reply.png')))
         self.seen_image.setStyleSheet(
             "background-color: transparent;border: 0px solid white;border-radius: 10px;")
         self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight)
         self.formLayout.addRow(self.seen_image, self.messege_time)
         self.last_used = "other"
-        new_messeg.clear()
 
     def voice_mess_other(self):
         self.formLayout.addRow(QLabel())
@@ -2125,13 +1218,13 @@ class UI_Master(QMainWindow):
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
         self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/user.png')))
         self.user_image.setIconSize(QSize(35, 35))
         if self.last_used == "me":
             self.formLayout.addRow(QLabel())
         self.seen_image = QPushButton()
         self.seen_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/google-play.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/google-play.png')))
         self.seen_image.setStyleSheet(
             "background-color: white;border: 3px solid white;border-radius: 10px;")
 
@@ -2175,13 +1268,13 @@ class UI_Master(QMainWindow):
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
         self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/me.png')))
         self.user_image.setIconSize(QSize(35, 35))
         if self.last_used == "other":
             self.formLayout.addRow(QLabel())
         self.seen_image = QPushButton()
         self.seen_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/google-play.png')))
+            QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/google-play.png')))
         self.seen_image.setStyleSheet(
             "background-color: #D7FAB3;border: 3px solid #D7FAB3;border-radius: 10px;")
 
@@ -2205,12 +1298,12 @@ class UI_Master(QMainWindow):
         self.voice = QSlider(Qt.Horizontal)
 
         self.voice.setMinimum(0)
-        self.voice.setMaximum(int(abs(float(mediainfo(os.getcwd() + "/UI/Master"  +'/Files/'+connect_to)['duration']))))
+        self.voice.setMaximum(int(abs(float(mediainfo(os.getcwd() + "UI/Master" +'/Files/'+connect_to)['duration']))))
         ##
         self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight)
         self.formLayout.addRow(self.messege_time, self.voice)
 
-        self.formLayout.itemAt(self.formLayout.count()-3).widget().clicked.connect(lambda : self.play_voice(connect_to,self.formLayout.count()-3,int(abs(float(mediainfo(os.getcwd() + "/UI/Master"  +'/Files/'+connect_to)['duration'])))) )
+        self.formLayout.itemAt(self.formLayout.count()-3).widget().clicked.connect(lambda : self.play_voice(connect_to,self.formLayout.count()-3,int(abs(float(mediainfo(os.getcwd() + "UI/Master" +'/Files/'+connect_to)['duration'])))) )
 
 
         self.formLayout.itemAt(self.formLayout.count(
@@ -2222,17 +1315,17 @@ class UI_Master(QMainWindow):
 
     def clickedBtn_user(self):
     
-        itm = QListWidgetItem("\nyasin78\n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')))
+        itm = QListWidgetItem("\n Mehdi Hamedi \n")
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/user.png')))
         self.listWidget.insertItem(0,itm)
-        itm = QListWidgetItem("\nmhfa1380\n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+        itm = QListWidgetItem("\n Yasin Khamar \n")
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/me.png')))
         self.listWidget.insertItem(1,itm)
         itm = QListWidgetItem("\n Mohammad Hossein Fadavi \n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/person.png')))
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/person.png')))
         self.listWidget.insertItem(2,itm)
         itm = QListWidgetItem("\n Mostafa Bastam \n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/woman.png')))
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/woman.png')))
         self.listWidget.insertItem(3,itm)
         
         self.listWidget.item(0).setWhatsThis('0')
@@ -2240,7 +1333,7 @@ class UI_Master(QMainWindow):
         self.listWidget.item(2).setWhatsThis('2')
 
         # self.listWidget.item(1).setForeground(QtCore.Qt.blue)
-        # self.listWidget.item(1).setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+        # self.listWidget.item(1).setIcon(QIcon(os.path.abspath(os.getcwd() + "UI/Master" +'/icons/me.png')))
         # # self.listWidget.item(1).setText(self.listWidget.item(1).text()[0:-1]+"  +1\n")
 
     def textChanged_messege_event(self):
@@ -2260,16 +1353,3 @@ class UI_Master(QMainWindow):
 App = QApplication(sys.argv)
 window2 = UI_Master()
 sys.exit(App.exec())
-
-
-
-if (path.isfile('Other/lice_l_2.txt')):
-    with open("Other/lice_l_2.txt") as file:  # Use file to refer to the file object
-        data = file.read()
-        if data:
-            print("login shodid!")
-else:
-    app = QApplication(sys.argv)
-    window = UI_Ads()
-    app.exec_()
-

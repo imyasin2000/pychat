@@ -15,8 +15,9 @@ print("\nThe server was successfully activated.\n")
 
 #Server information
 
-ip = '192.168.109.1'
-port = 14200
+ip = '0.0.0.0'
+port = 1425
+online_users={}
 f=""
 #-------------------------------connection-------------------------------------------------------
 class Socket:
@@ -35,22 +36,26 @@ class Socket:
                 print(" one client disconected...")
 
     def _wait_recv(self, conn: socket, addr):#waiting for new messege or conect or diconnect
+        global online_users
         data = b''#byte format
         while True:#wait for new message
-            # try:
-            d = conn.recv(self.size)
-            data += d
-            if len(d) < self.size:#for biger bytes
-                if data:
-                    d = data.split(b'\0')#get meeseges \0 hi ali\0 hello\0
-                    for i in range(len(d) - 1):
-                        self._recive_data(conn, decrypt(d[i]))#client,messeg sended
-                    data = d[-1]#ali\0mohammad\0 bade \0 akhari ham mide msln bara kamel bodn payam
-                else:
-                    conn.close()#if client leave
-            # except:
-            #     del online_users[conn]
-            #     print(online_users)
+            try:
+                d = conn.recv(self.size)
+                data += d
+                if len(d) < self.size:#for biger bytes
+                    if data:
+                        d = data.split(b'\0')#get meeseges \0 hi ali\0 hello\0
+                        for i in range(len(d) - 1):
+                            self._recive_data(conn, decrypt(d[i]))#client,messeg sended
+                        data = d[-1]#ali\0mohammad\0 bade \0 akhari ham mide msln bara kamel bodn payam
+                    else:
+                        conn.close()#if client leave
+            except Exception as inst:
+                print(inst)
+                del online_users[conn]
+                # print(online_users)
+                # print("disconected")
+                # return
 
 
     #addres karbar = client 
@@ -215,10 +220,14 @@ def edit_password(s:socket,data:list):
 #zakire migardad
 
 def adding_new_client_to_online(s:socket,data:list):
+    global online_users
     #-------add to online------------------------------------------------------
+  
+    
     print(data[0]+' connected!')
     online=data[0]
     online_users.update({s:data[0]})
+    print(online_users)
     # print(online_users)
     #start sending pm that recived when client was ofline
 
@@ -265,6 +274,7 @@ def adding_new_client_to_online(s:socket,data:list):
 #dar data base unsend
 #---> data= [sender,reciver,message,message_time,message_id,'t']
 def sending_messages(s:socket,data:list):
+    global online_users
     print(data)
     for key, value in online_users.items(): 
         if data[1] == value: 
@@ -294,6 +304,7 @@ def sending_messages(s:socket,data:list):
             connection.commit()
             connection.close()
         else:
+            print(data)
             connection = sqlite3.connect("./database.db")
             cur = connection.cursor()
             cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
@@ -304,6 +315,7 @@ def sending_messages(s:socket,data:list):
 #[sender(0),reciver(1),str(x)  (2),ext(3),bf"{usage}".hex()  (4),media_id (5),usage (6), time(7)]
 
 def add_picprofile(s:socket,data:list):
+    global online_users
     global f
 
     recived_f = data[5]+data[3]
@@ -410,7 +422,7 @@ def send_file_to_client(s:socket,data1:list):
 
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
       '107':edit_password,'108':add_picprofile,'120':send_file_to_client}
-online_users={}
+
 s=Socket(ip, port)#run socket init make object from socket
 
 #s.send
