@@ -353,8 +353,7 @@ class Window(QMainWindow):
         if self.last_used == "me":
             self.formLayout.addRow(QLabel())
         self.formLayout.addRow(self.user_image, self.messege_user)
-        self.formLayout.itemAt(self.formLayout.count(
-        )-2).widget().clicked.connect(self.clickedBtn_user)
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(self.clickedBtn_user)
 
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
@@ -622,7 +621,7 @@ class Window(QMainWindow):
             self.timer22 = QtCore.QTimer()
             self.timer22.timeout.connect(self.cheack_port)
             self.timer22.start(1000)
-            threading.Thread(target=self.start_rec_voice, args=()).start()
+            # threading.Thread(target=self.start_rec_voice, args=()).start()
 
             
     def cheack_port(self):
