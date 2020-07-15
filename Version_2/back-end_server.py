@@ -299,6 +299,7 @@ def sending_messages(s:socket,data:list):
             cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
             connection.commit()
             connection.close()
+            print("message added to data base")
 
 #[sender(0),reciver(1),str(x)  (2),ext(3),bf"{usage}".hex()  (4),media_id (5),usage (6), time(7)]
 
@@ -355,12 +356,14 @@ def add_picprofile(s:socket,data:list):
                     cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
                     connection.commit()
                     connection.close()
+                    print(f"we recived a file from {data[0]}  , server sent this file to {data[1]} ")
                 else:
                     connection = sqlite3.connect("./database.db")
                     cur = connection.cursor()
                     cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
                     connection.commit()
                     connection.close()
+                    print(f"we recived a file from {data[0]} but reciver ({data[1]}) is not online we stored this message in our data base...")
 
 
 
@@ -368,6 +371,32 @@ def add_picprofile(s:socket,data:list):
     else:
 
         f.write(bytes.fromhex(data[4]))
+
+
+def send_file_to_client(s:socket,data1:list):
+        data = [int(510),b'start'.hex(),data1[0]]
+        data = json.dumps(data)
+        print(data1)
+        print(type(data1))
+        s.send((data.encode() + b'\0'))
+        path=data1[0]
+        print(path)
+        f = open(path, 'rb')
+        while True:
+            l = f.read(1024)
+
+            while (l):
+                # f"{str(x)}{ext}{l}".encode()
+                data = [int(510),l.hex(),data1[0]]  # pasvand file + size file
+                data = json.dumps(data)
+                s.send((data.encode() + b'\0'))
+                l = f.read(1024)
+            if not l:
+                data = [int(510),b'end'.hex(),data1[0]]
+                data = json.dumps(data)
+                s.send((data.encode() + b'\0'))
+                print("file sent to client...")
+                break
 
 
 
@@ -380,7 +409,7 @@ def add_picprofile(s:socket,data:list):
 
 
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
-      '107':edit_password,'108':add_picprofile,}
+      '107':edit_password,'108':add_picprofile,'120':send_file_to_client}
 online_users={}
 s=Socket(ip, port)#run socket init make object from socket
 
