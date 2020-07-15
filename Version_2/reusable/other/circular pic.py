@@ -8,10 +8,10 @@ mask = Image.new('L', size, 0)
 draw = ImageDraw.Draw(mask)
 draw.ellipse((0, 0) + size, fill=255)
 from PIL import ImageFilter
-im = Image.open(os.path.abspath(os.getcwd()+'/output copy.png'))
+im = Image.open(os.path.abspath(os.getcwd()+'/output.png'))
 output = ImageOps.fit(im, mask.size, centering=(0.5, 0.5))
 output.putalpha(mask)
-output.save('output.png')
+output.save('output2.png')
 
 #blur pic
 from PIL import ImageFilter

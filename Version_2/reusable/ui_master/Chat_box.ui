@@ -26,7 +26,7 @@
    <widget class="QFrame" name="setting_FRM">
     <property name="geometry">
      <rect>
-      <x>-50</x>
+      <x>-500</x>
       <y>600</y>
       <width>381</width>
       <height>581</height>
@@ -86,25 +86,6 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="profile_LBL">
-     <property name="geometry">
-      <rect>
-       <x>98</x>
-       <y>140</y>
-       <width>180</width>
-       <height>180</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_4">
      <property name="geometry">
       <rect>
@@ -125,20 +106,129 @@
      <property name="geometry">
       <rect>
        <x>80</x>
-       <y>63</y>
-       <width>71</width>
-       <height>21</height>
+       <y>58</y>
+       <width>121</width>
+       <height>41</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#eeeeec;&quot;&gt;Setting&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; color:#eeeeec;&quot;&gt;Setting&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="profile_LBL">
+     <property name="geometry">
+      <rect>
+       <x>98</x>
+       <y>140</y>
+       <width>180</width>
+       <height>180</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>180</width>
+       <height>180</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>-20</x>
+       <y>350</y>
+       <width>451</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>370</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Youre Name</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>390</y>
+       <width>341</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>mohammad hossein fadavi</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>500</y>
+       <width>341</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>believe yourself</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>480</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>About</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line">
+     <property name="geometry">
+      <rect>
+       <x>-33</x>
+       <y>440</y>
+       <width>471</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
     <zorder>bk_sett_LBL</zorder>
-    <zorder>profile_LBL</zorder>
     <zorder>label_4</zorder>
     <zorder>menu_bk_BTN</zorder>
     <zorder>label_5</zorder>
+    <zorder>profile_LBL</zorder>
+    <zorder>label</zorder>
+    <zorder>label_10</zorder>
+    <zorder>label_11</zorder>
+    <zorder>label_12</zorder>
+    <zorder>label_13</zorder>
+    <zorder>line</zorder>
    </widget>
    <widget class="QFrame" name="mother_FRM">
     <property name="geometry">
@@ -220,6 +310,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="call_b">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>890</x>
@@ -720,6 +813,9 @@
         <width>31</width>
         <height>31</height>
        </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
       <property name="styleSheet">
        <string notr="true">pushButton&gt;setStyleSheet(&quot;QPushButton{background:transparent;}&quot;);</string>

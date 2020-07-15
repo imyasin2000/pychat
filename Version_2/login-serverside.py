@@ -21,8 +21,8 @@ print("\nThe server was successfully activated.\n")
 
 # Server information
 ## 51.195.19.3
-ip = '51.195.53.142'
-port = 1256
+ip = '0.0.0.0'
+port = 1261
 
 
 class Socket:
@@ -61,6 +61,7 @@ class Socket:
 
     def _on_disconnect(self, client: socket):
         print(client, "disconnected")
+        
 
     # dade haye daryafti ro bgir va client= yani ki in dade haro ferestade
     def _on_message(self, client: socket, data: bytes):
@@ -108,10 +109,10 @@ def send_email(s: socket, data: list):
     print(data)
     emialaddress = data[2]
     # setup the parameters of the message
-    password = [97, 109, 105, 110, 109, 104, 102, 97]
-    password = ''.join(chr(i) for i in password)
+
+    password='fegkaksfdscakzma'
     msg = MIMEMultipart()
-    msg['From'] = "PyChat Messenger"
+    msg['From'] = "pychat_messenger@yahoo.com"
     # message
     msg['To'] = emialaddress
 
@@ -135,7 +136,6 @@ def send_email(s: socket, data: list):
         # add in the message body
     else:
         msg['Subject'] = "Subscription"
-       
         random_number = (random.randint(100000, 1000000))
         message = (f"\nHi Dear {data[1]}.\n\n\n welcome to pychat! your verify code is : {random_number} .")
         url = pyqrcode.create(str(random_number))
@@ -143,32 +143,35 @@ def send_email(s: socket, data: list):
         img_data = open(os.getcwd() + '/Other/myqr.png', 'rb').read()
         image = MIMEImage(img_data, name=os.path.basename('myqr'))
         msg.attach(image)
-
         # add in the message body
-    msg.attach(MIMEText(message, 'plain'))
-    print("6")
-    # create server
-    server = smtplib.SMTP('smtp.gmail.com: 587')
-    print("7")
-    server.starttls()
-    print("8")
-    # Login Credentials for sending the mail
-    server.login("pychat.messenger@gmail.com", password)
-    print("9")
-    # send the message via the server.
-    server.sendmail(msg['From'], msg['To'], msg.as_string())
-    print("10")
-    server.quit()
-    print("11")
-    data.append(random_number)
-    print("12")
-    if data[0] == 'forgot':
-        data1 = [int(509)] + data  # email_verify
-        data1 = json.dumps(data1)  # etelaat daryafti avalie + code random
-        s.send((data1.encode() + b'\0'))
-    else:
-        # client_chek_mail(s,random_number)
-        client_chek_mail(s, data)
+    try :
+        msg.attach(MIMEText(message, 'plain'))
+        server = smtplib.SMTP('smtp.mail.yahoo.com: 587')
+        server.starttls()
+        server.login("pychat_messenger@yahoo.com", password)
+        server.sendmail(msg['From'], msg['To'], msg.as_string())
+        server.quit()
+        data.append(random_number)
+        if data[0] == 'forgot':
+        
+            data1 = [int(509)] + data  # email_verify
+            data1 = json.dumps(data1)  # etelaat daryafti avalie + code random
+            s.send((data1.encode() + b'\0'))
+            data1 = [int(502), "Plaese check youre Email."]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
+            
+        else:
+            # client_chek_mail(s,random_number)
+
+            client_chek_mail(s, data)
+            data1 = [int(502), "Plaese check youre Email."]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
+    except :
+            data1 = [int(502), "Error While Sending Email !"]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
 
 
 # baad az ersal mail bayad be client khabr dade shavad ta
@@ -185,10 +188,10 @@ def welcome_email(data: list):
     emialaddress = data[2]
     print(data[2])
     # setup the parameters of the message
-    password = [97, 109, 105, 110, 109, 104, 102, 97]
-    password = ''.join(chr(i) for i in password)
+ 
+    password = password='fegkaksfdscakzma'
     msg = MIMEMultipart()
-    msg['From'] = "PyChat Messenger"
+    msg['From'] = "pychat_messenger@yahoo.com"
     # message
     msg['To'] = emialaddress
     msg['Subject'] = "Welcome To PyChat"
@@ -196,10 +199,10 @@ def welcome_email(data: list):
     # add in the message body
     msg.attach(MIMEText(message, 'plain'))
     # create server
-    server = smtplib.SMTP('smtp.gmail.com: 587')
+    server = smtplib.SMTP('smtp.mail.yahoo.com: 587')
     server.starttls()
     # Login Credentials for sending the mail
-    server.login("pychat.messenger@gmail.com", password)
+    server.login("pychat_messenger@yahoo.com", password)
     # send the message via the server.
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()

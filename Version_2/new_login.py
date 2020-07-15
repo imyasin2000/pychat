@@ -37,7 +37,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.19.3
-s.connect(('51.195.53.142', 1256))
+s.connect(('0.0.0.0', 1261))
 
 email_changer = ''
 data_user = []
@@ -137,6 +137,10 @@ class user:
             window.Username_LE.clear()
             window.Password_LE.clear()
             window.Username_LE.setFocus()
+        elif data[0] == 'Error While Sending Email !':
+            wating_form(False,'')
+            wating_form(True,'no_response')
+            
         time.sleep(1)
         wating_form(False, "")
         notification(data[0])
@@ -181,6 +185,7 @@ class user:
     def change_pass(self):
         global window
         global email_changer
+
         pas = window.lineEdit_forget_pass.text()
         pas2 = window.lineEdit_forget_repass.text()
         if self.cheking_password(pas, pas2) and pas != '':
@@ -235,6 +240,14 @@ def wating_form(wating_until, form):
             window.label_18.setMovie(movie)
             movie.start()
             threading.Thread(target=window.net_conncted, args=()).start()
+        elif form == 'no_response':
+            window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
+            window.label_18.setHidden(False)
+            window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
+            movie = QtGui.QMovie(os.getcwd() + '/UI/Login/images/conection2.gif')
+            window.label_18.setMovie(movie)
+            movie.start()
+
         elif form == 'signin':
             window.pushButton_7.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Login/images/error.png')))
             window.label_18.setHidden(False)
@@ -294,6 +307,8 @@ def _accsepting(s: socket):
                     else:
                         s.close()
         except:
+            wating_form(False,"")
+            wating_form(True,"no_response")
             print("connection failed ...")
             return
 

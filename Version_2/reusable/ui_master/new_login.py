@@ -26,14 +26,17 @@ from threading import Thread
 import emoji
 #####
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu,QMessageBox
 import sys
+from PIL import Image, ImageOps, ImageDraw
 
 
 from playsound import playsound #++sudo apt-get install ffmpeg
 import os
-from pydub import AudioSegment
-from pydub.playback import play
+import shutil
+from pydub.utils import mediainfo
+
+
 
 
 
@@ -42,6 +45,7 @@ from pydub.playback import play
 record_until = True
 rec_sec = 0
 rec_min = 0
+play_sec=-1
 move_smth = -381
 zoom_smth = 52
 zoom_smth2 = 0
@@ -90,6 +94,17 @@ class Window(QMainWindow):
 
         self.send_b_6.setStyleSheet(
             "background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+       
+        self.label.setStyleSheet("background-color: white;border: 0px solid gray;font-size: 25px;border-radius:10px;")
+        self.label_10.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 193, 165);font-size: 15px;")
+        self.label_13.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 193, 165);font-size: 15px;")
+        self.label_11.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 13px;")
+        self.label_12.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 13px;")
+        
+        self.line.setStyleSheet("background-color: rgb(240, 240, 240);")
+        
+
+
 
         self.send_b_3.setStyleSheet(
             "background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
@@ -244,7 +259,7 @@ class Window(QMainWindow):
 
         self.button_record.setHidden(False)
         self.button_send.setHidden(True)
-        self.listWidget.currentItemChanged.connect(self.show_user_messege)
+        self.listWidget.itemClicked.connect(self.user_list_click)
         self.listWidget.setStyleSheet(
             "background-color: white;border: 0px solid lightgray;border-radius: 5px;")
         self.textedit_messegebox.setFocus()
@@ -271,10 +286,10 @@ class Window(QMainWindow):
         self.listWidget.verticalScrollBar().setStyleSheet(
             "border: none;background: lightgray;height: 26px;margin: 0px 26px 0 26px;")
 
-        self.profile_LBL.setPixmap(
-            QPixmap(os.path.abspath(os.getcwd()+'/output.png')))
-        self.profile_LBL.setStyleSheet(
-            "border: 0px solid gray ;border-radius: 90px;")
+        self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + '/Files/profile/output.png')))
+        self.profile_LBL.clicked.connect(self.contex_change_profile)
+
+        self.profile_LBL.setStyleSheet("border: 0px solid gray ;border-radius: 90px;")
 
         self.pv_LBL.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
@@ -302,10 +317,39 @@ class Window(QMainWindow):
             QIcon(QPixmap(os.path.abspath(os.getcwd() + '/icons/close (1).png'))))
         self.send_b_13.setHidden(True)
         self.send_b_13.clicked.connect(self.stop_rec)
+        self.call_b.clicked.connect(lambda : QMessageBox.about(self, "do not worry", "The ability to make calls will be added soon !!"))
 
         self.record_b.setCheckable(True)
         self.record_b.toggle()
         self.record_b.clicked.connect(self.rec_voice)
+        self.record_b.setToolTip("<font color=white>%s</font>" % 'Voice Messege'.replace("\n", "<br/>"))
+        self.send_b_13.setToolTip("<font color=white>%s</font>" % 'Delete Voice'.replace("\n", "<br/>"))
+        self.emoji_BTN_2.setToolTip("<font color=white>%s</font>" % 'Close Emoji box'.replace("\n", "<br/>"))
+        self.emoji_BTN.setToolTip("<font color=white>%s</font>" % 'Open Emoji box'.replace("\n", "<br/>"))
+        self.doc_BTN.setToolTip("<font color=white>%s</font>" % 'Attach file'.replace("\n", "<br/>"))
+        self.camera_BTN.setToolTip("<font color=white>%s</font>" % 'Take Picture'.replace("\n", "<br/>"))
+        self.call_b.setToolTip("<font color=white>%s</font>" % 'Make Call'.replace("\n", "<br/>"))
+        self.attach_b.setToolTip("<font color=white>%s</font>" % 'Attach'.replace("\n", "<br/>"))
+        self.attach_b_2.setToolTip("<font color=black>%s</font>" % 'Attach'.replace("\n", "<br/>"))
+        self.menu_user_b.setToolTip("<font color=white>%s</font>" % 'Menu'.replace("\n", "<br/>"))
+        self.searchuser_b.setToolTip("<font color=white>%s</font>" % 'Search'.replace("\n", "<br/>"))
+        self.send_b_11.setToolTip("<font color=black>%s</font>" % 'Scroll Down'.replace("\n", "<br/>"))
+        self.send_b.setToolTip("<font color=white>%s</font>" % 'Send'.replace("\n", "<br/>"))
+        self.pv_LBL.setToolTip("<font color=white>%s</font>" % 'Profile'.replace("\n", "<br/>"))
+        self.pushButton_2.setToolTip("<font color=white>%s</font>" % 'Search'.replace("\n", "<br/>"))
+        self.pushButton.setToolTip("<font color=white>%s</font>" % 'Cancel Search'.replace("\n", "<br/>"))
+        self.user_search_b.setToolTip("<font color=black>%s</font>" % 'Search'.replace("\n", "<br/>"))
+        self.menu_b.setToolTip("<font color=black>%s</font>" % 'Menu'.replace("\n", "<br/>"))
+        self.menu_bk_BTN.setToolTip("<font color=white>%s</font>" % 'Go Back'.replace("\n", "<br/>"))
+
+        
+        
+        
+        
+        
+        
+        
+        
 
         self.menu_user_b.clicked.connect(self.contex_menu)
 
@@ -327,14 +371,117 @@ class Window(QMainWindow):
         # time.sleep(2)
         # movie.stop()
 
-        # self.timer = QtCore.QTimer()
+       # self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(lambda : movie.stop())
-        # self.timer.singleShot(30)
+        # self.timer.singleShot(30) 
         self.timer10 = QtCore.QTimer()
         self.timer10.timeout.connect(self.move_down_wheel)
         self.timer10.start(500)
         self.center()
+
+        
         self.show()
+
+
+
+    def user_list_click(self,item):
+        print(item.whatsThis())
+ 
+    def contex_change_profile(self):
+        menu = QMenu(self)
+        View = newAct = menu.addAction("View photo")
+        Take = menu.addAction("Take photo")
+        Upload = menu.addAction("Upload photo")
+        Remove = menu.addAction("Remove photo")
+
+        View.triggered.connect(self.show_profile_pic)
+        Take.triggered.connect(self.capture_pic_profile)
+        Upload.triggered.connect(self.choose_profile_pic)
+        Remove.triggered.connect(self.delete_profile_pic)
+        menu.exec_(QCursor.pos())
+    
+    def delete_profile_pic(self):
+        qm = QMessageBox()
+        ret = qm.question(self,'warning!', "Are you sure you want to delete your profile picture?", qm.Yes | qm.No)
+        if ret == qm.Yes:
+            src = os.path.abspath(os.getcwd() + '/icons/output.png')
+            dst = os.path.abspath(os.getcwd() + '/Files/profile/output.png')
+            shutil.copy(src, dst)
+            self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + '/Files/profile/output.png')))
+        else:
+            pass
+        
+    def show_profile_pic(self):
+        
+
+        img = Image.open(os.path.abspath(os.getcwd() + '/Files/profile/output.png'))
+        defult = Image.open(os.path.abspath(os.getcwd() + '/icons/output.png'))
+
+        if defult.histogram() == img.histogram(): 
+            QMessageBox.about(self, "PyChat", "You do not have a profile picture to display")
+            
+        else:
+            img.show()
+            
+
+    
+
+    def choose_profile_pic(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"Image files (*.jpg *.png)")
+        dst = os.path.abspath(os.getcwd() + '/Files/profile/output.png')
+       
+        shutil.copy(fname[0], dst)
+        #circle pic
+        size = (500, 500)
+        mask = Image.new('L', size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0) + size, fill=255)
+        from PIL import ImageFilter
+        im = Image.open(os.path.abspath(os.getcwd()+'/Files/profile/output.png'))
+        output = ImageOps.fit(im, mask.size, centering=(0.5, 0.5))
+        output.putalpha(mask)
+        output.save(os.path.abspath(os.getcwd()+'/Files/profile/output.png'))
+
+        self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + '/Files/profile/output.png')))
+        
+    def capture_pic_profile(self):
+        QMessageBox.about(self, "Hint", "press space to capture picture or esc to quit")
+        cam = cv2.VideoCapture(0)
+        cv2.namedWindow("Profile Pic")
+        while True:
+            ret, frame = cam.read()
+            if not ret:
+                break
+            cv2.imshow("Profile Pic", frame)
+            k = cv2.waitKey(1)
+            if k%256 == 27:
+                # ESC pressed
+                break
+            elif k%256 == 32:
+                # SPACE pressed
+                img_name = os.path.abspath(os.getcwd() + '/Files/profile/output.png')
+                cv2.imwrite(img_name, frame)
+                
+                #circle pic
+                size = (500, 500)
+                mask = Image.new('L', size, 0)
+                draw = ImageDraw.Draw(mask)
+                draw.ellipse((0, 0) + size, fill=255)
+                from PIL import ImageFilter
+                im = Image.open(os.path.abspath(os.getcwd()+'/Files/profile/output.png'))
+                output = ImageOps.fit(im, mask.size, centering=(0.5, 0.5))
+                output.putalpha(mask)
+                output.save(os.path.abspath(os.getcwd()+'/Files/profile/output.png'))
+                cam.release()
+                cv2.destroyAllWindows()
+                self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + '/Files/profile/output.png')))
+
+
+               
+
+        cam.release()
+
+        cv2.destroyAllWindows()
 
     def file_receve(self):
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
@@ -546,10 +693,29 @@ class Window(QMainWindow):
         #     print('\033c')
         #     return 0
             
+    def slider_over(self,itm,time):
+        global play_sec
+        play_sec+=1
+        self.formLayout.itemAt(itm).widget().setValue(play_sec)
         
-    def play_voice(self, voice_id):
-        audio2 = AudioSegment.from_file(os.getcwd()+'/Files/'+voice_id)
-        play(audio2)
+        if play_sec == time:
+            play_sec = -1
+            self.formLayout.itemAt(itm).widget().setValue(0)
+            self.timer50.stop()
+
+            
+    def play_voice(self, voice_id,itm,play_t):
+      
+        thread = threading.Thread(target=lambda : playsound(os.getcwd()+'/Files/'+voice_id) )
+        thread.start()
+    
+        self.timer50 = QtCore.QTimer()
+        self.timer50.timeout.connect(lambda : self.slider_over(itm,play_t))
+        self.timer50.start(1000)
+        
+        # print(mediainfo(os.getcwd()+'/Files/'+voice_id)['duration'])
+        
+
 
 
     def rec_voice(self):
@@ -1102,10 +1268,8 @@ class Window(QMainWindow):
 
         self.formLayout.itemAt(self.formLayout.count(
         )-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.formLayout.itemAt(self.formLayout.count(
-        )-1).widget().clicked.connect(lambda : self.play_voice(connect_to))
-        self.formLayout.itemAt(self.formLayout.count(
-        )-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
         self.messege_time = QLabel(datetime.datetime.now().strftime(
             "%H:%M"), alignment=Qt.AlignRight)
@@ -1115,11 +1279,15 @@ class Window(QMainWindow):
 
         self.voice = QSlider(Qt.Horizontal)
 
-        self.voice.setMinimum(10)
-        self.voice.setMaximum(30)
+        self.voice.setMinimum(0)
+        self.voice.setMaximum(int(abs(float(mediainfo(os.getcwd()+'/Files/'+connect_to)['duration']))))
         ##
         self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight)
         self.formLayout.addRow(self.messege_time, self.voice)
+
+        self.formLayout.itemAt(self.formLayout.count()-3).widget().clicked.connect(lambda : self.play_voice(connect_to,self.formLayout.count()-3,int(abs(float(mediainfo(os.getcwd()+'/Files/'+connect_to)['duration'])))) )
+
+
         self.formLayout.itemAt(self.formLayout.count(
         )-1).widget().sliderReleased.connect(self.clickedBtn_user)
 
@@ -1128,12 +1296,24 @@ class Window(QMainWindow):
         self.last_used = "me"
 
     def clickedBtn_user(self):
-        # self.formLayout.QPushButton.click()
-        itm = QListWidgetItem("\n   Mohammad Hossein Fadavi\n ")
+    
+        itm = QListWidgetItem("\n Mohammad Hossein Fadavi\n")
         itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/user.png')))
-        self.listWidget.addItem(itm)
+        self.listWidget.insertItem(0,itm)
+        itm = QListWidgetItem("\n Mohammad h\n")
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/user.png')))
+        self.listWidget.insertItem(1,itm)
+        itm = QListWidgetItem("\n Mohammad Hossein\n")
+        itm.setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/user.png')))
+        self.listWidget.insertItem(2,itm)
+        
+        self.listWidget.item(0).setWhatsThis('0')
+        self.listWidget.item(1).setWhatsThis('1')
+        self.listWidget.item(2).setWhatsThis('2')
 
         # self.listWidget.item(1).setForeground(QtCore.Qt.blue)
+        # self.listWidget.item(1).setIcon(QIcon(os.path.abspath(os.getcwd()+'/icons/me.png')))
+        # # self.listWidget.item(1).setText(self.listWidget.item(1).text()[0:-1]+"  +1\n")
 
     def textChanged_messege_event(self):
 
