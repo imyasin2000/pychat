@@ -73,6 +73,8 @@ from playsound import playsound #++sudo apt-get install ffmpeg
 import os
 import shutil
 from pydub.utils import mediainfo
+from tkinter import filedialog
+from tkinter import *
 
 
 
@@ -101,11 +103,13 @@ move_smth2 = 571
 mic_port=True
 
 new_messeg = []
+new_file = []
 
-# token='yasin78'
-# reciver='mhfa1380'
-token='mhfa1380'
-reciver='yasin78'
+f=''
+token='yasin78'
+reciver='mhfa1380'
+# token='mhfa1380'
+# reciver='yasin78'
 
 class user:
     def __init__(self):
@@ -298,6 +302,38 @@ class user:
         data=[int(106),sender,reciver,message,message_time,message_id,'t']
         sending_to_server(s,data)
 
+    def send_file(self, s: socket,sender,reciver,usage):
+        root = Tk()
+        root.resizable(2, 2)
+        root.filename = filedialog.askopenfilename(initialdir="/", title="Select file",filetypes=( ("all files", "*.*"),("jpeg files", "*.jpg"),("ppng files", "*.png")))
+        name, ext = os.path.splitext(root.filename)
+        x = os.path.getsize(root.filename) #size
+        send_time=str(datetime.datetime.now())[:-4]
+        media_id=str(sender)+str(reciver)+send_time
+        media_id=media_id.replace(":","-")
+        media_id=media_id.replace(' ','-')
+        media_id=media_id.replace('.','-')
+        root.destroy()
+        down=0
+        data = [int(108), sender,reciver,str(x),ext,b'start'.hex(),media_id,usage]  # pasvand file + size file
+        sending_to_server(s, data)
+        f = open(root.filename, 'rb')
+        while True:
+            l = f.read(20480)
+
+            while (l):
+                # f"{str(x)}{ext}{l}".encode()
+                down = down + 20480
+                percent = (100 * float(down) / float(x))-0.03
+                print("{:.2f} %".format(percent),end="--")
+                data = [int(108), sender,reciver,str(x),ext,l.hex(),media_id,usage,send_time]  # pasvand file + size file
+                sending_to_server(s, data)
+                l = f.read(20480)
+            if not l:
+                data = [int(108), sender,reciver,str(x),ext,b'end'.hex(),media_id,usage,send_time]
+                sending_to_server(s, data)
+                print("sended")
+                break
 
 
 def recive_message(s:socket,data:list):
@@ -326,14 +362,26 @@ def recive_message(s:socket,data:list):
                 continue
 
         elif mes[-1]=='m':
-            print(f"media from  {mes[0]} address in our server is {mes[2]}")
-            key=input("do you want to download this file?  (enter Y or N )")
-            if key=='Y':
-                sending_to_server(s,[int(120),mes[2]])
-            else:
-                continue
+            if reciver == mes[0] and token != mes[0]:
 
+                new_mes2 = mes[2]
+                
+            # if key=='Y':
+            #     pass
+            # else:
+            #     continue
 
+def receve_file(s:socket,data:list):
+    global f
+    recived_f = data[1]
+    if bytes.fromhex(data[0])==b"start":
+        f = open(recived_f, "wb")
+    elif bytes.fromhex(data[0])==b"end":
+        print(f"file from {data[0]} recived")
+        f.close()
+    else:
+        f.write(bytes.fromhex(data[0]))
+    
 # ----------------------------------------------------------------------------------------------other func ------------------
 def wating_form(wating_until, form):
     global window
@@ -453,7 +501,7 @@ obj_work={ 'token':"yasin78",
       '504':obj.password_changed,
       '503':recive_message,
     #   '509':obj.profile_changed,
-    #   '510':receve_file,
+      '510':receve_file,
 
  
       }
@@ -909,7 +957,7 @@ class UI_Master(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi(os.path.abspath(os.getcwd() + "/UI/Master/Chat_box.ui"), self)
-        global token,s
+        global token,reciver,s,obj
         im_online=[int(105),token]
         sending_to_server(s,im_online)
 
@@ -1093,7 +1141,8 @@ class UI_Master(QMainWindow):
         self.button_clear.clicked.connect(self.voice_mess_other)
         self.searchuser_b.clicked.connect(self.click_search)
         self.pushButton.clicked.connect(self.back_from_search)
-        self.doc_BTN.clicked.connect(self.openFileNameDialog)
+        
+        self.doc_BTN.clicked.connect(lambda:obj.send_file(s,token,reciver,'m'))
         self.attach_b_2.clicked.connect(self.click_attach_2)
         self.camera_BTN.clicked.connect(self.click_camera_BTN)
         self.menu_b.clicked.connect(self.start_menu)
@@ -1987,13 +2036,8 @@ class UI_Master(QMainWindow):
         self.lineEdit.setHidden(True)
         self.searchuser_b.setGeometry(QtCore.QRect(930, 10, 31, 31))
 
-    def openFileNameDialog(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(
-            self, "FileDialog", "", "All Files ();;Python Files (.py)", options=options)
-        if fileName:
-            print(fileName)
+ 
+        
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -2035,7 +2079,7 @@ class UI_Master(QMainWindow):
                 QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
             self.user_image.setIconSize(QSize(35, 35))
 
-            if len(self.textedit_messegebox.toPlainText()) <= 66:
+            if len(self.textedit_messegebox.toPlainText().strip()) <= 66:
                 self.messege_user = QLabel(
                     "  " + self.textedit_messegebox.toPlainText(), self)
             else:
