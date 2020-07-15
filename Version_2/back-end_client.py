@@ -104,7 +104,7 @@ class user :
     def send_voice_messege(self,s:socket,sender,reciver):
         import pyaudio
         import wave
-        chunk = 1024
+        chunk = 20480
         FORMAT = pyaudio.paInt16
         channels = 1
         sample_rate = 44100
@@ -158,16 +158,16 @@ class user :
         sending_to_server(s, data)
         f = open(root.filename, 'rb')
         while True:
-            l = f.read(1024)
+            l = f.read(20480)
 
             while (l):
                 # f"{str(x)}{ext}{l}".encode()
-                down = down + 1024
+                down = down + 20480
                 percent = (100 * float(down) / float(x))-0.03
                 print("{:.2f} %".format(percent),end="--")
                 data = [int(108), sender,reciver,str(x),ext,l.hex(),media_id,usage,send_time]  # pasvand file + size file
                 sending_to_server(s, data)
-                l = f.read(1024)
+                l = f.read(20480)
             if not l:
                 data = [int(108), sender,reciver,str(x),ext,b'end'.hex(),media_id,usage,send_time]
                 sending_to_server(s, data)
@@ -182,24 +182,43 @@ class user :
 
 #--------------other func -------------------------------------------------
 
-def recive_text_message(s:socket,data:list):
+def recive_message(s:socket,data:list):
     number_of_message=len(data)
     print(f'\n{number_of_message} new message!')
-    for i in data:
-        print(f'{i[0]} : {i[2]} ({i[3]})')
-        # status.store_messages(i)
+    for mes in data:
+        if mes[-1]=="t":
+            print(f'{mes[0]} : {mes[2]} ({mes[3]})')
+                # status.store_messages(i)
+        elif mes[-1]=='v':
+            print(f"voice message from {mes[0]} ---> address in our server is {mes[2]}")
+            key=input("do you want to download this file?  enter Y or N ")
+            if key=='Y':
+                sending_to_server(s,[int(120),mes[2]])
+            else:
+                continue
+
+        elif mes[-1]=='m':
+            print(f"media from  {mes[0]} address in our server is {mes[2]}")
+            key=input("do you want to download this file?  (enter Y or N )")
+            if key=='Y':
+                sending_to_server(s,[int(120),mes[2]])
+            else:
+                continue
+            
+
+
+
 
 def receve_file(s:socket,data:list):
     global f
-    print(data)
-    recived_f = '0aFile_' + "2" + data[3]
-    if bytes.fromhex(data[4])==b"start":
+    recived_f =data[1]
+    if bytes.fromhex(data[0])==b"start":
         f = open(recived_f, "wb")
-    elif bytes.fromhex(data[4])==b"end":
-        print("hi")
+    elif bytes.fromhex(data[0])==b"end":
+        print(f"file from {data[0]} recived")
         f.close()
     else:
-        f.write(bytes.fromhex(data[4]))
+        f.write(bytes.fromhex(data[0]))
     
 
 #----------------network connections with Queue--------------------------------
@@ -210,29 +229,28 @@ def receve_file(s:socket,data:list):
 def _accsepting(s:socket):
     data = b''
     while True:
-        time.sleep(0.02)
-        try:
+        # try:
 
             #do taye dg niaz nabod
-            r, _, _ = select([s], [s], [])#baresi mishe vasl hast ya na
-            if r:
-                d = s.recv(4096)
-                data += d
-                if len(d) < 4096:
-                    if data:
-                        d = data.split(b'\0')
-                        #extera baraye dycrypt ezafe beshe
-                        #load_data(decrypt(d[i]))
-                        for i in range(len(d) - 1):
-                            load_data(d[i])
-                            data = d[-1]
-                else:
-                    s.close()
+        r, _, _ = select([s], [s], [])#baresi mishe vasl hast ya na
+        if r:
+            d = s.recv(20480)
+            data += d
+            if len(d) < 20480:
+                if data:
+                    d = data.split(b'\0')
+                    #extera baraye dycrypt ezafe beshe
+                    #load_data(decrypt(d[i]))
+                    for i in range(len(d) - 1):
+                        load_data(d[i])
+                        data = d[-1]
+            else:
+                pass
                     
-        except:
-                print("connection failed ...")
-                break
-                # return
+        # except:
+        #         print("connection failed ...")
+        #         break
+        #         # return
 
 
 
@@ -255,10 +273,8 @@ def sending_to_server(socket:socket,data):
 #in tabe kar ha va darkhast hayie ke az samte server amade ra inja ejra mikonad 
 def do_work(obj:user,s:socket):
     while True:
-        time.sleep(0.03)
         if not q.empty():
             new_data=q.get()
-            print(new_data)
             task=new_data[0]
             obj_work[f"{task}"](s,new_data[1:])
             #yasinmhd110@gmail.com
@@ -276,9 +292,10 @@ obj_work={ 'token':"yasin78",
       '502':obj.server_added_user_to_database,
       '509':obj.check_mail_forgotpass,
       '504':obj.password_changed,
-      '503':recive_text_message,
-        '505':receve_file,
-        '509':obj.profile_changed,
+      '503':recive_message,
+      '509':obj.profile_changed,
+      '510':receve_file,
+
  
       }
 
@@ -291,9 +308,9 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 #online zakhire konad #TODO #in tike ro bayad behtar konam 
 
 token='yasin78'
-# im_online=[int(105),token]
-# sending_to_server(s,im_online)
-obj.send_profilepic(s,token,'mhfa1380','p')
+im_online=[int(105),token]
+sending_to_server(s,im_online)
+obj.send_profilepic(s,token,'yasin78','m')
 
 
 
@@ -303,7 +320,7 @@ obj.send_profilepic(s,token,'mhfa1380','p')
 # obj.forgot_password(s)
 # while True:
 #     obj.send_text_message(s,'yasin78','mfa1380')
-#obj.forgot_password(s)
+# obj.forgot_password(s)
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
 # obj.send_voice_messege(s,'yasin78','yasin78')
