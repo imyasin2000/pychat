@@ -25,7 +25,9 @@ from PyQt5.QtCore import *
 from PyQt5.Qt import Qt
 import hashlib, uuid
 from PyQt5.QtCore import QTimer
-
+import pyqrcode 
+import png 
+from pyqrcode import QRCode 
 from requests import get, post
 import json
 import webbrowser
@@ -76,7 +78,7 @@ from pydub.utils import mediainfo
 from tkinter import filedialog
 from tkinter import *
 import os.path
-
+from kavenegar import *
 
 
 q = Queue()
@@ -108,8 +110,8 @@ new_file = []
 f=''
 token='yasin78'
 reciver='mhfa1380'
-# token='mhfa1380'
-# reciver='yasin78'
+token='mhfa1380'
+reciver='yasin78'
 
 class user:
     def __init__(self):
@@ -302,22 +304,21 @@ class user:
         data=[int(106),sender,reciver,message,message_time,message_id,'t']
         sending_to_server(s,data)
 
-    def send_file(self, s: socket,sender,reciver,usage):
-        root = Tk()
-        root.resizable(2, 2)
-        root.filename = filedialog.askopenfilename(initialdir="/", title="Select file",filetypes=( ("all files", "*.*"),("jpeg files", "*.jpg"),("ppng files", "*.png")))
-        name, ext = os.path.splitext(root.filename)
-        x = os.path.getsize(root.filename) #size
+    def send_file(self, s: socket,sender,reciver,usage,file_patch):
+        
+        # root.filename = filedialog.askopenfilename(initialdir="/", title="Select file",filetypes=( ("all files", "*.*"),("jpeg files", "*.jpg"),("ppng files", "*.png")))
+        name, ext = os.path.splitext(file_patch)
+        x = os.path.getsize(file_patch) #size
         send_time=str(datetime.datetime.now())[:-4]
         media_id=str(sender)+str(reciver)+send_time
         media_id=media_id.replace(":","-")
         media_id=media_id.replace(' ','-')
         media_id=media_id.replace('.','-')
-        root.destroy()
+    
         down=0
         data = [int(108), sender,reciver,str(x),ext,b'start'.hex(),media_id,usage]  # pasvand file + size file
         sending_to_server(s, data)
-        f = open(root.filename, 'rb')
+        f = open(file_patch, 'rb')
         while True:
             l = f.read(20480)
 
@@ -983,6 +984,7 @@ class UI_Master(QMainWindow):
         self.listWidget = self.findChild(QListWidget, "listWidget")
         self.label_6.setHidden(True)
         self.label_7.setHidden(True)
+        
 
         self.send_b_6.clicked.connect(lambda: self.emoji_v(":rose:"))
         self.send_b_3.clicked.connect(lambda: self.emoji_v(":grimacing_face:"))
@@ -1006,10 +1008,15 @@ class UI_Master(QMainWindow):
         self.label_13.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 193, 165);font-size: 15px;")
         self.label_11.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 14px;")
         self.label_12.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 14px;")
+        self.send_b_6.setStyleSheet(
+            "background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
         
         self.line.setStyleSheet("background-color: rgb(240, 240, 240);")
+        self.add_frindl.setStyleSheet("background-color: transparent;border: 0px solid gray;border-radius:10px;color:rgb(95, 125, 149);font-size: 15px;")
+        self.add_frindl_2.setStyleSheet("background-color: transparent;border: 0px solid gray;border-radius:10px;color:rgb(95, 125, 149);font-size: 15px;")
+        self.frame_2.setStyleSheet("background-color: rgba(255,255,255,.92);")
         
-
+        
 
 
         self.send_b_3.setStyleSheet(
@@ -1097,7 +1104,23 @@ class UI_Master(QMainWindow):
         self.emoji_BTN_2.setStyleSheet(
             "background-color: transparent;border: 1px solid white;border-radius:15px;")
 
-        self.clear_b.setWhatsThis("lksdaf;jksnf;j")
+
+
+        self.add_freind.setStyleSheet(
+                    "background-color: rgb(95, 125, 149);border: 0px solid white;border-radius:11px;color : white;font-size: 13px;")
+
+        self.invite.setStyleSheet(
+                    "background-color: rgb(95, 125, 149);border: 0px solid white;border-radius:11px;color : white;font-size: 13px;")
+
+
+        self.invite_2.setStyleSheet(
+                    "background-color: rgb(95, 125, 149);border: 0px solid white;border-radius:11px;color : white;font-size: 13px;")
+
+        self.cancle_user.setStyleSheet(
+        "background-color: transparent;border: 1px solid white;border-radius:15px;")
+
+        
+        # self.clear_b.setWhatsThis("lksdaf;jksnf;j")
 
         self.label_5.setStyleSheet("background-color: transparent;")
 
@@ -1110,6 +1133,10 @@ class UI_Master(QMainWindow):
             "background-color: light gray;border: 0px solid white;border-radius:20px;")
 
         self.send_b_11.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/up-chevron.png'))
+        
+        self.cancle_user.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/left-arrow.png'))
+
+        
         self.send_b_11.setHidden(True)
         self.button_attach.setStyleSheet(
             "background-color: transparent;border: 0px solid white;border-radius:15px;")
@@ -1141,13 +1168,30 @@ class UI_Master(QMainWindow):
         self.button_attach.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/clip.png'))
         self.button_send.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/send.png'))
 
+        self.send_b_14.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/add-button.png'))
+
+        self.send_b_14.clicked.connect(self.show_add_invite)
+        self.invite.clicked.connect(self.sms_invite)
+        self.add_freind.clicked.connect(self.add_user_freind)
+
+        self.user_add.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:10px;")
+        self.user_add_2.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:10px;")
+
+        
+
+
+
+        self.cancle_user.clicked.connect(self.hide_add_invite)
+
+        self.send_b_14.setStyleSheet("background-color: rgba(230, 230, 230, 0.7);border: 0px solid white;border-radius:20px;" )
+
         self.button_send.clicked.connect(self.clickedBtn_send)
     
         self.button_clear.clicked.connect(self.voice_mess_other)
         self.searchuser_b.clicked.connect(self.click_search)
         self.pushButton.clicked.connect(self.back_from_search)
         
-        self.doc_BTN.clicked.connect(lambda:obj.send_file(s,token,reciver,'m'))
+        self.doc_BTN.clicked.connect(lambda:self.file_send(["d",""]))
         self.attach_b_2.clicked.connect(self.click_attach_2)
         self.camera_BTN.clicked.connect(self.click_camera_BTN)
         self.menu_b.clicked.connect(self.start_menu)
@@ -1207,7 +1251,7 @@ class UI_Master(QMainWindow):
         self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
         self.profile_LBL.clicked.connect(self.contex_change_profile)
 
-        self.profile_LBL.setStyleSheet("border: 0px solid gray ;border-radius: 90px;")
+        self.profile_LBL.setStyleSheet("background-color: transparent;border: 0px solid white ;border-radius: 90px;")
 
         self.pv_LBL.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
@@ -1270,10 +1314,18 @@ class UI_Master(QMainWindow):
         self.send_b_8.setToolTip("<font color=white>%s</font>" % '🥰'.replace("\n", "<br/>"))
         self.send_b_7.setToolTip("<font color=white>%s</font>" % '🖐'.replace("\n", "<br/>"))
         self.send_b_12.setToolTip("<font color=white>%s</font>" % '💋'.replace("\n", "<br/>"))
+
+        self.send_b_14.setToolTip("<font color=black>%s</font>" % 'Add'.replace("\n", "<br/>"))
+        self.cancle_user.setToolTip("<font color=white>%s</font>" % 'Go Back'.replace("\n", "<br/>"))
+        self.add_freind.setToolTip("<font color=white>%s</font>" % 'Add'.replace("\n", "<br/>"))
+        self.invite.setToolTip("<font color=white>%s</font>" % 'Send Sms'.replace("\n", "<br/>"))
+        self.invite_2.setToolTip("<font color=black>%s</font>" % 'Qr Code'.replace("\n", "<br/>"))
         
         
 
         self.menu_user_b.clicked.connect(self.contex_menu)
+        self.invite_2.clicked.connect(self.qr_invite)
+        
 
         self.emoji_BTN_2.setEnabled(True)
         self.emoji_BTN_2.setHidden(True)
@@ -1312,6 +1364,31 @@ class UI_Master(QMainWindow):
         
         self.show()
 
+    def sms_invite(self):
+        if  self.user_add_2.text() :
+            try:
+                api = KavenegarAPI('6A7654584E6D34646A486137726D5A586858695A655A464566566D7A6D683331626B4E33394D594B7835493D')
+                params = {
+                    'sender': '10004346',
+                    'receptor': str(self.user_add_2.text()),
+                    'message': 'Lets Chat On PyChat.'
+                            }   
+                response = api.sms_send(params)
+                QMessageBox.about(self, "PyChat", "Invitation message sent successfully")
+                self.hide_add_invite()
+            except : 
+                QMessageBox.about(self, "PyChat", "ooops! Try Again Later.")
+        else:
+            QMessageBox.about(self, "PyChat", "Please enter phonenumber.")
+
+        
+        
+    def add_user_freind(self):
+        if  self.user_add.text() :
+            pass
+        else:
+            QMessageBox.about(self, "PyChat", "Please enter User Name.")
+
 
     def choos_type(self,data):
         if data==[]:
@@ -1324,7 +1401,6 @@ class UI_Master(QMainWindow):
             self.file_receve(data[1:])
 
         
-
     def user_list_click(self,item):
         global reciver
         reciver = item.text().strip('\n').lstrip()
@@ -1351,10 +1427,35 @@ class UI_Master(QMainWindow):
         Remove.triggered.connect(self.delete_profile_pic)
         menu.exec_(QCursor.pos())
     
+    def hide_add_invite(self):
+        self.frame_2.setGeometry(QtCore.QRect(0, 800, 321, 361))
+        self.user_add_2.clear()
+        self.user_add.clear()
+        # self.listWidget.setEnabled(True)
+
+
+    def show_add_invite(self):
+        self.frame_2.setGeometry(QtCore.QRect(60, 210, 321, 361))
+
+        # self.listWidget.setEnabled(False)
+
+    def qr_invite(self):
+        global token
+        if self.user_add_2.text() :
+        
+            s = "SMSTO:"+str(self.user_add_2.text())+":"+token+" invited you to chat on PyChat.\n\nYou can download PyChat with the link below : \n\nbit.ly/2CCrEQH"
+            url = pyqrcode.create(s)
+            
+            url.png(os.getcwd() + "/UI/Master"  +'/icons/invite.png', scale = 6)
+            opener ="open" if sys.platform == "darwin" else "xdg-open"
+            subprocess.call([opener, os.getcwd() + "/UI/Master"  +'/icons/invite.png'])
+            self.hide_add_invite()
+        else:
+            QMessageBox.about(self, "PyChat", "Please enter phonenumber.")
 
     def avatar (self):
         try:
-            fname = QFileDialog.getOpenFileName(self, 'Open file', os.path.abspath(os.getcwd() + "/UI/Master/Files/avatar//") ,"Image files (*.jpg *.png)")
+            fname = QFileDialog.getOpenFileName(self, 'Open file', os.path.abspath(os.getcwd() + "/UI/Master/Files/avatar/") ,"Image files (*.jpg *.png)")
         except FileNotFoundError:
             print("c")
             return
@@ -1363,6 +1464,7 @@ class UI_Master(QMainWindow):
         shutil.copy(fname[0], dst)
         #circle pic
         size = (500, 500)
+        from PIL import Image, ImageOps, ImageDraw
         mask = Image.new('L', size, 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0) + size, fill=255)
@@ -1386,6 +1488,7 @@ class UI_Master(QMainWindow):
             pass
         
     def show_profile_pic(self):
+        from PIL import Image, ImageOps, ImageDraw
         
 
         img = Image.open(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png'))
@@ -1398,6 +1501,7 @@ class UI_Master(QMainWindow):
             img.show()
             
     def choose_profile_pic(self):
+        from PIL import Image, ImageOps, ImageDraw
         try:
             fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"Image files (*.jpg *.png)")
         except FileNotFoundError:
@@ -1407,6 +1511,7 @@ class UI_Master(QMainWindow):
         shutil.copy(fname[0], dst)
         #circle pic
         size = (500, 500)
+        
         mask = Image.new('L', size, 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0) + size, fill=255)
@@ -1419,6 +1524,7 @@ class UI_Master(QMainWindow):
         self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
         
     def capture_pic_profile(self):
+        from PIL import Image, ImageOps, ImageDraw
         QMessageBox.about(self, "Hint", "press space to capture picture or esc to quit")
         cam = cv2.VideoCapture(0)
         cv2.namedWindow("Profile Pic")
@@ -1465,22 +1571,26 @@ class UI_Master(QMainWindow):
         print(where,type(where))
 
         if download_status == True:
-            print('--'+os.path.splitext(data[0])[1]+'--')
+           
             if os.path.splitext(data[0])[1] in ['.jpg','.png','.jpeg']:
                 self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd()+'/'+data[0])))
+                self.formLayout.itemAt(where).widget().setIconSize(QSize(500, 300))
 
             elif os.path.splitext(data[0])[1] in ['.mkv','.mp4']:
                 self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/video-camera.png')))
+                self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
 
             elif os.path.splitext(data[0])[1] in ['.mp3','.vaw']:
                 self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/mp3.png')))
+                self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
 
             else:
                 self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file.png')))
+                self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
 
 
-            self.formLayout.itemAt(where).widget().setStyleSheet("background-color: white;border: 16px solid white;border-radius: 25px;font-size: 20px;")
-            self.formLayout.itemAt(where).widget().setIconSize(QSize(400, 300))
+            self.formLayout.itemAt(where).widget().setStyleSheet("background-color: white;border: 8px solid white;border-radius: 25px;font-size: 20px;")
+            
             download_status=False
             print(download_status)
             self.timer17.stop()
@@ -1525,7 +1635,7 @@ class UI_Master(QMainWindow):
         self.messege_user.setIcon(
             QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/download.png')))
             
-        self.messege_user.setIconSize(QSize(300, 300))
+        self.messege_user.setIconSize(QSize(300, 35))
 
         # self.messege_user.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius: 17px;font-size: 20px;")
         if self.last_used == "me":
@@ -1542,7 +1652,7 @@ class UI_Master(QMainWindow):
         self.formLayout.itemAt(self.formLayout.count()-1).widget().setWhatsThis(data[0])
 
         self.formLayout.itemAt(self.formLayout.count()-1).widget().setStyleSheet(
-            "background-color: white;border: 16px solid white;border-radius: 25px;font-size: 20px;")
+            "background-color: white;border: 8px solid white;border-radius: 25px;font-size: 20px;")
         self.formLayout.itemAt(self.formLayout.count(
         )-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
@@ -1560,8 +1670,107 @@ class UI_Master(QMainWindow):
         self.last_used = "other"
         new_messeg.clear()
 
-    def file_send(self):
-        pass
+    def file_s_open(self,patch):
+        global download_status
+        where = self.index_serarch(patch)
+        if where == -1 :
+            return
+
+        if os.path.isfile(patch):
+           
+            opener ="open" if sys.platform == "darwin" else "xdg-open"
+            subprocess.call([opener, patch])
+        # print(where,type(where))
+        
+        
+        
+
+        
+
+    def file_send(self,wich):
+        global token,reciver
+        self.attach_b.setHidden(False)
+        self.attach_b_2.setHidden(True)
+        self.timer12 = QtCore.QTimer()
+        self.timer12.timeout.connect(self.doc_movedown)
+        self.timer12.start(5)
+        global token,reciver
+        fname=[]
+        if wich[0]=='c':
+            print(wich[1])
+            fname=[wich[1],'']
+
+        else:
+            try:
+                fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"All files *.*")
+            except FileNotFoundError:
+                return 0
+        obj.send_file(s,token,reciver,'m',fname[0])
+        self.exit_emoji_box()
+
+        if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
+            QTimer.singleShot(50, self.scrol_down)
+        self.user_image = QPushButton()
+        self.user_image.setIcon(
+            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+        self.user_image.setIconSize(QSize(35, 35))
+
+        self.messege_user = QPushButton()
+
+
+        self.messege_user.setIcon(QIcon(fname[0]))
+            
+        self.messege_user.setIconSize(QSize(500, 300))
+
+        # self.messege_user.setStyleSheet("background-color: white;border: 0px solid lightgray;border-radius: 17px;font-size: 20px;")
+        if self.last_used == "me":
+            self.formLayout.addRow(QLabel())
+        self.formLayout.addRow(self.user_image, self.messege_user)
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(self.clickedBtn_user)
+
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
+            "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
+        self.formLayout.itemAt(self.formLayout.count(
+        )-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().clicked.connect(lambda : self.file_s_open (fname[0]))
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().setWhatsThis(fname[0])
+
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().setStyleSheet(
+            "background-color: #D7FAB3;border: 12px solid rbg(215,250,175);border-radius: 25px;font-size: 20px;")
+        self.formLayout.itemAt(self.formLayout.count(
+        )-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+
+        where = self.formLayout.count()-1
+
+        if os.path.splitext(fname[0])[1] in ['.jpg','.png','.jpeg']:
+            self.formLayout.itemAt(where).widget().setIcon(QIcon(fname[0]))
+            self.formLayout.itemAt(where).widget().setIconSize(QSize(500, 300))
+
+        elif os.path.splitext(fname[0])[1] in ['.mkv','.mp4']:
+            self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/video-camera.png')))
+            self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
+
+        elif os.path.splitext(fname[0])[1] in ['.mp3','.vaw']:
+            self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/mp3.png')))
+            self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
+
+        else:
+            self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file.png')))
+            self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
+
+
+
+        self.messege_time = QLabel(" 12:54 ", alignment=Qt.AlignRight)
+        self.messege_time.setStyleSheet("color: black")
+        self.messege_time.setStyleSheet(
+            "background-color: white;border: 0px solid lightgray;border-radius: 5px;font-size: 14px;")
+        self.seen_image = QLabel()
+        self.seen_image.setPixmap(QPixmap(os.path.abspath(
+            os.getcwd() + "/UI/Master"  +'/icons/not_seen.png')).scaledToWidth(20))
+        self.formLayout.addRow(self.messege_time, self.seen_image)
+        self.last_used = "other"
+        new_messeg.clear()
 
     def emoji_v(self, from_f):
         self.messegebox_t.setText(
@@ -1621,7 +1830,7 @@ class UI_Master(QMainWindow):
         zoom_smth -= 1
         self.profile_LBL.resize(zoom_smth, zoom_smth)
         self.profile_LBL.setStyleSheet(
-            "border: 0px solid gray ;border-radius: %dpx;" % int(zoom_smth/2))
+            "background-color: transparent;border: 0px solid white ;border-radius: %dpx;" % int(zoom_smth/2))
         if move_smth == -384:
             self.timer.stop()
             # move_smth=0
@@ -1814,9 +2023,9 @@ class UI_Master(QMainWindow):
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.rec_sec)
             self.timer.start(1000)
-            self.timer22 = QtCore.QTimer()
-            self.timer22.timeout.connect(self.cheack_port)
-            self.timer22.start(1000)
+            # self.timer22 = QtCore.QTimer()
+            # self.timer22.timeout.connect(self.cheack_port)
+            # self.timer22.start(1000)
             # threading.Thread(target=self.start_rec_voice, args=()).start()
 
     def cheack_port(self):
@@ -1875,7 +2084,7 @@ class UI_Master(QMainWindow):
         zoom_smth += 1
         self.profile_LBL.resize(zoom_smth, zoom_smth)
         self.profile_LBL.setStyleSheet(
-            "border: 0px solid gray ;border-radius: %dpx;" % int(zoom_smth/2))
+            "background-color: transparent;border: 0px solid white ;border-radius: %dpx;" % int(zoom_smth/2))
         if move_smth == 3:
             self.timer.stop()
 
@@ -1983,21 +2192,40 @@ class UI_Master(QMainWindow):
         self.timer2.start(1)
 
     def click_camera_BTN(self):
-        cv2.namedWindow("preview")
-        vc = cv2.VideoCapture(0)
-
-        if vc.isOpened():  # try to get the first frame
-            rval, frame = vc.read()
-        else:
-            rval = False
-
-        while rval:
-            cv2.imshow("preview", frame)
-            rval, frame = vc.read()
-            key = cv2.waitKey(20)
-            if key == 27:  # exit on ESC
+        from PIL import Image, ImageOps, ImageDraw
+        QMessageBox.about(self, "Hint", "press space to capture picture or esc to quit")
+        cam = cv2.VideoCapture(0)
+        cv2.namedWindow("send Pic")
+        while True:
+            ret, frame = cam.read()
+            if not ret:
                 break
-        cv2.destroyWindow("preview")
+            cv2.imshow("send Pic", frame)
+            k = cv2.waitKey(1)
+            if k%256 == 27:
+                # ESC pressed
+                break
+            elif k%256 == 32:
+                # SPACE pressed
+                img_name = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/camera/output.png')
+                cv2.imwrite(img_name, frame)
+                cam.release()
+                cv2.destroyAllWindows()
+                self.file_send(["c",os.getcwd() + "/UI/Master"   + '/Files/camera/output.png'])
+
+            
+        
+           
+           
+
+
+               
+
+        cam.release()
+
+        cv2.destroyAllWindows()
+
+        
 
     def click_attach(self):
 
