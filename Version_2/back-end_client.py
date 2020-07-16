@@ -9,6 +9,7 @@ import datetime
 from tkinter import filedialog
 from tkinter import *
 import os
+import sqlite3
 
 q=Queue()
 s=socket.socket()
@@ -147,6 +148,26 @@ class user :
     def profile_changed(self,s:socket,data:list):
         print('your profile changed :)')
 
+    def add_friend(self,s:socket,token):
+        friend=input("enter an id ...")
+        data2=[int(121),token,friend]
+        sending_to_server(s,data2)
+
+
+    def failed_add_friend(self,socket,data):
+        print('the username is not avaulable...')
+    
+    def friend_added(self,socket,data):
+        print(f'{data[0]} , with name {data[1]} now is your friend his bio is {data[2]} and profile address is {data[3]}')
+        connection = sqlite3.connect("./client.db")
+        cur = connection.cursor()
+        cur.execute(f"INSERT INTO friends VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
+        connection.commit()
+        connection.close()
+        print('now your freind is ',chat_list(data[0]))
+        return chat_list(data[0])
+
+
 
 
 
@@ -174,6 +195,49 @@ def recive_message(s:socket,data:list):
                 sending_to_server(s,[int(120),mes[2]])
             else:
                 continue
+
+def chat_list(friend=None):
+    """the name of last ferind id optional"""
+    connection = sqlite3.connect("./client.db")
+    cursor = connection.cursor()
+
+
+    if friend==NONE:
+        cursor.execute("SELECT * FROM friends")
+        r2 = cursor.fetchall()
+        connection.close()
+        return r2
+
+    else:
+
+        cursor.execute("SELECT * FROM friends WHERE user_id=?", (friend,))
+        r = cursor.fetchall()
+        if r==[]:
+            cursor.execute("SELECT * FROM friends")
+            r2 = cursor.fetchall()
+            connection.close()
+            return r2
+        else:
+            cursor.execute("DELETE FROM friends WHERE user_id=?", (friend,))
+            connection.commit()
+            cursor.execute(f"INSERT INTO friends VALUES (?,?,?,?)", (r[0][0], r[0][1], r[0][2], r[0][3]))
+            connection.commit()
+            cursor.execute("SELECT * FROM friends")
+            r2 = cursor.fetchall()
+            connection.close()
+            return r2
+
+
+
+
+
+
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM friends")
+    r = cursor.fetchall()
+    return r
+
+
             
 
 
@@ -265,6 +329,8 @@ obj_work={ 'token':"yasin78",
       '503':recive_message,
       '509':obj.profile_changed,
       '510':receve_file,
+      '511':obj.failed_add_friend,
+      '512':obj.friend_added,
 
  
       }
@@ -277,10 +343,12 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 #in 2 khat baraye etesal avalie be server ast ta in ke server client mara be onvan 
 #online zakhire konad #TODO #in tike ro bayad behtar konam 
 
-token='yasin78'
+token='user1'
 im_online=[int(105),token]
 sending_to_server(s,im_online)
-obj.send_profilepic(s,token,'yasin78','m')
+# obj.send_profilepic(s,token,'yasin78','m')
+
+obj.add_friend(s,token)
 
 
 

@@ -15,8 +15,8 @@ print("\nThe server was successfully activated.\n")
 
 #Server information
 
-ip = '0.0.0.0'
-port = 1425
+ip = '192.168.109.1'
+port = 14200
 online_users={}
 f=""
 #-------------------------------connection-------------------------------------------------------
@@ -188,7 +188,7 @@ def sign_in_request(s:socket,data:list):
     cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     r = cursor.fetchall()
     connection.close()
-    print(r)
+    print('one user want sign in we crud data from data base ... : ',r)
     print(data[1])
     if r[0][0]==data[0] and r[0][3]==data[1]:
         data1=[int(502),"welcome to pychat!"]
@@ -410,6 +410,21 @@ def send_file_to_client(s:socket,data1:list):
                 print("file sent to client...")
                 break
 
+def to_check_friend_adding(s:socket,data:list):
+    res=adding_friends(data)
+    if res==int(404):
+        data=[int(511)]
+        data = json.dumps(data)
+        s.send((data.encode() + b'\0'))
+    else:
+        data=res
+        data = json.dumps(data)
+        s.send((data.encode() + b'\0'))
+
+
+
+    
+
 
 
 
@@ -421,7 +436,7 @@ def send_file_to_client(s:socket,data1:list):
 
 
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
-      '107':edit_password,'108':add_picprofile,'120':send_file_to_client}
+      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding}
 
 s=Socket(ip, port)#run socket init make object from socket
 

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import List, Iterable
 from numbers import Number
 import json
+import sqlite3
 
 
 def encrypt(data: bytes) -> bytes:
@@ -148,4 +149,99 @@ class VideoMessage(WithTextMessage):
 
 class FileMessage(WithTextMessage):
     file: File
+
+
+def adding_friends(data:list):
+    '''
+    clearly connection is our connection object to  user database that we 
+    did it 
+    r is a  cruded data(list) from database  and username is a person that 
+    you want to add friend to him/her 
+    '''
+    user_that_send_response=data[0]
+    connection = sqlite3.connect("./database.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM users WHERE user_id=?", (user_that_send_response,))
+    r = cursor.fetchall()
+    if r==[]:
+        return int(404)
+
+    else:
+
+        ls=json.loads(r[0][-1])
+        if data[1] not in ls :
+            ls.append(data[1])
+            ls=json.dumps(ls)
+            cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls,user_that_send_response))
+            connection.commit()
+            connection.close()
+
+            connection = sqlite3.connect("./database.db")
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM users WHERE user_id=?", (data[1],))
+            r2 = cursor.fetchall()
+            data3=[int(512),r2[0][0],r2[0][1],r2[0][-2],r2[0][-3]]
+            ls2=json.loads(r2[0][-1])
+            if data[0] not in ls2:
+                ls2.append(data[0])
+                ls2=json.dumps(ls2)
+                cursor = connection.cursor()
+                cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
+                connection.commit()
+                connection.close()
+
+            else:
+                ls2.remove(data[0])
+                ls2.append(data[0])
+                ls2=json.dumps(ls2)
+                cursor = connection.cursor()
+                cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
+                connection.commit()
+                connection.close()
+
+            return data3
+        else:
+            ls.remove(data[1])
+            ls.append(data[1])
+            ls=json.dumps(ls)
+            cursor = connection.cursor()
+            cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls,user_that_send_response))
+            connection.commit()
+            connection = sqlite3.connect("./database.db")
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM users WHERE user_id=?", (data[1],))
+            r2 = cursor.fetchall()
+            data3=[int(512),r2[0][0],r2[0][1],r2[0][-2],r2[0][-3]]
+            ls2=json.loads(r2[0][-1])
+            if data[0] not in ls2:
+                ls2.append(data[0])
+                ls2=json.dumps(ls2)
+                cursor = connection.cursor()
+                cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
+                connection.commit()
+                connection.close()
+
+            else:
+                ls2.remove(data[0])
+                ls2.append(data[0])
+                ls2=json.dumps(ls2)
+                cursor = connection.cursor()
+                cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
+                connection.commit()
+                connection.close()
+
+            return data3
+
+        connection.close()
+
+
+
+
+
+
+
+
+
+
+
 
