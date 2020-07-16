@@ -230,19 +230,6 @@ def chat_list(friend=None):
 
 
 
-
-
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM friends")
-    r = cursor.fetchall()
-    return r
-
-
-            
-
-
-
-
 def receve_file(s:socket,data:list):
     global f
     recived_f =data[1]

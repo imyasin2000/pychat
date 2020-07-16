@@ -82,6 +82,7 @@ from kavenegar import *
 import face_recognition
 import cv2
 import numpy as np
+import sqlite3
 
 
 q = Queue()
@@ -339,6 +340,57 @@ class user:
                 print("sended")
                 break
 
+    def add_friend(self,s:socket,token,friend):
+    
+        data2=[int(121),token,friend]
+        sending_to_server(s,data2)
+
+    def failed_add_friend(self,socket,data):
+        notification('Unfortunately, User not found!')
+
+    def friend_added(self,socket,data):
+        print(f'{data[0]} , with name {data[1]} now is your friend his bio is {data[2]} and profile address is {data[3]}')
+        connection = sqlite3.connect("./client.db")
+        cur = connection.cursor()
+        cur.execute(f"INSERT INTO friends VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
+        connection.commit()
+        connection.close()
+        print('now your freind is ',chat_list(data[0]))
+        return chat_list(data[0])
+
+
+
+def chat_list(friend=None):
+    """the name of last ferind id optional"""
+    connection = sqlite3.connect("./client.db")
+    cursor = connection.cursor()
+
+
+    if friend==NONE:
+        cursor.execute("SELECT * FROM friends")
+        r2 = cursor.fetchall()
+        connection.close()
+        return r2
+
+    else:
+
+        cursor.execute("SELECT * FROM friends WHERE user_id=?", (friend,))
+        r = cursor.fetchall()
+        if r==[]:
+            cursor.execute("SELECT * FROM friends")
+            r2 = cursor.fetchall()
+            connection.close()
+            return r2
+        else:
+            cursor.execute("DELETE FROM friends WHERE user_id=?", (friend,))
+            connection.commit()
+            cursor.execute(f"INSERT INTO friends VALUES (?,?,?,?)", (r[0][0], r[0][1], r[0][2], r[0][3]))
+            connection.commit()
+            cursor.execute("SELECT * FROM friends")
+            r2 = cursor.fetchall()
+            connection.close()
+            return r2
+
 
 def recive_message(s:socket,data:list):
     global reciver,new_messeg
@@ -511,6 +563,8 @@ obj_work={ 'token':"yasin78",
       '503':recive_message,
     #   '509':obj.profile_changed,
       '510':receve_file,
+      '511':obj.failed_add_friend,
+      '512':obj.friend_added,
 
  
       }
@@ -1196,7 +1250,7 @@ class UI_Master(QMainWindow):
         self.camera_BTN.clicked.connect(self.click_camera_BTN)
         self.menu_b.clicked.connect(self.start_menu)
 
-        
+        self.clickedBtn_user()
 
         self.menu_bk_BTN.clicked.connect(self.menu_back)
         self.emoji_BTN.clicked.connect(self.start_emoji_box)
@@ -1208,7 +1262,7 @@ class UI_Master(QMainWindow):
 
         # self.label_3.mouseReleaseEvent = self.clickedBtn_other()
 
-        self.button_user.clicked.connect(self.clickedBtn_user)
+    
         self.button_attach.clicked.connect(self.click_attach)
         self.textedit_messegebox.textChanged.connect(
             self.textChanged_messege_event)
@@ -1384,8 +1438,10 @@ class UI_Master(QMainWindow):
         
         
     def add_user_freind(self):
+        global obj,s,token
         if  self.user_add.text() :
-            pass
+            obj.add_friend(s,token,self.user_add.text())
+            self.hide_add_invite()
         else:
             QMessageBox.about(self, "PyChat", "Please enter User Name.")
 
@@ -2557,23 +2613,15 @@ class UI_Master(QMainWindow):
         self.last_used = "me"
 
     def clickedBtn_user(self):
-    
-        itm = QListWidgetItem("\nyasin78\n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')))
-        self.listWidget.insertItem(0,itm)
-        itm = QListWidgetItem("\nmhfa1380\n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
-        self.listWidget.insertItem(1,itm)
-        itm = QListWidgetItem("\n Mohammad Hossein Fadavi \n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/person.png')))
-        self.listWidget.insertItem(2,itm)
-        itm = QListWidgetItem("\n Mostafa Bastam \n")
-        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/woman.png')))
-        self.listWidget.insertItem(3,itm)
-        
-        self.listWidget.item(0).setWhatsThis('0')
-        self.listWidget.item(1).setWhatsThis('1')
-        self.listWidget.item(2).setWhatsThis('2')
+        list_users = chat_list()
+        list_users.reverse()
+        self.listWidget.clear()
+        for (count,item) in enumerate(list_users):
+            itm = QListWidgetItem("\n "+item[1]+"\n")
+            itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item[3])))
+            self.listWidget.insertItem(count,itm)        
+            self.listWidget.item(count).setWhatsThis(item[0])
+
 
         # self.listWidget.item(1).setForeground(QtCore.Qt.blue)
         # self.listWidget.item(1).setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
@@ -2718,9 +2766,9 @@ class face_ui(QMainWindow):
             self.timer_face.singleShot(3400, lambda: self.close())
 
 
-app_face = QApplication(sys.argv)
-face = face_ui()
-app_face.exit(app_face.exec_())
+# app_face = QApplication(sys.argv)
+# face = face_ui()
+# app_face.exit(app_face.exec_())
 
 App = QApplication(sys.argv)
 window2 = UI_Master()

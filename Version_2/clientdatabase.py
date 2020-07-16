@@ -42,9 +42,10 @@ connection.commit()
 connection.close()
 
 
-# data=['unknown','unknown','unknown','unknown',0]
-# connection = sqlite3.connect("./client.db")
-# cur = connection.cursor()
-# cur.execute("INSERT INTO info VALUES (?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4]))
-# connection.commit()
-# connection.close()
+data=['yasin78','yasin khamar','darseto nakhon!','person.png']
+connection = sqlite3.connect("./client.db")
+cur = connection.cursor()
+cur.execute("INSERT INTO friends VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
+connection.commit()
+connection.close()
+

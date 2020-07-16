@@ -15,8 +15,8 @@ print("\nThe server was successfully activated.\n")
 
 #Server information
 
-ip = '192.168.109.1'
-port = 14200
+ip = '0.0.0.0'
+port = 1425
 online_users={}
 f=""
 #-------------------------------connection-------------------------------------------------------
