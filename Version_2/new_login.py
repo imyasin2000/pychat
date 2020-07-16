@@ -75,7 +75,7 @@ import shutil
 from pydub.utils import mediainfo
 from tkinter import filedialog
 from tkinter import *
-
+import os.path
 
 
 
@@ -101,7 +101,7 @@ zoom_smth3 = 0
 move_smth1 = 550
 move_smth2 = 571
 mic_port=True
-
+download_status= False
 new_messeg = []
 new_file = []
 
@@ -345,6 +345,7 @@ def recive_message(s:socket,data:list):
             
             if reciver == mes[0] and token != mes[0]:
                 new_mes2 = []
+                new_mes2.append('t')
                 new_mes2.append(mes[2])
                 new_mes2.append(mes[3])
                 new_messeg = new_mes2
@@ -363,8 +364,11 @@ def recive_message(s:socket,data:list):
 
         elif mes[-1]=='m':
             if reciver == mes[0] and token != mes[0]:
+                new_mes2 = []
+                new_mes2.append('m')
+                new_mes2.append(mes[2])
+                new_messeg = new_mes2
 
-                new_mes2 = mes[2]
                 
             # if key=='Y':
             #     pass
@@ -372,13 +376,14 @@ def recive_message(s:socket,data:list):
             #     continue
 
 def receve_file(s:socket,data:list):
-    global f
+    global f,download_status
     recived_f = data[1]
     if bytes.fromhex(data[0])==b"start":
         f = open(recived_f, "wb")
     elif bytes.fromhex(data[0])==b"end":
         print(f"file from {data[0]} recived")
         f.close()
+        download_status = True
     else:
         f.write(bytes.fromhex(data[0]))
     
@@ -1147,7 +1152,7 @@ class UI_Master(QMainWindow):
         self.camera_BTN.clicked.connect(self.click_camera_BTN)
         self.menu_b.clicked.connect(self.start_menu)
 
-        self.clear_b_2.clicked.connect(self.file_receve)
+        
 
         self.menu_bk_BTN.clicked.connect(self.menu_back)
         self.emoji_BTN.clicked.connect(self.start_emoji_box)
@@ -1296,9 +1301,8 @@ class UI_Master(QMainWindow):
         self.timer10.timeout.connect(self.move_down_wheel)
         self.timer10.start(500)
         global new_messeg
-
         self.timer19 = QtCore.QTimer()
-        self.timer19.timeout.connect(lambda : self.clickedBtn_other(new_messeg))
+        self.timer19.timeout.connect(lambda : self.choos_type(new_messeg))
         self.timer19.start(1)
         
         # 
@@ -1309,6 +1313,17 @@ class UI_Master(QMainWindow):
         self.show()
 
 
+    def choos_type(self,data):
+        if data==[]:
+            return
+
+        elif data[0] == 't':
+            self.clickedBtn_other(data[1:])
+
+        elif data[0] == 'm':
+            self.file_receve(data[1:])
+
+        
 
     def user_list_click(self,item):
         global reciver
@@ -1382,8 +1397,6 @@ class UI_Master(QMainWindow):
         else:
             img.show()
             
-
-
     def choose_profile_pic(self):
         try:
             fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"Image files (*.jpg *.png)")
@@ -1444,7 +1457,63 @@ class UI_Master(QMainWindow):
 
         cv2.destroyAllWindows()
 
-    def file_receve(self):
+    def download_state(self,data):
+        global download_status
+        where = self.index_serarch(data[0])
+        if where == -1 :
+            return
+        print(where,type(where))
+
+        if download_status == True:
+            print('--'+os.path.splitext(data[0])[1]+'--')
+            if os.path.splitext(data[0])[1] in ['.jpg','.png','.jpeg']:
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd()+'/'+data[0])))
+
+            elif os.path.splitext(data[0])[1] in ['.mkv','.mp4']:
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/video-camera.png')))
+
+            elif os.path.splitext(data[0])[1] in ['.mp3','.vaw']:
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/mp3.png')))
+
+            else:
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file.png')))
+
+
+            self.formLayout.itemAt(where).widget().setStyleSheet("background-color: white;border: 16px solid white;border-radius: 25px;font-size: 20px;")
+            self.formLayout.itemAt(where).widget().setIconSize(QSize(400, 300))
+            download_status=False
+            print(download_status)
+            self.timer17.stop()
+        else:
+            self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/download (1).png')))
+
+ 
+    def download_file(self,data):
+       
+        if os.path.isfile(data[0]):
+            file =os.path.abspath(os.getcwd()+'/'+data[0])
+            opener ="open" if sys.platform == "darwin" else "xdg-open"
+            subprocess.call([opener, file])
+        else:
+            
+            
+            self.timer17 = QtCore.QTimer()
+            self.timer17.timeout.connect(lambda :self.download_state(data))
+            self.timer17.start(200)
+            
+            sending_to_server(s,[int(120),data[0]])
+    
+    def index_serarch(self,txt): ########################################################################################
+        for i in range(0,self.formLayout.count()-1):
+            
+            if str(self.formLayout.itemAt(i).widget().whatsThis()) == str(txt):
+                print(i)
+                return i
+        return -1
+    
+    def file_receve(self,data):
+        global new_messeg
+
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
@@ -1455,7 +1524,8 @@ class UI_Master(QMainWindow):
         self.messege_user = QPushButton()
         self.messege_user.setIcon(
             QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/download.png')))
-        self.messege_user.setIconSize(QSize(400, 300))
+            
+        self.messege_user.setIconSize(QSize(300, 300))
 
         # self.messege_user.setStyleSheet("background-color: white;border: 1px solid lightgray;border-radius: 17px;font-size: 20px;")
         if self.last_used == "me":
@@ -1468,11 +1538,11 @@ class UI_Master(QMainWindow):
         self.formLayout.itemAt(self.formLayout.count(
         )-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
-        self.formLayout.itemAt(self.formLayout.count(
-        )-1).widget().clicked.connect(self.clickedBtn_user)
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().clicked.connect(lambda : self.download_file (data))
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().setWhatsThis(data[0])
 
         self.formLayout.itemAt(self.formLayout.count()-1).widget().setStyleSheet(
-            "background-color: white;border: 1px solid lightgray;border-radius: 17px;font-size: 20px;")
+            "background-color: white;border: 16px solid white;border-radius: 25px;font-size: 20px;")
         self.formLayout.itemAt(self.formLayout.count(
         )-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
@@ -1488,6 +1558,7 @@ class UI_Master(QMainWindow):
 
         self.formLayout.addRow(self.id, self.messege_time)
         self.last_used = "other"
+        new_messeg.clear()
 
     def file_send(self):
         pass
@@ -1666,7 +1737,6 @@ class UI_Master(QMainWindow):
             self.formLayout.itemAt(itm).widget().setValue(0)
             self.timer50.stop()
 
-            
     def play_voice(self, voice_id,itm,play_t):
       
         thread = threading.Thread(target=lambda : playsound(os.getcwd() + "/UI/Master"  +'/Files/'+voice_id) )
@@ -1677,8 +1747,7 @@ class UI_Master(QMainWindow):
         self.timer50.start(1000)
         
         # print(mediainfo(os.getcwd() + "/UI/Master"  +'/Files/'+voice_id)['duration'])
-        
-
+     
     def rec_voice(self):
         global record_until
         self.exit_emoji_box()
@@ -1750,7 +1819,6 @@ class UI_Master(QMainWindow):
             self.timer22.start(1000)
             # threading.Thread(target=self.start_rec_voice, args=()).start()
 
-            
     def cheack_port(self):
         global mic_port
       
@@ -2034,15 +2102,13 @@ class UI_Master(QMainWindow):
 
         self.pushButton.setHidden(True)
         self.lineEdit.setHidden(True)
-        self.searchuser_b.setGeometry(QtCore.QRect(930, 10, 31, 31))
-
- 
-        
+        self.searchuser_b.setGeometry(QtCore.QRect(930, 10, 31, 31))    
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             # self.close()
-            self.clickedBtn_send()
+            # self.clickedBtn_send()
+            pass
 
         # if event.key() == Qt.Key_2:
         #     # self.clickedBtn_send()
@@ -2069,7 +2135,7 @@ class UI_Master(QMainWindow):
     def clickedBtn_send(self):
         global token,reciver
         self.exit_emoji_box()
-        obj.send_text_message(s,token,reciver,self.textedit_messegebox.toPlainText().strip())
+        obj.send_text_message(s,token,reciver,self.textedit_messegebox.toPlainText())
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         if self.textedit_messegebox.toPlainText().strip():
@@ -2121,10 +2187,7 @@ class UI_Master(QMainWindow):
     def clickedBtn_other(self,data):
 
         global new_messeg
-       
-        if data == []:
-            return
-        
+  
         time_2 = data[1]
         time_2=time_2[11:16]
         messege = data[0]
@@ -2142,13 +2205,14 @@ class UI_Master(QMainWindow):
         if self.last_used == "me":
             self.formLayout.addRow(QLabel())
         self.formLayout.addRow(self.user_image, self.messege_user)
-        self.formLayout.itemAt(self.formLayout.count(
-        )-2).widget().clicked.connect(self.clickedBtn_user)
+       
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().setWhatsThis(messege)
+
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(self.clickedBtn_user)
 
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
-        self.formLayout.itemAt(self.formLayout.count(
-        )-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
         self.messege_time = QLabel(time_2, alignment=Qt.AlignRight)
         self.messege_time.setStyleSheet("color: black")

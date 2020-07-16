@@ -15,3 +15,12 @@
 # #read mouse position    
 
     
+import os
+import subprocess,sys
+
+file =os.path.abspath(os.getcwd()+'/output2.png')
+
+
+opener ="open" if sys.platform == "darwin" else "xdg-open"
+subprocess.call([opener, file])
+

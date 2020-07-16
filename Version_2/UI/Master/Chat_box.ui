@@ -1212,22 +1212,6 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="clear_b_2">
-     <property name="geometry">
-      <rect>
-       <x>300</x>
-       <y>520</y>
-       <width>61</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="whatsThis">
-      <string>sdfgsdfgfdsgdf</string>
-     </property>
-     <property name="text">
-      <string>file</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_9">
      <property name="geometry">
       <rect>
@@ -1319,7 +1303,6 @@
     <zorder>camera_BTN</zorder>
     <zorder>send_b_13</zorder>
     <zorder>label_8</zorder>
-    <zorder>clear_b_2</zorder>
     <zorder>label_9</zorder>
     <zorder>wating_l</zorder>
     <zorder>label_14</zorder>
