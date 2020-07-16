@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1042</width>
-    <height>912</height>
+    <width>2000</width>
+    <height>3000</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -276,7 +276,7 @@
       <rect>
        <x>380</x>
        <y>50</y>
-       <width>691</width>
+       <width>671</width>
        <height>451</height>
       </rect>
      </property>
@@ -616,9 +616,9 @@
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>380</x>
+       <x>50</x>
        <y>0</y>
-       <width>671</width>
+       <width>1001</width>
        <height>51</height>
       </rect>
      </property>
@@ -1234,7 +1234,7 @@
     <widget class="QLabel" name="wating_l">
      <property name="geometry">
       <rect>
-       <x>380</x>
+       <x>370</x>
        <y>0</y>
        <width>681</width>
        <height>571</height>
@@ -1307,11 +1307,9 @@
     <zorder>scrollArea</zorder>
     <zorder>lineEdit</zorder>
     <zorder>emoji_BTN</zorder>
-    <zorder>user_search_b</zorder>
     <zorder>searchuser_b</zorder>
     <zorder>pushButton_2</zorder>
     <zorder>lastseen_l</zorder>
-    <zorder>user_search_t</zorder>
     <zorder>pushButton</zorder>
     <zorder>usernamem_l</zorder>
     <zorder>menu_user_b</zorder>
@@ -1331,6 +1329,8 @@
     <zorder>wating_l</zorder>
     <zorder>label_14</zorder>
     <zorder>send_b_14</zorder>
+    <zorder>user_search_t</zorder>
+    <zorder>user_search_b</zorder>
    </widget>
    <widget class="QPushButton" name="emoji_BTN_2">
     <property name="geometry">
@@ -1521,10 +1521,225 @@
      </property>
     </widget>
    </widget>
+   <widget class="QFrame" name="chat_info_FRM">
+    <property name="geometry">
+     <rect>
+      <x>1060</x>
+      <y>0</y>
+      <width>671</width>
+      <height>561</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>671</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(240, 240, 240);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>10</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>10</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(240, 240, 240);</string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;chat info&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="profile_LBL_2">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>70</y>
+       <width>180</width>
+       <height>180</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>s</string>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>110</y>
+       <width>111</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;fadavi joun&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_18">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>295</y>
+       <width>671</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_19">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>305</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Mute notification&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>310</y>
+       <width>16</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>50</y>
+       <width>671</width>
+       <height>511</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(240, 240, 240);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_21">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>50</y>
+       <width>671</width>
+       <height>231</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="listWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>-1</x>
+       <y>390</y>
+       <width>675</width>
+       <height>171</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_22">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>360</y>
+       <width>671</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; color:#ffffff;&quot;&gt;ghjghjg&lt;/span&gt;&lt;span style=&quot; font-size:12pt; color:#00bfa5;&quot;&gt;participants &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <zorder>label_20</zorder>
+    <zorder>label_15</zorder>
+    <zorder>pushButton_3</zorder>
+    <zorder>label_16</zorder>
+    <zorder>label_18</zorder>
+    <zorder>label_19</zorder>
+    <zorder>checkBox</zorder>
+    <zorder>label_21</zorder>
+    <zorder>label_17</zorder>
+    <zorder>profile_LBL_2</zorder>
+    <zorder>listWidget_2</zorder>
+    <zorder>label_22</zorder>
+   </widget>
    <zorder>mother_FRM</zorder>
    <zorder>setting_FRM</zorder>
    <zorder>emoji_BTN_2</zorder>
    <zorder>frame_2</zorder>
+   <zorder>chat_info_FRM</zorder>
   </widget>
  </widget>
  <resources/>

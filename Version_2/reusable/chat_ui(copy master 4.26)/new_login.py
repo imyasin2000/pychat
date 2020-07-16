@@ -236,7 +236,7 @@ class Window(QMainWindow):
         self.button_send.setIcon(QIcon(os.getcwd()+'/icons/send.png'))
 
         self.button_send.clicked.connect(self.clickedBtn_send)
-        self.button_other.clicked.connect(self.clickedBtn_other)
+        # self.button_other.clicked.connect(self.clickedBtn_other)
         self.button_clear.clicked.connect(self.voice_mess_other)
         self.searchuser_b.clicked.connect(self.click_search)
         self.pushButton.clicked.connect(self.back_from_search)

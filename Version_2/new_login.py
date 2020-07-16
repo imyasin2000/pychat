@@ -26,7 +26,7 @@ from PyQt5.Qt import Qt
 import hashlib, uuid
 from PyQt5.QtCore import QTimer
 import pyqrcode 
-import png 
+import png
 from pyqrcode import QRCode 
 from requests import get, post
 import json
@@ -90,7 +90,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0', 1425))
+s.connect(('192.168.43.44', 1425))
 
 email_changer = ''
 data_user = []
@@ -106,6 +106,8 @@ zoom_smth2 = 0
 zoom_smth3 = 0
 move_smth1 = 550
 move_smth2 = 571
+move_smth4 = 1060
+
 mic_port=True
 download_status= False
 new_messeg = []
@@ -1197,7 +1199,7 @@ class UI_Master(QMainWindow):
         self.textedit_messegebox.setStyleSheet(
             "background-color: white;border: 1px solid lightgray;border-radius:18px;font-size: 20px;")
         self.button_usersearch.setStyleSheet(
-            "background-color: white;border: 1px solid white;")
+            "background-color: transparent;")
         self.textedit_usersearch.setStyleSheet(
             "background-color: white;border: 1px solid gray;border-radius:15px;")
 
@@ -1411,12 +1413,56 @@ class UI_Master(QMainWindow):
         self.timer19.timeout.connect(lambda : self.choos_type(new_messeg))
         self.timer19.start(1)
         
-        # 
+        #-------------------------------------------------------------------------------------
+
+        self.pv_LBL.clicked.connect(self.start_move_chat_info_FRM)
+        self.pushButton_3.clicked.connect(self.exit_move_back_chat_info_FRM)
+        self.pushButton_3.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/close.png')))
+
+
+
+        #-----------------------------------------------------------------------------------------
    
         self.center()
 
         
         self.show()
+
+
+
+    #---------------------------------------------------------------------------------------------
+    def start_move_chat_info_FRM(self):
+
+        self.timerl = QtCore.QTimer()
+        self.timerl.timeout.connect(self.move_chat_info_FRM)
+        self.timerl.start(0)
+
+    def move_chat_info_FRM(self):
+        global move_smth4
+        self.chat_info_FRM.setGeometry(QtCore.QRect(move_smth4, 0, 681, 571))
+        move_smth4 -= 2
+        if move_smth4 == 380:
+            self.timerl.stop()
+
+
+
+    def exit_move_back_chat_info_FRM(self):
+
+        self.timerh = QtCore.QTimer()
+        self.timerh.timeout.connect(self.move_back_chat_info_FRM)
+        self.timerh.start(0)
+
+
+    def move_back_chat_info_FRM(self):
+
+        global move_smth4
+        self.chat_info_FRM.setGeometry(QtCore.QRect(move_smth4, 0, 681, 571))
+        move_smth4 += 2
+        if move_smth4 == 1060:
+            self.timerh.stop()
+
+
+    #---------------------------------------------------------------------------------------------
 
     def sms_invite(self):
         if  self.user_add_2.text() :
