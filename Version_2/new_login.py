@@ -1426,13 +1426,13 @@ class UI_Master(QMainWindow):
        # self.timer = QtCore.QTimer()
         # self.timer.timeout.connect(lambda : movie.stop())
         # self.timer.singleShot(30) 
-        self.timer10 = QtCore.QTimer()
-        self.timer10.timeout.connect(self.move_down_wheel)
-        self.timer10.start(500)
+        # self.timer10 = QtCore.QTimer()
+        # self.timer10.timeout.connect(self.move_down_wheel)
+        # self.timer10.start(500)
         global new_messeg
         self.timer19 = QtCore.QTimer()
         self.timer19.timeout.connect(lambda : self.choos_type(new_messeg))
-        self.timer19.start(1)
+        self.timer19.start(100)
         self.label_24.setStyleSheet("background-color: rgba(1,36,32,.7);")
        
         
@@ -1574,6 +1574,7 @@ class UI_Master(QMainWindow):
 
 
     def choos_type(self,data):
+        self.move_down_wheel()
         if data==[]:
             return
 
@@ -1964,35 +1965,39 @@ class UI_Master(QMainWindow):
         self.move_d_zout()
 
     def move_down_wheel(self):
-        
+               
         if self.scrollArea.verticalScrollBar().value() != self.scrollArea.verticalScrollBar().maximum():
-            self.timer11 = QtCore.QTimer()
-            self.timer11.timeout.connect(self.move_d_zin)
-            self.timer11.start(4)
+            self.move_d_zin()
+            # self.timer11 = QtCore.QTimer()
+            # self.timer11.timeout.connect()
+            # self.timer11.start(1)
             self.send_b_11.setHidden(False)
         else:
+            self.move_d_zout()
+            
 
-            self.timer11 = QtCore.QTimer()
-            self.timer11.timeout.connect(self.move_d_zout)
-            self.timer11.start(4)
+            # self.timer11 = QtCore.QTimer()
+            # self.timer11.timeout.connect()
+            # self.timer11.start(1)
             # QTimer.singleShot(50, lambda:print(self.scrollArea.verticalScrollBar().value()))
 
     def move_d_zin(self):
+       
         global zoom_smth2
-        zoom_smth2 += 1
+        zoom_smth2 += 12
 
         self.send_b_11.resize(zoom_smth2, zoom_smth2)
         self.send_b_11.setIconSize(
             QSize(int(zoom_smth2/2+5), int(zoom_smth2/2+5)))
         self.send_b_11.setStyleSheet(
             "background-color: rgba(247, 247, 247, 1);border: 0px solid white;border-radius:%dpx;" % int(zoom_smth2/2))
-        if zoom_smth2 >= 41:
-            zoom_smth2 = 41
-            self.timer11.stop()
+        if zoom_smth2 >= 36:
+            zoom_smth2 = 36
+            # self.timer11.stop()
 
     def move_d_zout(self):
         global zoom_smth2
-        zoom_smth2 -= 1
+        zoom_smth2 -= 12
         self.send_b_11.resize(zoom_smth2, zoom_smth2)
         self.send_b_11.setIconSize(
             QSize(int(zoom_smth2/2+5), int(zoom_smth2/2+5)))
@@ -2001,7 +2006,7 @@ class UI_Master(QMainWindow):
         if zoom_smth2 <= 0:
             zoom_smth2 = 0
             self.send_b_11.setHidden(True)
-            self.timer11.stop()
+            # self.timer11.stop()
 
     def move_down(self):
         global move_smth, zoom_smth
