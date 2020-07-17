@@ -195,26 +195,11 @@ def recive_message(s:socket,data:list):
                 sending_to_server(s,[int(120),mes[2]])
             else:
                 continue
-#---------------to adding new data in client database in each part  for loupe
-
-def get_all_chat(your_name,your_friend):
-
-        if str(your_name)>str(your_friend):
-            tabale=str(your_name+str(your_friend))
-        else:
-            tabale=str(your_friend+str(your_name))
-
-        connection=sqlite3.connect('./client.db')
-        cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM {tabale}")
-        r = cursor.fetchall()
-        return r
 
         if str(mes[0])>str(mes[1]):
             tabale=str(mes[0]+str(mes[1]))
         else:
             tabale=str(mes[1]+str(mes[0]))
-        
         connection = sqlite3.connect("./client.db")
         cursor = connection.cursor()
 
@@ -230,10 +215,26 @@ def get_all_chat(your_name,your_friend):
         """
         cursor.execute(sql)
         connection.commit()
+
         cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (mes[0], mes[1], mes[2], mes[3],mes[4],mes[5]))
         connection.commit()
-
     connection.close()
+    
+#---------------to adding new data in client database in each part  for loupe
+
+def get_all_chat(your_name,your_friend):
+
+        if str(your_name)>str(your_friend):
+            tabale=str(your_name+str(your_friend))
+        else:
+            tabale=str(your_friend+str(your_name))
+
+        connection=sqlite3.connect('./client.db')
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM {tabale}")
+        r = cursor.fetchall()
+        connection.close()
+        return r
 
 
 def chat_list(friend=None):
