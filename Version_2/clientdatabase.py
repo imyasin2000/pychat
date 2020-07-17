@@ -42,7 +42,7 @@ connection.commit()
 connection.close()
 
 
-data=['yasin78','yasin khamar','darseto nakhon!','person.png']
+data=['mehdipro','Mehdi Hamedi','manand tambr bash.','output.png']
 connection = sqlite3.connect("./client.db")
 cur = connection.cursor()
 cur.execute("INSERT INTO friends VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
