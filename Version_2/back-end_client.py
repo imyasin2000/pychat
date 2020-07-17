@@ -195,6 +195,46 @@ def recive_message(s:socket,data:list):
                 sending_to_server(s,[int(120),mes[2]])
             else:
                 continue
+#---------------to adding new data in client database in each part  for loupe
+
+def get_all_chat(your_name,your_friend):
+
+        if str(your_name)>str(your_friend):
+            tabale=str(your_name+str(your_friend))
+        else:
+            tabale=str(your_friend+str(your_name))
+
+        connection=sqlite3.connect('./client.db')
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM {tabale}")
+        r = cursor.fetchall()
+        return r
+
+        if str(mes[0])>str(mes[1]):
+            tabale=str(mes[0]+str(mes[1]))
+        else:
+            tabale=str(mes[1]+str(mes[0]))
+        
+        connection = sqlite3.connect("./client.db")
+        cursor = connection.cursor()
+
+        sql=f"""
+            CREATE TABLE IF NOT EXISTS {tabale}(
+            sender VARCHAR (48),
+            reciver VARCHAR(48),
+            message VARCHAR (600),
+            message_time DATETIME (60),
+            message_id VARCHAR (60),
+            message_type VARCHAR (3)
+            );
+        """
+        cursor.execute(sql)
+        connection.commit()
+        cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (mes[0], mes[1], mes[2], mes[3],mes[4],mes[5]))
+        connection.commit()
+
+    connection.close()
+
 
 def chat_list(friend=None):
     """the name of last ferind id optional"""
@@ -226,6 +266,23 @@ def chat_list(friend=None):
             r2 = cursor.fetchall()
             connection.close()
             return r2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
 
 
 
@@ -335,7 +392,7 @@ im_online=[int(105),token]
 sending_to_server(s,im_online)
 # obj.send_profilepic(s,token,'yasin78','m')
 
-obj.add_friend(s,token)
+# obj.add_friend(s,token)
 
 
 
@@ -343,8 +400,10 @@ obj.add_friend(s,token)
 # obj.login(s)
 # obj.user_want_sign_in(s)
 # obj.forgot_password(s)
-# while True:
-#     obj.send_text_message(s,'yasin78','mfa1380')
+for i in range(2):
+    obj.send_text_message(s,token,token)
+
+print(get_all_chat(token,token))
 # obj.forgot_password(s)
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
