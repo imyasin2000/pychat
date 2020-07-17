@@ -271,23 +271,6 @@ def chat_list(friend=None):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-            
-
-
-
-
 def receve_file(s:socket,data:list):
     global f
     recived_f =data[1]
@@ -358,7 +341,6 @@ def do_work(obj:user,s:socket):
             obj_work[f"{task}"](s,new_data[1:])
             #yasinmhd110@gmail.com
             q.task_done()
-
 
 
 
