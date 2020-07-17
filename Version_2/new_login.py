@@ -90,7 +90,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.19.3
-s.connect(('192.168.43.44', 1425))
+s.connect(('0.0.0.0', 1425))
 
 email_changer = ''
 data_user = []
@@ -107,6 +107,7 @@ zoom_smth3 = 0
 move_smth1 = 550
 move_smth2 = 571
 move_smth4 = 1060
+move_smth5 = 570
 
 mic_port=True
 download_status= False
@@ -1068,9 +1069,12 @@ class UI_Master(QMainWindow):
             "background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
         
         self.line.setStyleSheet("background-color: rgb(240, 240, 240);")
-        self.add_frindl.setStyleSheet("background-color: transparent;border: 0px solid gray;border-radius:10px;color:rgb(95, 125, 149);font-size: 15px;")
-        self.add_frindl_2.setStyleSheet("background-color: transparent;border: 0px solid gray;border-radius:10px;color:rgb(95, 125, 149);font-size: 15px;")
-        self.frame_2.setStyleSheet("background-color: rgba(255,255,255,.92);")
+        self.add_frindl.setStyleSheet("background-color: transparent;border: 0px solid gray;border-radius:10px;color:rgb(255, 255, 255);font-size: 15px;")
+        self.add_frindl_2.setStyleSheet("background-color: transparent;border: 0px solid gray;border-radius:10px;color:rgb(255, 255, 255);font-size: 15px;")
+        self.add_frindl_3.setStyleSheet("background-color: transparent;border: 0px solid gray;border-radius:10px;color:rgb(150, 150, 150);font-size: 18px;")
+        self.frame_2.setStyleSheet("background-color: rgba(255,255,255,.7);")
+
+        
         
         
 
@@ -1173,7 +1177,7 @@ class UI_Master(QMainWindow):
                     "background-color: rgb(95, 125, 149);border: 0px solid white;border-radius:11px;color : white;font-size: 13px;")
 
         self.cancle_user.setStyleSheet(
-        "background-color: transparent;border: 1px solid white;border-radius:15px;")
+        "background-color: transparent;border: 0px solid white;border-radius:15px;")
 
         
         # self.clear_b.setWhatsThis("lksdaf;jksnf;j")
@@ -1198,15 +1202,19 @@ class UI_Master(QMainWindow):
             "background-color: transparent;border: 0px solid white;border-radius:15px;")
         self.textedit_messegebox.setStyleSheet(
             "background-color: white;border: 1px solid lightgray;border-radius:18px;font-size: 20px;")
-        self.button_usersearch.setStyleSheet(
-            "background-color: transparent;")
+        self.button_usersearch.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius:12px;font-size: 20px;")
         self.textedit_usersearch.setStyleSheet(
             "background-color: white;border: 1px solid gray;border-radius:15px;")
 
 
-
+        self.pushButton_3.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius:10px;font-size: 10px;")
         self.usernamem_l.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius:1px;font-size: 15px;")
         self.lastseen_l.setStyleSheet("background-color: transparent;border: 0px solid lightgray;border-radius:1px;font-size: 12px;")
+
+
+        self.label_17.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 26px;")
+        self.label_23.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(50, 50, 50);font-size: 20px;")
+
         
         
 
@@ -1234,7 +1242,7 @@ class UI_Master(QMainWindow):
         self.user_add_2.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:10px;")
 
         
-
+        self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/person.png')))
 
 
         self.cancle_user.clicked.connect(self.hide_add_invite)
@@ -1246,6 +1254,8 @@ class UI_Master(QMainWindow):
         self.button_clear.clicked.connect(self.voice_mess_other)
         self.searchuser_b.clicked.connect(self.click_search)
         self.pushButton.clicked.connect(self.back_from_search)
+        self.profile_LBL_2.clicked.connect(self.show_user_pic)
+        
         
         self.doc_BTN.clicked.connect(lambda:self.file_send(["d",""]))
         self.attach_b_2.clicked.connect(self.click_attach_2)
@@ -1279,7 +1289,9 @@ class UI_Master(QMainWindow):
         self.button_send.setHidden(True)
         self.listWidget.itemClicked.connect(self.user_list_click)
         self.listWidget.setStyleSheet(
-            "background-color: white;border: 0px solid lightgray;border-radius: 5px;")
+            "background-color: white;")
+
+
         self.textedit_messegebox.setFocus()
         self.setting_FRM.setStyleSheet(
             "background-color: black;border: 0px solid lightgray;border-radius: 5px;")
@@ -1308,6 +1320,10 @@ class UI_Master(QMainWindow):
         self.profile_LBL.clicked.connect(self.contex_change_profile)
 
         self.profile_LBL.setStyleSheet("background-color: transparent;border: 0px solid white ;border-radius: 90px;")
+        self.profile_LBL_2.setStyleSheet("background-color: transparent;border: 0px solid white ;border-radius: 90px;")
+
+
+
 
         self.pv_LBL.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
@@ -1315,6 +1331,8 @@ class UI_Master(QMainWindow):
             QIcon(os.path.abspath(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/person.png'))))
         self.label_7.setStyleSheet("background-color: transparent;")
         self.label_6.setStyleSheet("background-color: transparent;")
+
+        
         # self.emoji_FRM.setHidden(True)
         self.doc_BTN.setHidden(True)
         self.doc_BTN.setIcon(QIcon(os.path.abspath(
@@ -1354,6 +1372,7 @@ class UI_Master(QMainWindow):
         self.send_b_11.setToolTip("<font color=black>%s</font>" % 'Scroll Down'.replace("\n", "<br/>"))
         self.send_b.setToolTip("<font color=white>%s</font>" % 'Send'.replace("\n", "<br/>"))
         self.pv_LBL.setToolTip("<font color=white>%s</font>" % 'Profile'.replace("\n", "<br/>"))
+        
         self.pushButton_2.setToolTip("<font color=white>%s</font>" % 'Search'.replace("\n", "<br/>"))
         self.pushButton.setToolTip("<font color=white>%s</font>" % 'Cancel Search'.replace("\n", "<br/>"))
         self.user_search_b.setToolTip("<font color=black>%s</font>" % 'Search'.replace("\n", "<br/>"))
@@ -1370,6 +1389,8 @@ class UI_Master(QMainWindow):
         self.send_b_8.setToolTip("<font color=white>%s</font>" % '🥰'.replace("\n", "<br/>"))
         self.send_b_7.setToolTip("<font color=white>%s</font>" % '🖐'.replace("\n", "<br/>"))
         self.send_b_12.setToolTip("<font color=white>%s</font>" % '💋'.replace("\n", "<br/>"))
+        self.pushButton_3.setToolTip("<font color=white>%s</font>" % 'go back'.replace("\n", "<br/>"))
+        self.profile_LBL_2.setToolTip("<font color=white>%s</font>" % 'show pic'.replace("\n", "<br/>"))
 
         self.send_b_14.setToolTip("<font color=black>%s</font>" % 'Add'.replace("\n", "<br/>"))
         self.cancle_user.setToolTip("<font color=white>%s</font>" % 'Go Back'.replace("\n", "<br/>"))
@@ -1412,6 +1433,9 @@ class UI_Master(QMainWindow):
         self.timer19 = QtCore.QTimer()
         self.timer19.timeout.connect(lambda : self.choos_type(new_messeg))
         self.timer19.start(1)
+        self.label_24.setStyleSheet("background-color: rgba(1,36,32,.7);")
+       
+        
         
         #-------------------------------------------------------------------------------------
 
@@ -1428,41 +1452,98 @@ class UI_Master(QMainWindow):
         
         self.show()
 
-
+    def show_user_pic(self):
+        pass
 
     #---------------------------------------------------------------------------------------------
-    def start_move_chat_info_FRM(self):
-
-        self.timerl = QtCore.QTimer()
-        self.timerl.timeout.connect(self.move_chat_info_FRM)
-        self.timerl.start(0)
-
+  
     def move_chat_info_FRM(self):
         global move_smth4
+        
+        move_smth4 -= 6
         self.chat_info_FRM.setGeometry(QtCore.QRect(move_smth4, 0, 681, 571))
-        move_smth4 -= 2
-        if move_smth4 == 380:
+        if move_smth4 <= 380:
+            move_smth4 = 380
             self.timerl.stop()
 
+    def start_move_chat_info_FRM(self):
+        self.timerl = QtCore.QTimer()
+        self.timerl.timeout.connect(self.move_chat_info_FRM)
+        self.timerl.start(1)
+
+    def start_move_chat_info_FRM(self):
+        self.timerl = QtCore.QTimer()
+        self.timerl.timeout.connect(self.move_chat_info_FRM)
+        self.timerl.start(1)
 
 
     def exit_move_back_chat_info_FRM(self):
 
-        self.timerh = QtCore.QTimer()
-        self.timerh.timeout.connect(self.move_back_chat_info_FRM)
-        self.timerh.start(0)
+        self.timerl = QtCore.QTimer()
+        self.timerl.timeout.connect(self.move_back_chat_info_FRM)
+        self.timerl.start(1)
 
 
     def move_back_chat_info_FRM(self):
 
         global move_smth4
+        
+        move_smth4 += 10
         self.chat_info_FRM.setGeometry(QtCore.QRect(move_smth4, 0, 681, 571))
-        move_smth4 += 2
-        if move_smth4 == 1060:
-            self.timerh.stop()
+        if move_smth4 >= 1060:
+            move_smth4 = 1060
+            self.timerl.stop()
 
+
+  
+
+    def move_chat_info_invite(self):
+        global move_smth5
+        
+        move_smth5 -= 4
+        self.frame_2.setGeometry(QtCore.QRect(50, move_smth5, 331, 571))
+       
+        if move_smth5 <= 0:
+            move_smth5 = 0
+            self.timerlr.stop()
+
+
+    def move_back_chat_invite(self):
+
+        global move_smth5
+        
+        move_smth5 += 8
+        self.frame_2.setGeometry(QtCore.QRect(50, move_smth5, 331, 571))
+
+        if move_smth5 >= 570:
+            move_smth5 = 570
+            self.timerlr.stop()
+
+    def hide_add_invite(self):
+
+        self.timerlr = QtCore.QTimer()
+        self.timerlr.timeout.connect(self.move_back_chat_invite)
+        self.timerlr.start(1)
+
+        self.user_add_2.clear()
+        self.user_add.clear()
+        self.exit_move_back_chat_info_FRM()
+        # self.listWidget.setEnabled(True)
+
+
+    def show_add_invite(self):
+        # self.frame_2.setGeometry(QtCore.QRect(60, 210, 321, 361))
+
+        self.timerlr = QtCore.QTimer()
+        self.timerlr.timeout.connect(self.move_chat_info_invite)
+        self.timerlr.start(1)
+        self.exit_move_back_chat_info_FRM()    
 
     #---------------------------------------------------------------------------------------------
+
+
+
+
 
     def sms_invite(self):
         if  self.user_add_2.text() :
@@ -1505,10 +1586,17 @@ class UI_Master(QMainWindow):
         
     def user_list_click(self,item):
         global reciver
-        reciver = item.text().strip('\n').lstrip()
+        self.exit_move_back_chat_info_FRM()
+        
         self.pv_LBL.setIcon(item.icon())
+        self.profile_LBL_2.setIcon(item.icon())
+        profile = tuple(map(str, item.whatsThis().split('>,_,<')))
+        self.usernamem_l.setText(profile[1])
+        self.label_17.setText(profile[1])
+        self.label_23.setText(profile[2])
+        reciver = profile[0]
+        
 
-        self.usernamem_l.setText(item.text().strip('\n').lstrip())
         # print(item.whatsThis())
         self.wating_l.setHidden(True)
         self.label_14.setHidden(True)
@@ -1529,17 +1617,7 @@ class UI_Master(QMainWindow):
         Remove.triggered.connect(self.delete_profile_pic)
         menu.exec_(QCursor.pos())
     
-    def hide_add_invite(self):
-        self.frame_2.setGeometry(QtCore.QRect(0, 800, 321, 361))
-        self.user_add_2.clear()
-        self.user_add.clear()
-        # self.listWidget.setEnabled(True)
-
-
-    def show_add_invite(self):
-        self.frame_2.setGeometry(QtCore.QRect(60, 210, 321, 361))
-
-        # self.listWidget.setEnabled(False)
+   
 
     def qr_invite(self):
         global token
@@ -2191,7 +2269,7 @@ class UI_Master(QMainWindow):
             self.timer.stop()
 
     def start_menu(self):
-
+        self.hide_add_invite()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.move_ups)
         self.timer.start(1)
@@ -2662,11 +2740,21 @@ class UI_Master(QMainWindow):
         list_users = chat_list()
         list_users.reverse()
         self.listWidget.clear()
-        for (count,item) in enumerate(list_users):
-            itm = QListWidgetItem("\n "+item[1]+"\n")
-            itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item[3])))
+        for (count,item_l) in enumerate(list_users):
+            itm = QListWidgetItem("\n "+item_l[1]+"\n")
+            itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
             self.listWidget.insertItem(count,itm)        
-            self.listWidget.item(count).setWhatsThis(item[0])
+            self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+
+            itm = QListWidgetItem("\n "+item_l[1]+"\n")
+            itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+            self.listWidget_2.insertItem(count,itm)    
+
+        # for i in range (0,20):
+        #     itm = QListWidgetItem("\n "+'hhh'+"\n")
+        #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/output.png")))
+        #     self.listWidget.insertItem(i,itm) 
+            
 
 
         # self.listWidget.item(1).setForeground(QtCore.Qt.blue)

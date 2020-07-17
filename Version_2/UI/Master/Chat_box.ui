@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2000</width>
-    <height>3000</height>
+    <width>1953</width>
+    <height>1391</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
    <widget class="QFrame" name="setting_FRM">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>800</x>
       <y>600</y>
       <width>381</width>
       <height>581</height>
@@ -173,7 +173,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>mohammad hossein fadavi</string>
+      <string>Mehdi JOOOOOOOOOOOOOOON</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
@@ -781,9 +781,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-20</y>
         <width>51</width>
-        <height>581</height>
+        <height>591</height>
        </rect>
       </property>
       <property name="text">
@@ -829,9 +829,9 @@
      <widget class="QPushButton" name="clear_b">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>110</y>
-        <width>21</width>
+        <width>31</width>
         <height>25</height>
        </rect>
       </property>
@@ -1234,7 +1234,7 @@
     <widget class="QLabel" name="wating_l">
      <property name="geometry">
       <rect>
-       <x>370</x>
+       <x>380</x>
        <y>0</y>
        <width>681</width>
        <height>571</height>
@@ -1245,29 +1245,6 @@
      </property>
      <property name="scaledContents">
       <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_14">
-     <property name="geometry">
-      <rect>
-       <x>570</x>
-       <y>230</y>
-       <width>321</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Manjari</family>
-       <pointsize>12</pointsize>
-       <italic>true</italic>
-      </font>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Please select a chat to start messaging&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QPushButton" name="send_b_14">
@@ -1296,6 +1273,29 @@
       </size>
      </property>
     </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>240</y>
+       <width>321</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Manjari</family>
+       <pointsize>12</pointsize>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Please select a chat to start messaging&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
     <zorder>label_2</zorder>
     <zorder>label_3</zorder>
     <zorder>record_b</zorder>
@@ -1315,7 +1315,6 @@
     <zorder>menu_user_b</zorder>
     <zorder>messegebox_t</zorder>
     <zorder>send_b</zorder>
-    <zorder>frame</zorder>
     <zorder>doc_BTN</zorder>
     <zorder>pv_LBL</zorder>
     <zorder>label_6</zorder>
@@ -1326,11 +1325,12 @@
     <zorder>send_b_13</zorder>
     <zorder>label_8</zorder>
     <zorder>label_9</zorder>
-    <zorder>wating_l</zorder>
-    <zorder>label_14</zorder>
     <zorder>send_b_14</zorder>
     <zorder>user_search_t</zorder>
     <zorder>user_search_b</zorder>
+    <zorder>wating_l</zorder>
+    <zorder>label_14</zorder>
+    <zorder>frame</zorder>
    </widget>
    <widget class="QPushButton" name="emoji_BTN_2">
     <property name="geometry">
@@ -1358,169 +1358,6 @@
      </size>
     </property>
    </widget>
-   <widget class="QFrame" name="frame_2">
-    <property name="geometry">
-     <rect>
-      <x>530</x>
-      <y>590</y>
-      <width>321</width>
-      <height>361</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QLabel" name="add_frindl">
-     <property name="geometry">
-      <rect>
-       <x>-10</x>
-       <y>60</y>
-       <width>321</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string> Add Contact By User Name</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="user_add">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>301</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="add_freind">
-     <property name="geometry">
-      <rect>
-       <x>240</x>
-       <y>150</y>
-       <width>61</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>Add</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="cancle_user">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>41</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="invite">
-     <property name="geometry">
-      <rect>
-       <x>220</x>
-       <y>300</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>Send Sms</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="add_frindl_2">
-     <property name="geometry">
-      <rect>
-       <x>-10</x>
-       <y>210</y>
-       <width>321</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string> Invite Freind By Phone Number</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="user_add_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>250</y>
-       <width>301</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="Line" name="line_2">
-     <property name="geometry">
-      <rect>
-       <x>-80</x>
-       <y>180</y>
-       <width>401</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="invite_2">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>300</y>
-       <width>81</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>Qr Code</string>
-     </property>
-    </widget>
-   </widget>
    <widget class="QFrame" name="chat_info_FRM">
     <property name="geometry">
      <rect>
@@ -1530,8 +1367,11 @@
       <height>561</height>
      </rect>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::NoFrame</enum>
     </property>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
@@ -1541,7 +1381,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>671</width>
+       <width>681</width>
        <height>51</height>
       </rect>
      </property>
@@ -1555,29 +1395,32 @@
     <widget class="QPushButton" name="pushButton_3">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>10</y>
-       <width>31</width>
-       <height>31</height>
+       <width>25</width>
+       <height>25</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="text">
       <string/>
      </property>
      <property name="iconSize">
       <size>
-       <width>25</width>
-       <height>25</height>
+       <width>15</width>
+       <height>15</height>
       </size>
      </property>
      <property name="flat">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QLabel" name="label_16">
      <property name="geometry">
       <rect>
-       <x>100</x>
+       <x>90</x>
        <y>10</y>
        <width>101</width>
        <height>31</height>
@@ -1590,45 +1433,13 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;chat info&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-    <widget class="QLabel" name="profile_LBL_2">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>70</y>
-       <width>180</width>
-       <height>180</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>s</string>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_17">
-     <property name="geometry">
-      <rect>
-       <x>360</x>
-       <y>110</y>
-       <width>111</width>
-       <height>81</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;fadavi joun&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_18">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>295</y>
-       <width>671</width>
-       <height>51</height>
+       <x>4</x>
+       <y>285</y>
+       <width>691</width>
+       <height>71</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -1643,7 +1454,7 @@
       <rect>
        <x>50</x>
        <y>305</y>
-       <width>151</width>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
@@ -1660,8 +1471,29 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="baseSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="toolTip">
+      <string>Mute</string>
+     </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLabel" name="label_20">
@@ -1683,7 +1515,7 @@
     <widget class="QLabel" name="label_21">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>4</x>
        <y>50</y>
        <width>671</width>
        <height>231</height>
@@ -1696,30 +1528,146 @@
       <string/>
      </property>
     </widget>
-    <widget class="QListWidget" name="listWidget_2">
-     <property name="geometry">
-      <rect>
-       <x>-1</x>
-       <y>390</y>
-       <width>675</width>
-       <height>171</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_22">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>4</x>
        <y>360</y>
        <width>671</width>
-       <height>31</height>
+       <height>201</height>
       </rect>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; color:#ffffff;&quot;&gt;ghjghjg&lt;/span&gt;&lt;span style=&quot; font-size:12pt; color:#00bfa5;&quot;&gt;participants &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff; vertical-align:sub;&quot;&gt;0&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; color:#ffffff;&quot;&gt;0 &lt;/span&gt;&lt;span style=&quot; font-size:12pt; color:#00bfa5;&quot;&gt;   participants &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="profile_LBL_2">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>70</y>
+       <width>180</width>
+       <height>180</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>179</width>
+       <height>179</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>70</y>
+       <width>411</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Nimbus Roman</family>
+       <weight>75</weight>
+       <italic>true</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_23">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>160</y>
+       <width>381</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="listWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>44</x>
+       <y>420</y>
+       <width>631</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Chilanka</family>
+       <pointsize>14</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="cursor" stdset="0">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+     </property>
+     <property name="tabKeyNavigation">
+      <bool>false</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectItems</enum>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>40</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideRight</enum>
+     </property>
+     <property name="verticalScrollMode">
+      <enum>QAbstractItemView::ScrollPerItem</enum>
+     </property>
+     <property name="movement">
+      <enum>QListView::Static</enum>
+     </property>
+     <property name="spacing">
+      <number>5</number>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::ListMode</enum>
      </property>
     </widget>
     <zorder>label_20</zorder>
@@ -1730,16 +1678,206 @@
     <zorder>label_19</zorder>
     <zorder>checkBox</zorder>
     <zorder>label_21</zorder>
-    <zorder>label_17</zorder>
     <zorder>profile_LBL_2</zorder>
-    <zorder>listWidget_2</zorder>
+    <zorder>label_17</zorder>
+    <zorder>label_23</zorder>
     <zorder>label_22</zorder>
+    <zorder>listWidget_2</zorder>
+   </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>570</y>
+      <width>331</width>
+      <height>571</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="add_frindl">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>110</y>
+       <width>341</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string> Add Contact By User Name</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="user_add">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>311</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="add_freind">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>220</y>
+       <width>271</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Add</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="cancle_user">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>30</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="invite">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>480</y>
+       <width>131</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Send Sms</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="add_frindl_2">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>370</y>
+       <width>341</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string> Invite Freind By Phone Number</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="user_add_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>410</y>
+       <width>311</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="invite_2">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>480</y>
+       <width>131</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Qr Code</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_24">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>-14</y>
+       <width>351</width>
+       <height>591</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="add_frindl_3">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>290</y>
+       <width>341</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;________________________________________________________________&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <zorder>label_24</zorder>
+    <zorder>add_frindl</zorder>
+    <zorder>user_add</zorder>
+    <zorder>add_freind</zorder>
+    <zorder>cancle_user</zorder>
+    <zorder>invite</zorder>
+    <zorder>add_frindl_2</zorder>
+    <zorder>user_add_2</zorder>
+    <zorder>invite_2</zorder>
+    <zorder>add_frindl_3</zorder>
    </widget>
    <zorder>mother_FRM</zorder>
    <zorder>setting_FRM</zorder>
    <zorder>emoji_BTN_2</zorder>
-   <zorder>frame_2</zorder>
    <zorder>chat_info_FRM</zorder>
+   <zorder>frame_2</zorder>
   </widget>
  </widget>
  <resources/>
