@@ -228,13 +228,16 @@ def get_all_chat(your_name,your_friend):
             tabale=str(your_name+str(your_friend))
         else:
             tabale=str(your_friend+str(your_name))
+        try:
+            connection=sqlite3.connect('./client.db')
+            cursor = connection.cursor()
+            cursor.execute(f"SELECT * FROM {tabale}")
+            r = cursor.fetchall()
+            connection.close()
+            return r
 
-        connection=sqlite3.connect('./client.db')
-        cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM {tabale}")
-        r = cursor.fetchall()
-        connection.close()
-        return r
+        except:
+            return False
 
 
 def chat_list(friend=None):
@@ -383,10 +386,10 @@ sending_to_server(s,im_online)
 # obj.login(s)
 # obj.user_want_sign_in(s)
 # obj.forgot_password(s)
-for i in range(2):
-    obj.send_text_message(s,token,token)
+# for i in range(2):
+#     obj.send_text_message(s,token,token)
 
-print(get_all_chat(token,token))
+print(get_all_chat(token,'mhfa1380'))
 # obj.forgot_password(s)
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
