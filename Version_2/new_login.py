@@ -90,7 +90,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0', 1425))
+s.connect(('0.0.0.0', 1234))
 
 email_changer = ''
 data_user = []
@@ -1128,7 +1128,7 @@ class UI_Master(QMainWindow):
         
 
         # self.bottomchat_bar_l.setStyleSheet('background-color:rgba(240, 240, 240, 0.5);')
-
+        self.user_search_t.setFocus()
         self.doc_BTN.setStyleSheet(
             "background-color: transparent;border: 0px solid transparent;")
         self.camera_BTN.setStyleSheet(
@@ -1151,8 +1151,9 @@ class UI_Master(QMainWindow):
 
         # self.label_bottomchatbar.setStyleSheet("QWidget { background-color: %s}" % QtGui.QColor(255, 255, 255).name())
         # self.label_topchatbar.setStyleSheet("QWidget { background-color: %s}" % QtGui.QColor(255, 255, 255).name())
-        self.label_sidebar.setStyleSheet(
-            "QWidget { background-color: %s};border: 1px solid white;" % QtGui.QColor(1, 36, 32).name())
+        # self.label_sidebar.setStyleSheet("QWidget { background-color: %s};border: 1px solid white;" % QtGui.QColor(1, 36, 32).name())
+        self.label_sidebar.setStyleSheet("background-color: rgba(1, 36, 32,.9)")
+        
         # self.label_bottomchatbar.setStyleSheet("border: 1px solid lightgray;")
         # self.label_topchatbar.setStyleSheet("border: 1px solid lightgray;")
 
@@ -1213,7 +1214,7 @@ class UI_Master(QMainWindow):
 
 
         self.label_17.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 26px;")
-        self.label_23.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(50, 50, 50);font-size: 20px;")
+        self.label_23.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(100, 100, 100);font-size: 17px;")
 
         
         
@@ -1292,7 +1293,7 @@ class UI_Master(QMainWindow):
             "background-color: white;")
 
 
-        self.textedit_messegebox.setFocus()
+       
         self.setting_FRM.setStyleSheet(
             "background-color: black;border: 0px solid lightgray;border-radius: 5px;")
 
@@ -1439,7 +1440,7 @@ class UI_Master(QMainWindow):
         
         #-------------------------------------------------------------------------------------
 
-        self.pv_LBL.clicked.connect(self.start_move_chat_info_FRM)
+        self.pv_LBL.clicked.connect(lambda : self.start_move_chat_info_FRM("other"))
         self.pushButton_3.clicked.connect(self.exit_move_back_chat_info_FRM)
         self.pushButton_3.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/close.png')))
 
@@ -1466,12 +1467,25 @@ class UI_Master(QMainWindow):
             move_smth4 = 380
             self.timerl.stop()
 
-    def start_move_chat_info_FRM(self):
-        self.timerl = QtCore.QTimer()
-        self.timerl.timeout.connect(self.move_chat_info_FRM)
-        self.timerl.start(1)
+    
 
-    def start_move_chat_info_FRM(self):
+    def start_move_chat_info_FRM(self,from_who):
+        img = self.profile_LBL_2.icon()
+        name = self.label_17.text()
+        bio = self.label_23.text()
+        if from_who == "me":
+            self.exit_move_back_chat_info_FRM()
+            self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+            self.label_17.setText('mohammad hossein')
+            self.label_23.setText("dars bekhon pessar")
+      
+        else:
+
+
+            self.profile_LBL_2.setIcon(self.pv_LBL.icon())
+            self.label_17.setText(self.usernamem_l.text())
+            self.label_23.setText(self.usernamem_l.whatsThis())
+       
         self.timerl = QtCore.QTimer()
         self.timerl.timeout.connect(self.move_chat_info_FRM)
         self.timerl.start(1)
@@ -1520,6 +1534,7 @@ class UI_Master(QMainWindow):
             self.timerlr.stop()
 
     def hide_add_invite(self):
+        self.messegebox_t.setFocus()
 
         self.timerlr = QtCore.QTimer()
         self.timerlr.timeout.connect(self.move_back_chat_invite)
@@ -1533,7 +1548,7 @@ class UI_Master(QMainWindow):
 
     def show_add_invite(self):
         # self.frame_2.setGeometry(QtCore.QRect(60, 210, 321, 361))
-
+        self.user_add.setFocus()
         self.timerlr = QtCore.QTimer()
         self.timerlr.timeout.connect(self.move_chat_info_invite)
         self.timerlr.start(1)
@@ -1561,6 +1576,7 @@ class UI_Master(QMainWindow):
                 QMessageBox.about(self, "PyChat", "ooops! Try Again Later.")
         else:
             QMessageBox.about(self, "PyChat", "Please enter phonenumber.")
+            self.user_add_2.setFocus()
 
         
         
@@ -1571,6 +1587,7 @@ class UI_Master(QMainWindow):
             self.hide_add_invite()
         else:
             QMessageBox.about(self, "PyChat", "Please enter User Name.")
+            self.user_add.setFocus()
 
 
     def choos_type(self,data):
@@ -1586,14 +1603,16 @@ class UI_Master(QMainWindow):
 
         
     def user_list_click(self,item):
+        self.messegebox_t.setFocus()
         global reciver
         self.exit_move_back_chat_info_FRM()
-        
         self.pv_LBL.setIcon(item.icon())
         self.profile_LBL_2.setIcon(item.icon())
         profile = tuple(map(str, item.whatsThis().split('>,_,<')))
         self.usernamem_l.setText(profile[1])
+        self.usernamem_l.setWhatsThis(profile[2])
         self.label_17.setText(profile[1])
+
         self.label_23.setText(profile[2])
         reciver = profile[0]
         
@@ -1633,6 +1652,7 @@ class UI_Master(QMainWindow):
             self.hide_add_invite()
         else:
             QMessageBox.about(self, "PyChat", "Please enter phonenumber.")
+            self.user_add_2.setFocus()
 
     def avatar (self):
         try:
@@ -1808,8 +1828,7 @@ class UI_Master(QMainWindow):
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
-        self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')))
+        self.user_image.setIcon(self.pv_LBL.icon())
         self.user_image.setIconSize(QSize(35, 35))
 
         self.messege_user = QPushButton()
@@ -1822,7 +1841,7 @@ class UI_Master(QMainWindow):
         if self.last_used == "me":
             self.formLayout.addRow(QLabel())
         self.formLayout.addRow(self.user_image, self.messege_user)
-        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(self.clickedBtn_user)
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(lambda : self.start_move_chat_info_FRM("other"))
 
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
@@ -1907,7 +1926,7 @@ class UI_Master(QMainWindow):
         if self.last_used == "me":
             self.formLayout.addRow(QLabel())
         self.formLayout.addRow(self.user_image, self.messege_user)
-        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(self.clickedBtn_user)
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(lambda : self.start_move_chat_info_FRM("me"))
 
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
@@ -2520,7 +2539,8 @@ class UI_Master(QMainWindow):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             # self.close()
-            # self.clickedBtn_send()
+            self.clickedBtn_send()
+            self.messegebox_t.setFocus()
             pass
 
         # if event.key() == Qt.Key_2:
@@ -2546,6 +2566,7 @@ class UI_Master(QMainWindow):
         self.clear_screen()
 
     def clickedBtn_send(self):
+        self.messegebox_t.setFocus()
         global token,reciver
         self.exit_emoji_box()
         obj.send_text_message(s,token,reciver,self.textedit_messegebox.toPlainText())
@@ -2579,7 +2600,7 @@ class UI_Master(QMainWindow):
             self.formLayout.addRow(self.user_image, self.messege_user)
 
             self.formLayout.itemAt(self.formLayout.count(
-            )-2).widget().clicked.connect(self.clickedBtn_user)
+            )-2).widget().clicked.connect(lambda : self.start_move_chat_info_FRM("me"))
             self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
                 "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
             self.formLayout.itemAt(self.formLayout.count(
@@ -2598,6 +2619,7 @@ class UI_Master(QMainWindow):
             
 
     def clickedBtn_other(self,data):
+        self.messegebox_t.setFocus()
 
         global new_messeg
   
@@ -2608,8 +2630,7 @@ class UI_Master(QMainWindow):
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
-        self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')))
+        self.user_image.setIcon(self.pv_LBL.icon())
         self.user_image.setIconSize(QSize(35, 35))
         # self.user_image.setPixmap(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')).scaledToWidth(35))
         self.messege_user = QLabel(messege)
@@ -2621,7 +2642,7 @@ class UI_Master(QMainWindow):
        
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setWhatsThis(messege)
 
-        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(self.clickedBtn_user)
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().clicked.connect(lambda : self.start_move_chat_info_FRM("other"))
 
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
@@ -2641,12 +2662,12 @@ class UI_Master(QMainWindow):
         new_messeg.clear()
 
     def voice_mess_other(self):
+        self.messegebox_t.setFocus()
         self.formLayout.addRow(QLabel())
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
-        self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/user.png')))
+        self.user_image.setIcon(self.pv_LBL.icon())
         self.user_image.setIconSize(QSize(35, 35))
         if self.last_used == "me":
             self.formLayout.addRow(QLabel())
@@ -2658,14 +2679,13 @@ class UI_Master(QMainWindow):
 
         self.formLayout.addRow(self.user_image, self.seen_image)
         self.formLayout.itemAt(self.formLayout.count(
-        )-2).widget().clicked.connect(self.clickedBtn_user)
+        )-2).widget().clicked.connect(lambda : self.start_move_chat_info_FRM("other"))
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
 
         self.formLayout.itemAt(self.formLayout.count(
         )-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.formLayout.itemAt(self.formLayout.count(
-        )-1).widget().clicked.connect(self.clickedBtn_user)
+        # self.formLayout.itemAt(self.formLayout.count()-1).widget().clicked.connect(self.start_move_chat_info_FRM)
 
         self.formLayout.itemAt(self.formLayout.count(
         )-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
@@ -2683,14 +2703,15 @@ class UI_Master(QMainWindow):
         ##
         self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight)
         self.formLayout.addRow(self.messege_time, self.voice)
-        self.formLayout.itemAt(self.formLayout.count(
-        )-1).widget().sliderReleased.connect(self.clickedBtn_user)
+        # self.formLayout.itemAt(self.formLayout.count(
+        # )-1).widget().sliderReleased.connect(self.start_move_chat_info_FRM)
 
         self.formLayout.addRow(QLabel())
         self.formLayout.addRow(QLabel())
         self.last_used = "other"
 
     def voice_mess_me(self,connect_to):
+        self.messegebox_t.setFocus()
         self.formLayout.addRow(QLabel())
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
@@ -2708,7 +2729,7 @@ class UI_Master(QMainWindow):
 
         self.formLayout.addRow(self.user_image, self.seen_image)
         self.formLayout.itemAt(self.formLayout.count(
-        )-2).widget().clicked.connect(self.clickedBtn_user)
+        )-2).widget().clicked.connect(lambda : self.start_move_chat_info_FRM("me"))
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
 
@@ -2734,8 +2755,8 @@ class UI_Master(QMainWindow):
         self.formLayout.itemAt(self.formLayout.count()-3).widget().clicked.connect(lambda : self.play_voice(connect_to,self.formLayout.count()-3,int(abs(float(mediainfo(os.getcwd() + "/UI/Master"  +'/Files/'+connect_to)['duration'])))) )
 
 
-        self.formLayout.itemAt(self.formLayout.count(
-        )-1).widget().sliderReleased.connect(self.clickedBtn_user)
+        # self.formLayout.itemAt(self.formLayout.count(
+        # )-1).widget().sliderReleased.connect(lambda : self.start_move_chat_info_FRM("me"))
 
         self.formLayout.addRow(QLabel())
         self.formLayout.addRow(QLabel())
@@ -2776,6 +2797,7 @@ class UI_Master(QMainWindow):
             self.button_send.setHidden(True)
 
     def clear_screen(self):
+        self.messegebox_t.setFocus()
         for i in reversed(range(self.formLayout.count())):
             self.formLayout.itemAt(i).widget().deleteLater()
     

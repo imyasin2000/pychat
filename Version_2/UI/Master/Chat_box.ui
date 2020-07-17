@@ -638,6 +638,18 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="placeholderText">
+      <string>   Contact Serach</string>
+     </property>
     </widget>
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
@@ -1580,10 +1592,11 @@
      </property>
      <property name="font">
       <font>
-       <family>Nimbus Roman</family>
-       <weight>75</weight>
-       <italic>true</italic>
-       <bold>true</bold>
+       <family>Sahadeva</family>
+       <pointsize>11</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -1597,7 +1610,7 @@
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>160</y>
+       <y>150</y>
        <width>381</width>
        <height>91</height>
       </rect>
@@ -1606,7 +1619,7 @@
       <string/>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
      </property>
     </widget>
     <widget class="QListWidget" name="listWidget_2">
