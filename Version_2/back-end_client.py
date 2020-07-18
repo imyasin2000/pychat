@@ -106,11 +106,42 @@ class user :
 
     def send_text_message(self,s:socket,sender,reciver):
         message=input("enter text for sending to your friend : ")
+        
+        if str(sender)>str(reciver):
+            tabale=str(sender+str(reciver))
+        else:
+            tabale=str(sender+str(reciver))
+
         message_time=str(datetime.datetime.now())
         message_id=str(time.time())
-        message_id=str(sender)+str(reciver)+message_id[:-3]
+        message_id=str(tabale)+message_id[:-3]
         data=[int(106),sender,reciver,message,message_time,message_id,'t']
         sending_to_server(s,data)
+
+
+        connection = sqlite3.connect("./client.db")
+        cursor = connection.cursor()
+
+        sql=f"""
+            CREATE TABLE IF NOT EXISTS {tabale}(
+            sender VARCHAR (48),
+            reciver VARCHAR(48),
+            message VARCHAR (600),
+            message_time DATETIME (60),
+            message_id VARCHAR (60),
+            message_type VARCHAR (3)
+            );
+        """
+        cursor.execute(sql)
+        connection.commit()
+
+        cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (sender,reciver,message,message_time,message_id,'t'))
+        connection.commit()
+        connection.close()
+
+
+
+
 
     def send_profilepic(self, s: socket,sender,reciver,usage):
         root = Tk()
@@ -119,7 +150,12 @@ class user :
         name, ext = os.path.splitext(root.filename)
         x = os.path.getsize(root.filename) #size
         send_time=str(datetime.datetime.now())[:-4]
-        media_id=str(sender)+str(reciver)+send_time
+        if str(sender)>str(reciver):
+            tabale=str(sender+str(reciver))
+        else:
+            tabale=str(sender+str(reciver))
+
+        media_id=str(tabale)+send_time
         media_id=media_id.replace(":","-")
         media_id=media_id.replace(' ','-')
         media_id=media_id.replace('.','-')
@@ -345,6 +381,22 @@ def do_work(obj:user,s:socket):
             #yasinmhd110@gmail.com
             q.task_done()
 
+def login_check():
+    connection=sqlite3.connect('./client.db')
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT * FROM info")
+    r = cursor.fetchall()
+    connection.close()
+    #r[4] is login chek
+    return r
+def set_internal_pass():
+    password=input('enter an internal password')
+    connection=sqlite3.connect("./client.db")
+    cursor=connection.cursor()
+    cursor.execute("UPDATE info SET internal_password=?", (password))
+    connection.commit()
+    connection.close()
+
 
 
 #--------------------------main--------------------------------------------------
@@ -373,7 +425,7 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 #in 2 khat baraye etesal avalie be server ast ta in ke server client mara be onvan 
 #online zakhire konad #TODO #in tike ro bayad behtar konam 
 
-token='user1'
+token='yasin78'
 im_online=[int(105),token]
 sending_to_server(s,im_online)
 # obj.send_profilepic(s,token,'yasin78','m')
@@ -386,10 +438,11 @@ sending_to_server(s,im_online)
 # obj.login(s)
 # obj.user_want_sign_in(s)
 # obj.forgot_password(s)
-# for i in range(2):
-#     obj.send_text_message(s,token,token)
+for i in range(2):
+    obj.send_text_message(s,token,'mhfa1380')
+# set_internal_pass()
 
-print(get_all_chat(token,'mhfa1380'))
+# print(get_all_chat(token,'mhfa1380'))
 # obj.forgot_password(s)
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
