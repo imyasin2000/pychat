@@ -112,6 +112,35 @@ class user :
         data=[int(106),sender,reciver,message,message_time,message_id,'t']
         sending_to_server(s,data)
 
+        if str(sender)>str(reciver):
+            tabale=str(sender+str(reciver))
+        else:
+            tabale=str(sender+str(reciver))
+
+        connection = sqlite3.connect("./client.db")
+        cursor = connection.cursor()
+
+        sql=f"""
+            CREATE TABLE IF NOT EXISTS {tabale}(
+            sender VARCHAR (48),
+            reciver VARCHAR(48),
+            message VARCHAR (600),
+            message_time DATETIME (60),
+            message_id VARCHAR (60),
+            message_type VARCHAR (3)
+            );
+        """
+        cursor.execute(sql)
+        connection.commit()
+
+        cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (sender,reciver,message,message_time,message_id,'t'))
+        connection.commit()
+        connection.close()
+
+
+
+
+
     def send_profilepic(self, s: socket,sender,reciver,usage):
         root = Tk()
         root.resizable(0, 0)
@@ -345,6 +374,22 @@ def do_work(obj:user,s:socket):
             #yasinmhd110@gmail.com
             q.task_done()
 
+def login_check():
+    connection=sqlite3.connect('./client.db')
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT * FROM info")
+    r = cursor.fetchall()
+    connection.close()
+    #r[4] is login chek
+    return r
+def set_internal_pass():
+    password=input('enter an internal password')
+    connection=sqlite3.connect("./client.db")
+    cursor=connection.cursor()
+    cursor.execute("UPDATE info SET internal_password=?", (password))
+    connection.commit()
+    connection.close()
+
 
 
 #--------------------------main--------------------------------------------------
@@ -387,9 +432,10 @@ sending_to_server(s,im_online)
 # obj.user_want_sign_in(s)
 # obj.forgot_password(s)
 # for i in range(2):
-#     obj.send_text_message(s,token,token)
+#     obj.send_text_message(s,token,'mhfa1380')
+set_internal_pass()
 
-print(get_all_chat(token,'mhfa1380'))
+# print(get_all_chat(token,'mhfa1380'))
 # obj.forgot_password(s)
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
