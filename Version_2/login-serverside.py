@@ -206,7 +206,7 @@ def welcome_email(data: list):
     server.starttls()
     # Login Credentials for sending the mail
     server.login("pychat_messenger@yahoo.com", password)
-    # send the message via the server.
+    # send the message via  server.
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
     print(data)
@@ -585,6 +585,111 @@ def adding_friends(data:list):
 
 
 
+def recover_acount(data:list):
+    user_name=data[0]
+    name=create_database_for_recover_some_one()
+
+    connection = sqlite3.connect("./database.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM users WHERE user_id=?", (data[0],))
+    r = cursor.fetchall()
+
+    friends=r[0][-1]#its json format
+    friends=json.loads(friends)
+
+    connection2 = sqlite3.connect(f"{name}")
+    cursor2 = connection2.cursor()
+    cursor2.execute("INSERT INTO info VALUES (?,?,?,?,?,?,?)", (r[0][0], r[0][1], r[0][2],'',1,r[0][-3],r[0][-2]))
+
+
+    for freind in friends:
+        if str(freind)>str(user_name):
+            tabale=str(freind+str(user_name))
+        else:
+            tabale=str(user_name+str(freind))
+
+
+        sql=f"""
+                CREATE TABLE IF NOT EXISTS {tabale}(
+                sender VARCHAR (48),
+                reciver VARCHAR(48),
+                message VARCHAR (600),
+                message_time DATETIME (60),
+                message_id VARCHAR (60),
+                message_type VARCHAR (3)
+                );
+            """
+        cursor2.execute(sql)
+        cursor.execute("SELECT * FROM users WHERE user_id=?", (freind,))
+        freind_info=cursor.fetchall()
+        if freind_info!=[]:
+            cursor2.execute("INSERT INTO friends VALUES (?,?,?,?)", (freind_info[0][0], freind_info[0][1], freind_info[0][-3], freind_info[0][-2]))
+            connection2.commit()
+        else:
+            pass
+        try:
+            cursor.execute(f"SELECT * FROM {tabale}")
+            chat = cursor.fetchall()
+        except:
+            continue
+
+        for mes in chat:
+
+            cursor2.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (mes[0], mes[1],mes[2], mes[3],mes[4],mes[5]))
+            connection2.commit()
+
+    connection.close()
+    connection2.close()
+
+
+
+
+
+def create_database_for_recover_some_one():
+    name=str('client')+str(datetime.now())[9:]
+    name=name.replace(' ','-')
+    name=name.replace('.','-')
+    name=name.replace(':','-')
+    name=name+'.db'
+    print(name)
+    connection=sqlite3.connect(f"{name}")
+    cur=connection.cursor()
+
+    sql="""
+        CREATE TABLE IF NOT EXISTS  info(
+        user_id VARCHAR (48),
+        name VARCHAR(48),
+        mail VARCHAR (60),
+        internal_password VARCHAR (60),
+        login INTEGER,
+        bio VARCHAR(60),
+        profile VARCHAR(70)
+
+        );
+    """
+    cur.execute(sql)
+
+    sql="""
+        CREATE TABLE IF NOT EXISTS  friends(
+        user_id VARCHAR (48),
+        name VARCHAR(48),
+        bio VARCHAR(60),
+        profile VARCHAR(70)
+
+        );
+    """
+    cur.execute(sql)
+    connection.commit()
+    connection.close()
+    return name
+
+    
+
+
+
+
+
+
 
 
 
@@ -596,7 +701,7 @@ def adding_friends(data:list):
 
 
 #-----------------------------------------END FUNC ------------------------------------------------------------
-
+recover_acount(['PyChat'])
 
 
 print(online_users)
@@ -605,5 +710,4 @@ work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request
       '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'9000':send_ads}
 
 s=Socket(ip, port)#run socket init make object from socket
-
 #s.send

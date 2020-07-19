@@ -10,6 +10,7 @@ from tkinter import filedialog
 from tkinter import *
 import os
 import sqlite3
+import clientdatabase
 
 q=Queue()
 s=socket.socket()
@@ -105,6 +106,12 @@ class user :
 
     def password_changed(self,s:socket,data:list):
         print(data[0])
+
+    def logout(self,s:socket):
+        if os.path.exists("client.db"):
+            os.remove("client.db")
+            clientdatabase.create_database()
+
         
 
     
@@ -459,9 +466,10 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 token='yasin78'
 # im_online=[int(105),token]
 # sending_to_server(s,im_online)
-obj.send_profilepic(s,token,'yasin78','m')
+# obj.send_profilepic(s,token,'yasin78','m')
 
 # obj.add_friend(s,token)
+obj.logout(s)
 
 
 
