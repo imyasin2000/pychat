@@ -13,6 +13,7 @@ from captcha.image import ImageCaptcha
 from PyQt5 import uic
 import sys
 import os
+import webbrowser
 from os import path
 import random
 import http.client as httplib
@@ -93,7 +94,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0', 1234))
+s.connect(('0.0.0.0', 1261))
 
 email_changer = ''
 data_user = []
@@ -112,6 +113,7 @@ move_smth2 = 571
 move_smth4 = 1060
 move_smth5 = 570
 icon_d='down'
+item_change=''
 find_mess_ls = ["",[],0]
 color=''
 
@@ -215,12 +217,31 @@ class user:
         if data[0] == "welcome to pychat !":
             time.sleep(7)
             wating_form(False, "")
+            notification(data[0])
             window.Signup_FRM.setGeometry(QtCore.QRect(22000, 0, 801, 541))
             window.Signin_FRM.setGeometry(QtCore.QRect(0, 0, 801, 541))
             window.Recover_FRM_4.setGeometry(QtCore.QRect(22000, 0, 801, 541))
             window.Username_LE.clear()
             window.Password_LE.clear()
             window.Username_LE.setFocus()
+            connection = sqlite3.connect("./client.db")
+            cur = connection.cursor()
+            cur.execute("INSERT INTO info VALUES (?,?,?,?,?,?,?)", (data[1], data[2], data[3],'8b9c2ff6557732bc2678ff3eff8ff6557732bc2678ff3e',True,'Hey! Im Using PyChat.','output.png'))
+            connection.commit()
+            connection.close()
+            os.execl(sys.executable, os.path.abspath(__file__), *sys.argv) 
+        
+        elif data[0] == "welcome to pychat!":
+            time.sleep(1)
+            notification(data[0])
+            wating_form(False,"")
+            connection = sqlite3.connect("./client.db")
+            cur = connection.cursor()
+            cur.execute("INSERT INTO info VALUES (?,?,?,?,?,?,?)", (data[1], data[2], data[3],'8b9c2ff6557732bc2678ff3eff8ff6557732bc2678ff3e',True,'Hey! Im Using PyChat.','output.png'))
+            connection.commit()
+            connection.close()
+            os.execl(sys.executable, os.path.abspath(__file__), *sys.argv) 
+
         elif data[0] == 'Error While Sending Email !':
             wating_form(False,'')
             wating_form(True,'no_response')
@@ -632,10 +653,10 @@ def do_work(obj: user, s: socket):
 
 
 obj = user()
-obj_work={ 'token':"yasin78",
-      '500':obj.email_verify,
+obj_work={ 
+      '500':obj.get_code_server_rigister,
       '502':obj.server_added_user_to_database,
-      '509':obj.check_mail_forgotpass,
+      '509':obj.get_code_server,
       '504':obj.password_changed,
       '503':recive_message,
     #   '509':obj.profile_changed,
@@ -665,7 +686,9 @@ def cheak_net():
 def notification(messege):
     img = os.path.abspath(os.getcwd() + '/Other/icon.png')
     subprocess.Popen(["notify-send", "-i", img, "PyChat", messege])
-    playsound('Other/notify.mp3')
+    thread = threading.Thread(target=lambda : playsound(os.getcwd() + "/Other/notify.mp3") )
+    thread.start()
+  
 
 
 
@@ -843,9 +866,7 @@ class UI_login(QMainWindow):
                     image = response2.json()['picture']
                     self.Password_LE_4.setFocus()
 
-                    ##############################
-                    import urllib.request
-                    urllib.request.urlretrieve(image, '%s.jpg' % response2.json()['nickname'])
+                    
                 else:
                     QMessageBox.about(self, "signup error", "illegal access!")
             else:
@@ -981,9 +1002,7 @@ class UI_login(QMainWindow):
             time.sleep(2)
         wating_form(False, "")
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.close()
+  
 
     def close_win(self):
         self.close()
@@ -1304,6 +1323,16 @@ class UI_Master(QMainWindow):
             QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/laugh.png')))
 
         self.button_usersearch.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/search.png'))
+
+        self.menu_bk_BTN_3.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/menuseting.png'))
+        self.menu_bk_BTN_4.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/call.png'))
+        self.menu_bk_BTN_4.clicked.connect(self.contact_us)
+        self.menu_bk_BTN_4.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;color:black")
+
+        self.menu_bk_BTN_3.clicked.connect(self.contex_setting_menu)
+        self.menu_bk_BTN_3.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;color:black")
+        
+
         self.button_menu.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/menu.png'))
         self.button_record.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/radio.png'))
         self.button_attach.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/clip.png'))
@@ -1319,7 +1348,7 @@ class UI_Master(QMainWindow):
         self.user_add_2.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:10px;")
 
         
-        self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/person.png')))
+        self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
 
 
         self.cancle_user.clicked.connect(self.hide_add_invite)
@@ -1427,8 +1456,8 @@ class UI_Master(QMainWindow):
 
         self.record_b.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
-        self.record_b.setIcon(
-            QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/radio.png'))))
+        self.record_b.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/radio.png'))))
+        self.add_freind_3.setIcon(QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/back.png'))))
 
         self.send_b_13.setStyleSheet(
             "background-color: transparent;border: 0px solid gray ;border-radius: 20px;")
@@ -1448,7 +1477,7 @@ class UI_Master(QMainWindow):
         self.emoji_BTN.setToolTip("<font color=white>%s</font>" % 'Open Emoji box'.replace("\n", "<br/>"))
         self.doc_BTN.setToolTip("<font color=white>%s</font>" % 'Attach file'.replace("\n", "<br/>"))
         self.camera_BTN.setToolTip("<font color=white>%s</font>" % 'Take Picture'.replace("\n", "<br/>"))
-        self.call_b.setToolTip("<font color=white>%s</font>" % 'Make Call'.replace("\n", "<br/>"))
+        self.call_b.setToolTip("<font color=white>%s</font>" % 'Play Game'.replace("\n", "<br/>"))
         self.attach_b.setToolTip("<font color=white>%s</font>" % 'Attach'.replace("\n", "<br/>"))
         self.attach_b_2.setToolTip("<font color=black>%s</font>" % 'Attach'.replace("\n", "<br/>"))
         self.menu_user_b.setToolTip("<font color=white>%s</font>" % 'Menu'.replace("\n", "<br/>"))
@@ -1502,6 +1531,7 @@ class UI_Master(QMainWindow):
         
         self.label_25.setHidden(True)
         self.menu_user_b.clicked.connect(self.contex_menu)
+        self.add_freind_2.clicked.connect(self.change_local_pass)
         self.add_freind_3.clicked.connect(self.cancel_changepass)
         self.invite_2.clicked.connect(self.qr_invite)
         self.pushButton_2.clicked.connect(self.show_find_mess)
@@ -1554,6 +1584,33 @@ class UI_Master(QMainWindow):
 
         
         self.show()
+
+
+    def contact_us(self):
+        webbrowser.open('http://pychat.sazito.com/')
+
+    def change_local_pass(self):
+        if self.user_add_4.text() == self.user_add_3.text() and len(self.user_add_4.text().strip())>=4:
+          
+            connection=sqlite3.connect("./client.db")
+            cursor=connection.cursor()
+            cursor.execute("UPDATE info SET internal_password=?", (self.user_add_4.text(),))
+            connection.commit()
+            connection.close()
+            self.user_add_3.clear()
+            self.user_add_4.clear()
+            QMessageBox.about(self, "PyChat", "The password was successfully changed.")
+        elif len(self.user_add_4.text().strip())<4:
+            QMessageBox.about(self, "PyChat", "Password should not be less than 4 letters.")
+            self.user_add_3.setFocus()
+            
+
+            
+
+        else:
+            QMessageBox.about(self, "PyChat", "Passwords are not the same.")
+            self.user_add_3.setFocus()
+            
 
     def face_scan(self):
         from PIL import Image, ImageOps, ImageDraw
@@ -1701,7 +1758,7 @@ class UI_Master(QMainWindow):
         bio = self.label_23.text()
         if from_who == "me":
             self.exit_move_back_chat_info_FRM()
-            self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/%s.png'%info[0][6])))
+            self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png')))
             self.label_17.setText(info[0][1])
             self.label_23.setText(info[0][5])
       
@@ -1856,34 +1913,37 @@ class UI_Master(QMainWindow):
                     App.processEvents()
 
     def user_list_click(self,item):
-        self.clear_screen()
-        App.processEvents()
+        global item_change,reciver,token
+        if item_change != item.text():
 
-        self.messegebox_t.setFocus()
-        global reciver,token
-        self.exit_move_back_chat_info_FRM()
-        self.pv_LBL.setIcon(item.icon())
-        self.profile_LBL_2.setIcon(item.icon())
-        profile = tuple(map(str, item.whatsThis().split('>,_,<')))
-        self.usernamem_l.setText(profile[1])
-        self.usernamem_l.setWhatsThis(profile[2])
-        self.label_17.setText(profile[1])
-        self.label_23.setText(profile[2])
-        reciver = profile[0]
-        messege = get_all_chat(token,reciver)
-      
-        if messege == [] or messege == False:
-            self.label_25.setHidden(False)
-
-        else:
-           
-            self.print_data_messege(messege)
+            self.clear_screen()
+            App.processEvents()
+            self.messegebox_t.setFocus()
             
+            item_change = item.text()
+            self.exit_move_back_chat_info_FRM()
+            self.pv_LBL.setIcon(item.icon())
+            self.profile_LBL_2.setIcon(item.icon())
+            profile = tuple(map(str, item.whatsThis().split('>,_,<')))
+            self.usernamem_l.setText(profile[1])
+            self.usernamem_l.setWhatsThis(profile[2])
+            self.label_17.setText(profile[1])
+            self.label_23.setText(profile[2])
+            reciver = profile[0]
+            messege = get_all_chat(token,reciver)
         
+            if messege == [] or messege == False:
+                self.label_25.setHidden(False)
 
-        # print(item.whatsThis())
-        self.wating_l.setHidden(True)
-        self.label_14.setHidden(True)
+            else:
+            
+                self.print_data_messege(messege)
+                
+            
+
+            # print(item.whatsThis())
+            self.wating_l.setHidden(True)
+            self.label_14.setHidden(True)
         
  
     def contex_change_profile(self):
@@ -1902,7 +1962,43 @@ class UI_Master(QMainWindow):
         Remove.triggered.connect(self.delete_profile_pic)
         menu.exec_(QCursor.pos())
     
+    def contex_setting_menu(self):
+        menu = QMenu(self)
+        View = newAct = menu.addAction("Delete Face Id")
+        passw = newAct = menu.addAction("Turn Off Password")
+        Take = menu.addAction("Sign Out")
+        Upload = menu.addAction("Delete Account")
+        View.triggered.connect(self.delete_face_id)
+        Take.triggered.connect(self.sign_out)
+        Upload.triggered.connect(self.delete_account)
+        passw.triggered.connect(self.del_password)
+        menu.exec_(QCursor.pos())
+    
+    def del_password(self):
+            qm = QMessageBox()
+            ret = qm.question(self,'warning!', "Are you sure you want to turn off password ?", qm.Yes | qm.No)
+            if ret == qm.Yes:
+                connection=sqlite3.connect("./client.db")
+                cursor=connection.cursor()
+                cursor.execute("UPDATE info SET internal_password=?", ("8b9c2ff6557732bc2678ff3eff8ff6557732bc2678ff3e",))
+                connection.commit()
+                connection.close()
+                self.user_add_3.clear()
+                self.user_add_4.clear()
+                QMessageBox.about(self, "PyChat", "Local password successfully turn off password.")
 
+    def delete_face_id(self):
+        qm = QMessageBox()
+        ret = qm.question(self,'warning!', "Are you sure you want to delete your Face ID ?", qm.Yes | qm.No)
+        if ret == qm.Yes:
+            os.remove(os.getcwd() + "/UI/Master"  +'/Files/Face/face_id.png')
+
+    def sign_out(self):
+        pass
+   
+    def delete_account(self):
+        pass
+    
     def qr_invite(self):
         global token
         if self.user_add_2.text() :
@@ -1949,8 +2045,7 @@ class UI_Master(QMainWindow):
             dst = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')
             shutil.copy(src, dst)
             self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
-        else:
-            pass
+
         
     def show_profile_pic(self):
         from PIL import Image, ImageOps, ImageDraw
@@ -2117,7 +2212,7 @@ class UI_Master(QMainWindow):
         return -1
     
     def file_receve(self,data):
-        global new_messeg
+        global new_messeg,reciver
         self.label_25.setHidden(True)
         
         
@@ -2186,6 +2281,8 @@ class UI_Master(QMainWindow):
         self.formLayout.addRow(self.id, self.messege_time)
         self.last_used = "other"
         new_messeg.clear()
+       
+        self.clickedBtn_user(reciver)
         
 
     def file_s_open(self,patch):
@@ -2210,13 +2307,13 @@ class UI_Master(QMainWindow):
         self.timer12 = QtCore.QTimer()
         self.timer12.timeout.connect(self.doc_movedown)
         self.timer12.start(5)
-        global token,reciver
+        
         fname=[]
         if wich=='c':
-            fname=[data,'']
+            fname=[data,'']#camera datash hamon masire
             obj.send_file(s,token,reciver,'m',fname[0])
         elif wich == 'print':
-            print(data)
+            
             fname = [os.getcwd()+'/Download_Res/' + data[2],]
             # obj.send_file(s,token,reciver,'m',os.getcwd() + '/' + fname[0])
         else:
@@ -2290,6 +2387,8 @@ class UI_Master(QMainWindow):
         self.formLayout.addRow(self.messege_time, self.seen_image)
         self.last_used = "other"
         new_messeg.clear()
+        
+        self.clickedBtn_user(reciver)
 
     def emoji_v(self, from_f):
         self.messegebox_t.setText(
@@ -2730,11 +2829,12 @@ class UI_Master(QMainWindow):
                 break
             elif k%256 == 32:
                 # SPACE pressed
-                img_name = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/camera/output.png')
+                name_file = str(datetime.datetime.now().date()) + '_' + str(datetime.datetime.now().time()).replace(':', '.')
+                img_name = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/camera/%s.png'%name_file)
                 cv2.imwrite(img_name, frame)
                 cam.release()
                 cv2.destroyAllWindows()
-                self.file_send("c",os.getcwd() + "/UI/Master"   + '/Files/camera/output.png')
+                self.file_send("c",os.getcwd() + "/UI/Master"   + '/Files/camera/%s.png'%name_file)
 
             
         
@@ -2862,7 +2962,7 @@ class UI_Master(QMainWindow):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             # self.close()
-            self.clickedBtn_send("None")
+            # self.clickedBtn_send("None")
             self.messegebox_t.setFocus()
             pass
 
@@ -2948,6 +3048,8 @@ class UI_Master(QMainWindow):
         self.formLayout.addRow(self.messege_time, self.seen_image)
         self.last_used = "me"
         
+        self.clickedBtn_user(reciver)
+        
             
 
     def clickedBtn_other(self,data):
@@ -2995,6 +3097,8 @@ class UI_Master(QMainWindow):
         self.last_used = "other"
         App.processEvents()
         new_messeg.clear()
+        global reciver
+        self.clickedBtn_user(reciver)
 
     def voice_mess_other(self):
 
@@ -3045,6 +3149,8 @@ class UI_Master(QMainWindow):
         self.formLayout.addRow(QLabel())
         self.formLayout.addRow(QLabel())
         self.last_used = "other"
+        global reciver
+        self.clickedBtn_user(reciver)
 
     def voice_mess_me(self,connect_to):
         self.label_25.setHidden(True)
@@ -3098,9 +3204,11 @@ class UI_Master(QMainWindow):
         self.formLayout.addRow(QLabel())
         self.formLayout.addRow(QLabel())
         self.last_used = "me"
+        global reciver
+        self.clickedBtn_user(reciver)
 
-    def clickedBtn_user(self):
-        list_users = chat_list()
+    def clickedBtn_user(self,friend=None):
+        list_users = chat_list(friend)
         list_users.reverse()
         self.listWidget.clear()
         for (count,item_l) in enumerate(list_users):
@@ -3292,21 +3400,21 @@ login_check()
 # window_master = UI_Master()
 # sys.exit(App.exec_())
 
-# if not info:
-app_login = QApplication(sys.argv)
-window = UI_login()
-app_login.exit(app_login.exec_())
-# elif not info[0][3]:
-#     App = QApplication(sys.argv)
-#     window_master = UI_Master()
-#     sys.exit(App.exec_())
-# else:
-#     app_face = QApplication(sys.argv)
-#     face = face_ui()
-#     app_face.exit(app_face.exec_())
-#     App = QApplication(sys.argv)
-#     window_master = UI_Master()
-#     sys.exit(App.exec_())
+if not info:
+    app_login = QApplication(sys.argv)
+    window = UI_login()
+    app_login.exit(app_login.exec_())
+elif info[0][3] =="8b9c2ff6557732bc2678ff3eff8ff6557732bc2678ff3e" or info[0][3] == "":
+    App = QApplication(sys.argv)
+    window_master = UI_Master()
+    sys.exit(App.exec_())
+else:
+    app_face = QApplication(sys.argv)
+    face = face_ui()
+    app_face.exit(app_face.exec_())
+    App = QApplication(sys.argv)
+    window_master = UI_Master()
+    sys.exit(App.exec_())
 
 
 

@@ -169,7 +169,7 @@ def add_new_user(s:socket,data: list):
     #agar chek kardan user name sahih bud in farakhani shavad 
     connection = sqlite3.connect("./database.db")
     cur = connection.cursor()
-    cur.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],'hey! im using pychat','person.png','unknown'))
+    cur.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],'hey! im using pychat','output.png','unknown'))
     connection.commit()
     connection.close()
     data1=[int(502)]+data

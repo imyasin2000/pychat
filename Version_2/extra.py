@@ -198,7 +198,7 @@ def adding_friends(data:list):
                 cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
                 connection.commit()
                 connection.close()
-
+            print(data3)
             return data3
         else:
             ls.remove(data[1])
@@ -229,7 +229,7 @@ def adding_friends(data:list):
                 cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
                 connection.commit()
                 connection.close()
-
+            print(data3)
             return data3
 
         connection.close()

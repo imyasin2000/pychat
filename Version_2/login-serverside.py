@@ -23,6 +23,8 @@ print("\nThe server was successfully activated.\n")
 ## 51.195.19.3
 ip = '0.0.0.0'
 port = 1261
+online_users={}
+f=""
 
 
 class Socket:
@@ -47,11 +49,12 @@ class Socket:
                     if data:
                         d = data.split(b'\0')  # get meeseges \0 hi ali\0 hello\0
                         for i in range(len(d) - 1):
-                            self._on_message(conn, decrypt(d[i]))  # client,messeg sended
+                            self._recive_data(conn, decrypt(d[i]))  # client,messeg sended
                         data = d[-1]  # ali\0mohammad\0 bade \0 akhari ham mide msln bara kamel bodn payam
                     else:
                         conn.close()  # if client leave
             except:  # dissconect client
+                del online_users[conn]
                 self._on_disconnect(conn)
                 return
 
@@ -64,7 +67,7 @@ class Socket:
         
 
     # dade haye daryafti ro bgir va client= yani ki in dade haro ferestade
-    def _on_message(self, client: socket, data: bytes):
+    def _recive_data(self, client: socket, data: bytes):
         x = (json.loads(data.decode()))
         task = x[0]
         work[f"{task}"](client, x[1:])
@@ -84,7 +87,7 @@ class Socket:
 def login_chek(s: socket, data):
     user_id = data[0]
     sock = s
-    connection = sqlite3.connect("./users.db")
+    connection = sqlite3.connect("./database.db")
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     r = cursor.fetchall()
@@ -95,7 +98,7 @@ def login_chek(s: socket, data):
         print("login_chek")
     else:
         print("exist")
-        data1 = [int(502), " Username available! "]
+        data1 = [int(502), " This username was used by another user. "]
         data1 = json.dumps(data1)
         s.send((data1.encode() + b'\0'))
         # sock.send(sock,"in data base ghablan vojud dashte")
@@ -210,16 +213,20 @@ def welcome_email(data: list):
 
 
 def add_new_user(s: socket, data: list):
+    ls = []
+    ls=json.dumps(ls)
     # ghab in tabe tabe chek kardan username farakhani mishavad
     # agar chek kardan user name sahih bud in farakhani shavad
-    connection = sqlite3.connect("./users.db")
+    connection = sqlite3.connect("./database.db")
     cur = connection.cursor()
-    cur.execute("INSERT INTO users VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
+    cur.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],'Hey! Im Using PyChat.','output.png',ls))
     connection.commit()
     connection.close()
     print(data)
     welcome_email(data)
-    data1 = [int(502), "welcome to pychat !"]
+ 
+
+    data1=[int(502),"welcome to pychat !"]+data
     data1 = json.dumps(data1)
     s.send((data1.encode() + b'\0'))
     print("new_user_added")
@@ -228,7 +235,7 @@ def add_new_user(s: socket, data: list):
 def sign_in_request(s: socket, data: list):
     user_id = data[0]
     print(user_id)
-    connection = sqlite3.connect("./users.db")
+    connection = sqlite3.connect("./database.db")
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     r = cursor.fetchall()
@@ -237,11 +244,11 @@ def sign_in_request(s: socket, data: list):
     print(data[1])
     if r:
         if r[0][0] == data[0] and r[0][3] == data[1]:
-            data1 = [int(502), "welcome to pychat!"]
+            data1=[int(502),"welcome to pychat!"]+[r[0][0],r[0][1],r[0][2]]
             data1 = json.dumps(data1)
             s.send((data1.encode() + b'\0'))
         elif r[0][0] == data[0] and data[1] == 'd7c9dbcef6708effbdd973ebb0cbcef6708effbdd973eb':
-            data1 = [int(502), "welcome to pychat!"]
+            data1=[int(502),"welcome to pychat!"]+[r[0][0],r[0][1],r[0][2]]
             data1 = json.dumps(data1)
             s.send((data1.encode() + b'\0'))
         else:
@@ -269,10 +276,251 @@ def edit_password(s: socket, data: list):
     s.send((data1.encode() + b'\0'))
 
 
-# def send_ads()
-work = {'100': login_chek, '101': send_email, '102': add_new_user, '103': sign_in_request,
-        '107': edit_password}
+def adding_new_client_to_online(s:socket,data:list):
+    global online_users
+    #-------add to online------------------------------------------------------
+  
+    
+    print(data[0]+' connected!')
+    online=data[0]
+    online_users.update({s:data[0]})
+    print(online_users)
+    # print(online_users)
+    #start sending pm that recived when client was ofline
 
-s = Socket(ip, port)  # run socket init make object from socket
+    connection = sqlite3.connect("./database.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM unsend WHERE reciver=?", (online,))
+    r = cursor.fetchall()
+    cursor.execute("DELETE FROM unsend WHERE reciver=?", (online,))
+    if r!=[]:
+        data=[int(503)]+r
+        print("start sending unsend pm to user")
+        data = json.dumps(data)
+        s.send((data.encode() + b'\0'))
+        print("sending pm finished")
+        for i in r :
+            if str(i[0])>str(i[1]):
+                tabale=str(i[0]+str(i[1]))
+            else:
+                tabale=str(i[1]+str(i[0]))
 
-# s.send
+            sql=f"""
+                CREATE TABLE IF NOT EXISTS {tabale}(
+                sender VARCHAR (48),
+                reciver VARCHAR(48),
+                message VARCHAR (600),
+                message_time DATETIME (60),
+                message_id VARCHAR (60),
+                message_type VARCHAR (3)
+                );
+            """
+            cursor.execute(sql)
+            connection.commit()
+
+            cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (i[0], i[1], i[2], i[3],i[4],i[5]))
+            connection.commit()
+        connection.close()
+        print(f'messages from {r[0][0]} to {r[1][1]} stored in our database ')
+
+    else:
+        connection.commit()
+        connection.close()
+
+#ersal payam haye daryafti be fard online va dar gheir in surat zakhire an ha 
+#dar data base unsend
+#---> data= [sender,reciver,message,message_time,message_id,'t']
+def sending_messages(s:socket,data:list):
+    global online_users
+    print(data)
+    for key, value in online_users.items(): 
+        if data[1] == value: 
+            data1=[int(503),(data[0],data[1],data[2],data[3],data[4],data[5])]
+            data1 = json.dumps(data1)
+            key.send((data1.encode() + b'\0'))
+            connection = sqlite3.connect("./database.db")
+            cur = connection.cursor()
+
+            if str(data[0])>str(data[1]):
+                tabale=str(data[0]+str(data[1]))
+            else:
+                tabale=str(data[1]+str(data[0]))
+
+            sql=f"""
+                CREATE TABLE IF NOT EXISTS {tabale}(
+                sender VARCHAR (48),
+                reciver VARCHAR(48),
+                message VARCHAR (600),
+                message_time DATETIME (60),
+                message_id VARCHAR (60),
+                message_type VARCHAR (3)
+                );
+            """
+            cur.execute(sql)
+            cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
+            connection.commit()
+            connection.close()
+        else:
+            print(data)
+            connection = sqlite3.connect("./database.db")
+            cur = connection.cursor()
+            cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
+            connection.commit()
+            connection.close()
+            print("message added to data base")
+
+#[sender(0),reciver(1),str(x)  (2),ext(3),bf"{usage}".hex()  (4),media_id (5),usage (6), time(7)]
+
+def add_picprofile(s:socket,data:list):
+    global online_users
+    global f
+
+    recived_f = data[5]+data[3]
+
+    if bytes.fromhex(data[4]) == b"start":
+        f = open(recived_f, "wb")
+
+
+    elif bytes.fromhex(data[4]) ==b"end":
+        print(f"file from {data[0]} recived")
+        print(data[-1])
+
+        f.close()
+
+        if data[-2]=='p':
+            connection=sqlite3.connect("./database.db")
+            cursor=connection.cursor()
+            cursor.execute("UPDATE users SET profile=? WHERE user_id=?", (recived_f,data[0]))
+            connection.commit()
+            connection.close()
+            data1=[int(509)]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
+        
+        else:
+            for key, value in online_users.items(): 
+                if data[1] == value: 
+                    data1=[int(503),(data[0], data[1],recived_f, data[-1],data[5],data[-2])]
+                    data1 = json.dumps(data1)
+                    key.send((data1.encode() + b'\0'))
+                    connection = sqlite3.connect("./database.db")
+                    cur = connection.cursor()
+
+                    if str(data[0])>str(data[1]):
+                        tabale=str(data[0]+str(data[1]))
+                    else:
+                        tabale=str(data[1]+str(data[0]))
+
+                    sql=f"""
+                        CREATE TABLE IF NOT EXISTS {tabale}(
+                        sender VARCHAR (48),
+                        reciver VARCHAR(48),
+                        message VARCHAR (600),
+                        message_time DATETIME (60),
+                        message_id VARCHAR (60),
+                        message_type VARCHAR (3)
+                        );
+                    """
+                    cur.execute(sql)
+                    cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
+                    connection.commit()
+                    connection.close()
+                    print(f"we recived a file from {data[0]}  , server sent this file to {data[1]} ")
+                else:
+                    connection = sqlite3.connect("./database.db")
+                    cur = connection.cursor()
+                    cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
+                    connection.commit()
+                    connection.close()
+                    print(f"we recived a file from {data[0]} but reciver ({data[1]}) is not online we stored this message in our data base...")
+
+
+
+
+    else:
+
+        f.write(bytes.fromhex(data[4]))
+
+
+def send_file_to_client(s:socket,data1:list):
+        data = [int(510),b'start'.hex(),data1[0]]
+        data = json.dumps(data)
+        print(data1)
+        print(type(data1))
+        s.send((data.encode() + b'\0'))
+        path=data1[0]
+        print(path)
+        f = open(path, 'rb')
+        while True:
+            l = f.read(1024)
+
+            while (l):
+                # f"{str(x)}{ext}{l}".encode()
+                data = [int(510),l.hex(),data1[0]]  # pasvand file + size file
+                data = json.dumps(data)
+                s.send((data.encode() + b'\0'))
+                l = f.read(1024)
+            if not l:
+                data = [int(510),b'end'.hex(),data1[0]]
+                data = json.dumps(data)
+                s.send((data.encode() + b'\0'))
+                print("file sent to client...")
+                break
+
+def to_check_friend_adding(s:socket,data:list):
+    res=adding_friends(data)
+    if res==int(404):
+        data=[int(511)]
+        data = json.dumps(data)
+        s.send((data.encode() + b'\0'))
+    else:
+        data=res
+        data = json.dumps(data)
+        s.send((data.encode() + b'\0'))
+
+
+def send_ads(s:socket,data):
+    add=data[1:]
+    add=[int(6000)]+add
+    add=json.dumps(add)
+    global online_users
+    print(online_users)
+    print(data)
+
+    # if not bool(online_users) :
+        # try:
+        #     for (key,reciver) in online_users.items():
+        #         try:
+        #             key.send((data.encode() + b'\0'))
+        #         except:
+        #             print("while sending ads to client one client immadiatly get offline...")
+        #             continue
+        # except:
+    #     #     print('we tried tosend ads to online client but no one is not online... ')
+    # else:
+    #         print('we tried tosend ads to online client but no one is not online... ')
+
+
+
+
+
+
+
+    
+
+
+
+
+
+#-----------------------------------------END FUNC ------------------------------------------------------------
+
+
+
+print(online_users)
+
+work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
+      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'9000':send_ads}
+
+s=Socket(ip, port)#run socket init make object from socket
+
+#s.send

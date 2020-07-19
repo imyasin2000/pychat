@@ -258,9 +258,9 @@
      <widget class="QPushButton" name="add_freind_2">
       <property name="geometry">
        <rect>
-        <x>200</x>
+        <x>60</x>
         <y>400</y>
-        <width>151</width>
+        <width>261</width>
         <height>25</height>
        </rect>
       </property>
@@ -304,6 +304,9 @@
         <height>25</height>
        </rect>
       </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
@@ -320,27 +323,14 @@
         <height>25</height>
        </rect>
       </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
       <property name="clearButtonEnabled">
        <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="add_freind_3">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>400</y>
-        <width>151</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="cursor">
-       <cursorShape>PointingHandCursor</cursorShape>
-      </property>
-      <property name="text">
-       <string>Cancel</string>
       </property>
      </widget>
      <widget class="QLabel" name="add_frindl_5">
@@ -359,19 +349,116 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
+     <widget class="QPushButton" name="menu_bk_BTN_3">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>10</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">pushButton&gt;setStyleSheet(&quot;QPushButton{background:transparent;}&quot;);</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/menu (copy).png</normaloff>../../icons/menu (copy).png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="add_freind_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">pushButton&gt;setStyleSheet(&quot;QPushButton{background:transparent;}&quot;);</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../icons/menu (copy).png</normaloff>../../icons/menu (copy).png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
      <zorder>add_frindl_5</zorder>
      <zorder>cancle_user_2</zorder>
      <zorder>add_frindl_4</zorder>
      <zorder>user_add_3</zorder>
      <zorder>user_add_4</zorder>
-     <zorder>add_freind_3</zorder>
      <zorder>add_freind_2</zorder>
+     <zorder>menu_bk_BTN_3</zorder>
+     <zorder>add_freind_3</zorder>
     </widget>
     <widget class="QPushButton" name="menu_bk_BTN_2">
      <property name="geometry">
       <rect>
        <x>340</x>
        <y>120</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">pushButton&gt;setStyleSheet(&quot;QPushButton{background:transparent;}&quot;);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../../icons/menu (copy).png</normaloff>../../icons/menu (copy).png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="menu_bk_BTN_4">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>70</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -412,6 +499,7 @@
     <zorder>line</zorder>
     <zorder>menu_bk_BTN_2</zorder>
     <zorder>frame_3</zorder>
+    <zorder>menu_bk_BTN_4</zorder>
    </widget>
    <widget class="QFrame" name="mother_FRM">
     <property name="geometry">
@@ -711,6 +799,12 @@
      <property name="icon">
       <iconset>
        <normaloff>../../icons/menu (copy).png</normaloff>../../icons/menu (copy).png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
      </property>
     </widget>
     <widget class="QPushButton" name="camera_BTN">
