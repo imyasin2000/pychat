@@ -68,7 +68,12 @@ class user :
     #pasokh server be inke aya ba movafaghiat user jadid ra
     #be data base ezafe karde ya kheir
     def server_added_user_to_database(self,s:socket,data:list):
-        print(data[0])
+        print(f'yes server elcome to pychat {data[0]}')
+        connection = sqlite3.connect("./client.db")
+        cur = connection.cursor()
+        cur.execute("INSERT INTO info VALUES (?,?,?,?,?,?,?)", (data[0], data[1], data[2],'unknown',True,'unknown','person.png'))
+        connection.commit()
+        connection.close()
 
 
     def user_want_sign_in(self,s:socket):
@@ -396,6 +401,7 @@ def set_internal_pass():
     cursor.execute("UPDATE info SET internal_password=?", (password))
     connection.commit()
     connection.close()
+    
 
 
 
@@ -427,7 +433,7 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 
 token='yasin78'
 im_online=[int(105),token]
-sending_to_server(s,im_online)
+# sending_to_server(s,im_online)
 # obj.send_profilepic(s,token,'yasin78','m')
 
 # obj.add_friend(s,token)
@@ -436,10 +442,10 @@ sending_to_server(s,im_online)
 
 
 # obj.login(s)
-# obj.user_want_sign_in(s)
+obj.user_want_sign_in(s)
 # obj.forgot_password(s)
-for i in range(2):
-    obj.send_text_message(s,token,'mhfa1380')
+# for i in range(2):
+#     obj.send_text_message(s,token,'yasin78')
 # set_internal_pass()
 
 # print(get_all_chat(token,'mhfa1380'))
@@ -447,4 +453,3 @@ for i in range(2):
 
 # threading.Thread(target=obj.send_file,args=(s,token,'amin')).start()
 # obj.send_voice_messege(s,'yasin78','yasin78')
-

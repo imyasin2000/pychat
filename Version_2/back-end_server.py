@@ -52,7 +52,7 @@ class Socket:
                         conn.close()#if client leave
             except Exception as inst:
                 print(inst)
-                del online_users[conn]
+                # del online_users[conn]
                 # print(online_users)
                 # print("disconected")
                 # return
@@ -169,10 +169,10 @@ def add_new_user(s:socket,data: list):
     #agar chek kardan user name sahih bud in farakhani shavad 
     connection = sqlite3.connect("./database.db")
     cur = connection.cursor()
-    cur.execute("INSERT INTO users VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
+    cur.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],'hey! im using pychat','person.png','unknown'))
     connection.commit()
     connection.close()
-    data1=[int(502),"welcome to pychat!"]
+    data1=[int(502)]+data
     data1 = json.dumps(data1)
     s.send((data1.encode() + b'\0'))
     print("new_user_added")
@@ -191,7 +191,7 @@ def sign_in_request(s:socket,data:list):
     print('one user want sign in we crud data from data base ... : ',r)
     print(data[1])
     if r[0][0]==data[0] and r[0][3]==data[1]:
-        data1=[int(502),"welcome to pychat!"]
+        data1=[int(502),r[0][0],r[0][1],r[0][2]]
         data1 = json.dumps(data1)
         s.send((data1.encode() + b'\0'))
 
@@ -422,6 +422,32 @@ def to_check_friend_adding(s:socket,data:list):
         s.send((data.encode() + b'\0'))
 
 
+def send_ads(s:socket,data):
+    add=data[1:]
+    add=[int(6000)]+add
+    add=json.dumps(add)
+    global online_users
+    print(online_users)
+    print(data)
+
+    # if not bool(online_users) :
+        # try:
+        #     for (key,reciver) in online_users.items():
+        #         try:
+        #             key.send((data.encode() + b'\0'))
+        #         except:
+        #             print("while sending ads to client one client immadiatly get offline...")
+        #             continue
+        # except:
+    #     #     print('we tried tosend ads to online client but no one is not online... ')
+    # else:
+    #         print('we tried tosend ads to online client but no one is not online... ')
+
+
+
+
+
+
 
     
 
@@ -433,10 +459,10 @@ def to_check_friend_adding(s:socket,data:list):
 
 
 
-
+print(online_users)
 
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
-      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding}
+      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'9000':send_ads}
 
 s=Socket(ip, port)#run socket init make object from socket
 
