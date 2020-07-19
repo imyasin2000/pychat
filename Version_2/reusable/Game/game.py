@@ -10,7 +10,6 @@ score = 0
 
 def game():
 
-
     def tap(x, y):
         "Move bird up in response to screen tap."
         up = vector(0, 30)
