@@ -33,6 +33,7 @@ import json
 import webbrowser
 import jwt
 import base64
+import turtle
 
 import cv2
 import numpy as np
@@ -121,7 +122,8 @@ new_messeg = []
 
 
 f=''
-token='yasin78'
+token=''
+info=[]
 reciver='mhfa1380'
 # token='mhfa1380'
 # reciver='yasin78'
@@ -503,7 +505,7 @@ def recive_message(s:socket,data:list):
 
 def receve_file(s:socket,data:list):
     global f,download_status
-    recived_f = data[1]
+    recived_f = os.getcwd()+'/Download_Res/' + data[1]
     if bytes.fromhex(data[0])==b"start":
         f = open(recived_f, "wb")
     elif bytes.fromhex(data[0])==b"end":
@@ -512,7 +514,23 @@ def receve_file(s:socket,data:list):
         download_status = True
     else:
         f.write(bytes.fromhex(data[0]))
-    
+
+
+def login_check():
+    global token,info
+    connection=sqlite3.connect('./client.db')
+    cursor = connection.cursor()
+    cursor.execute(f"SELECT * FROM info")
+    r = cursor.fetchall()
+    connection.close()
+    #r[4] is login chek
+    if r ==[]:
+        info = []
+    else:
+        print(r)
+        token = r[0][0]   
+        info = r
+        print (info)
 # ----------------------------------------------------------------------------------------------other func ------------------
 def wating_form(wating_until, form):
     global window
@@ -653,6 +671,7 @@ def notification(messege):
 
 
 class UI_login(QMainWindow):
+    
     def __init__(self):
         global obj
         self.capcha_code = 0
@@ -1072,6 +1091,7 @@ class UI_Master(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        
         uic.loadUi(os.path.abspath(os.getcwd() + "/UI/Master/Chat_box.ui"), self)
         global token,reciver,s,obj
         im_online=[int(105),token]
@@ -1117,6 +1137,9 @@ class UI_Master(QMainWindow):
         self.label_10.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 193, 165);font-size: 15px;")
         self.label_13.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 193, 165);font-size: 15px;")
         self.label_11.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 14px;")
+        global info
+        self.label_11.setText(info[0][1])
+        self.label_12.setText(info[0][5])
         self.label_12.setStyleSheet("background-color: white;border: 0px solid gray;border-radius:10px;color:rgb(0, 0, 0);font-size: 14px;")
         self.send_b_6.setStyleSheet(
             "background-color: transparent;border: 0px solid gray;font-size: 25px;border-radius:10px;")
@@ -1300,7 +1323,7 @@ class UI_Master(QMainWindow):
 
 
         self.cancle_user.clicked.connect(self.hide_add_invite)
-        # self.user_search_b.clicked.connect(self.search_users)
+        self.user_search_b.clicked.connect(self.search_users)
 
         self.send_b_14.setStyleSheet("background-color: rgba(230, 230, 230, 0.7);border: 0px solid white;border-radius:20px;" )
 
@@ -1316,6 +1339,7 @@ class UI_Master(QMainWindow):
         self.attach_b_2.clicked.connect(self.click_attach_2)
         self.camera_BTN.clicked.connect(self.click_camera_BTN)
         self.menu_b.clicked.connect(self.start_menu)
+        self.cancle_user_2.clicked.connect(self.face_scan)
 
         self.clickedBtn_user()
 
@@ -1413,7 +1437,7 @@ class UI_Master(QMainWindow):
         self.send_b_13.setHidden(True)
         self.send_b_13.clicked.connect(self.stop_rec)
         self.menu_bk_BTN_2.clicked.connect(lambda:self.frame_3.setHidden(False))
-        self.call_b.clicked.connect(lambda : QMessageBox.about(self, "do not worry", "The ability to make calls will be added soon !!"))
+        self.call_b.clicked.connect(self.snake)
 
         self.record_b.setCheckable(True)
         self.record_b.toggle()
@@ -1531,6 +1555,35 @@ class UI_Master(QMainWindow):
         
         self.show()
 
+    def face_scan(self):
+        from PIL import Image, ImageOps, ImageDraw
+        QMessageBox.about(self, "Hint", "press space to capture picture or esc to quit")
+        cam = cv2.VideoCapture(0)
+        cv2.namedWindow("Add Face")
+        while True:
+            ret, frame = cam.read()
+            if not ret:
+                break
+            cv2.imshow("Add Face", frame)
+            k = cv2.waitKey(1)
+            if k%256 == 27:
+                # ESC pressed
+                break
+            elif k%256 == 32:
+                # SPACE pressed
+                img_name = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/Face/face_id.png')
+                cv2.imwrite(img_name, frame)
+                cam.release()
+                cv2.destroyAllWindows()
+                
+
+
+               
+
+        cam.release()
+
+        cv2.destroyAllWindows()
+
     def cancel_changepass(self):
         self.frame_3.setHidden(True)
 
@@ -1544,16 +1597,25 @@ class UI_Master(QMainWindow):
         else:
             after=[]
             for i in range(len(ls)):
-                after.append(ls[i].whatsThis())
-           
-            self.listWidget.clear()
-      
-            for i in range(len(ls)):
-                profile = tuple(map(str, after[i].split('>,_,<')))
-                itm = QListWidgetItem("\n "+profile[1]+"\n")
-                itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + profile[3])))
-                self.listWidget.insertItem(i,itm)        
-                self.listWidget.item(i).setWhatsThis('>,_,<'.join(profile))
+                after.append(ls[i].text())
+            list_users = chat_list()
+            
+            # print(list(map(filter(lambda x : x in list_users[], ls))))
+            
+            # ist_users = chat_list()
+            # list_users.reverse()
+            # map(filter)
+            # self.listWidget.clear()
+            # for (count,item_l) in enumerate(list_users):
+            #     itm = QListWidgetItem("\n "+item_l[1]+"\n")
+            #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+            #     self.listWidget.insertItem(count,itm)        
+            #     self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+
+            #     itm = QListWidgetItem("\n "+item_l[1]+"\n")
+            #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+            #     self.listWidget_2.insertItem(count,itm)    
+
             
 
 
@@ -1599,7 +1661,7 @@ class UI_Master(QMainWindow):
             self.go_next_search()
             
 
-           
+         
     # def             
             
 
@@ -1633,14 +1695,15 @@ class UI_Master(QMainWindow):
     
 
     def start_move_chat_info_FRM(self,from_who):
+        global info
         img = self.profile_LBL_2.icon()
         name = self.label_17.text()
         bio = self.label_23.text()
         if from_who == "me":
             self.exit_move_back_chat_info_FRM()
-            self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
-            self.label_17.setText('mohammad hossein')
-            self.label_23.setText("dars bekhon pessar")
+            self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/%s.png'%info[0][6])))
+            self.label_17.setText(info[0][1])
+            self.label_23.setText(info[0][5])
       
         else:
 
@@ -1778,7 +1841,7 @@ class UI_Master(QMainWindow):
                     
     
                 elif data[5] == 'm':
-                    # self.file_send("print",data)
+                    self.file_send("print",data)
                     pass
 
 
@@ -1979,7 +2042,7 @@ class UI_Master(QMainWindow):
             
         
             if os.path.splitext(data[0])[1] in ['.jpg','.png','.jpeg']:
-                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd()+'/'+data[0])))
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd()+'/Download_Res/'+data[0])))
                 self.formLayout.itemAt(where).widget().setIconSize(QSize(500, 300))
 
             elif os.path.splitext(data[0])[1] in ['.mkv','.mp4']:
@@ -2018,10 +2081,26 @@ class UI_Master(QMainWindow):
     def download_file(self,data):
      
         global icon_d
-        if os.path.isfile(os.getcwd()+'/' + data[0]) and icon_d == "down":
-            file =os.path.abspath(os.getcwd() + '/' + data[0])
+        if os.path.isfile(os.getcwd()+'/Download_Res/' + data[0]) and icon_d == "down":
+            file =os.path.abspath(os.getcwd() + '/Download_Res/' + data[0])
             opener ="open" if sys.platform == "darwin" else "xdg-open"
             subprocess.call([opener, file])
+            where = self.index_serarch(data[0])
+            if os.path.splitext(data[0])[1] in ['.jpg','.png','.jpeg']:
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd()+'/Download_Res/'+data[0])))
+                self.formLayout.itemAt(where).widget().setIconSize(QSize(500, 300))
+
+            elif os.path.splitext(data[0])[1] in ['.mkv','.mp4']:
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/video-camera.png')))
+                self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
+
+            elif os.path.splitext(data[0])[1] in ['.mp3','.vaw']:
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/mp3.png')))
+                self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
+
+            else:
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file.png')))
+                self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
         elif icon_d != "s" and icon_d != "f":
     
             self.timer17 = QtCore.QTimer()
@@ -2069,10 +2148,10 @@ class UI_Master(QMainWindow):
         
         
         where = self.formLayout.count()-1
-        if os.path.isfile(os.getcwd()+'/' + data[0]):
+        if os.path.isfile(os.getcwd()+'/Download_Res/' + data[0]):
             
             if os.path.splitext(data[0])[1] in ['.jpg','.png','.jpeg']:
-                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd()+'/'+data[0])))
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd()+'/Download_Res/'+data[0])))
                 self.formLayout.itemAt(where).widget().setIconSize(QSize(500, 300))
 
             elif os.path.splitext(data[0])[1] in ['.mkv','.mp4']:
@@ -2123,6 +2202,7 @@ class UI_Master(QMainWindow):
         
         
     def file_send(self,wich,data):
+        
         self.label_25.setHidden(True)
         global token,reciver
         self.attach_b.setHidden(False)
@@ -2136,8 +2216,9 @@ class UI_Master(QMainWindow):
             fname=[data,'']
             obj.send_file(s,token,reciver,'m',fname[0])
         elif wich == 'print':
-            fname=[data[2],'']
-            obj.send_file(s,token,reciver,'m',os.getcwd() + '/' + fname[0])
+            print(data)
+            fname = [os.getcwd()+'/Download_Res/' + data[2],]
+            # obj.send_file(s,token,reciver,'m',os.getcwd() + '/' + fname[0])
         else:
             try:
                 fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"All files *.*")
@@ -2150,7 +2231,7 @@ class UI_Master(QMainWindow):
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
         self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png')))
         self.user_image.setIconSize(QSize(35, 35))
 
         self.messege_user = QPushButton()
@@ -2816,7 +2897,7 @@ class UI_Master(QMainWindow):
         if self.scrollArea.verticalScrollBar().value() == self.scrollArea.verticalScrollBar().maximum():
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
-        self.user_image.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+        self.user_image.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png')))
         self.user_image.setIconSize(QSize(35, 35))
         if messege == 'None' :
             if self.textedit_messegebox.toPlainText().strip():
@@ -2973,7 +3054,7 @@ class UI_Master(QMainWindow):
             QTimer.singleShot(50, self.scrol_down)
         self.user_image = QPushButton()
         self.user_image.setIcon(
-            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/me.png')))
+            QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png')))
         self.user_image.setIconSize(QSize(35, 35))
         if self.last_used == "other":
             self.formLayout.addRow(QLabel())
@@ -3059,6 +3140,13 @@ class UI_Master(QMainWindow):
             self.formLayout.itemAt(i).widget().deleteLater()
             App.processEvents()
     
+    
+    def snake(self):
+        pass
+
+
+
+
 
 class face_ui(QMainWindow):
     
@@ -3083,7 +3171,7 @@ class face_ui(QMainWindow):
         # self.lookingfor_l.setHidden(False)
         self.lookingfor_l.setStyleSheet(
             'background-color:rgba(255, 255, 255, 0.5);')
-
+        self.welcome_l_3.setHidden(True)
         movie = QtGui.QMovie(os.getcwd() + '/UI/Unlock/befor.gif')
         self.lookingfor_l.setMovie(movie)
         movie.start()
@@ -3099,24 +3187,37 @@ class face_ui(QMainWindow):
             'background-color:transparent;color:rgb(107, 107, 107)')
         self.welcome_l_2.setStyleSheet(
             'background-color:transparent;color:rgb(107, 107, 107)')
-
+        self.welcome_l_3.setStyleSheet(
+            'background-color:transparent;color:rgb(107, 107, 107)')
         self.textEdit.textChanged.connect(self.textChanged_messege_event)
         self.show()
         self.face_id_unlock()
 
     def textChanged_messege_event(self):
-        if str(self.textEdit.text()) == '1234':
+        global info
+        if str(self.textEdit.text()) == info[0][3]:
             self.close_cam = True
             self.show_next()
+            self.lookingfor_l.setHidden(False)
             self.welcome_l_2.setHidden(True)
+            self.welcome_l_3.setHidden(True)
             self.textEdit.setHidden(True)
 
     def face_id_unlock(self):
         app_face.processEvents()
+        if not path.isfile(os.getcwd() + "/UI/Master"   + '/Files/Face/face_id.png'):
+            self.lookingfor_l.setHidden(True)
+            self.welcome_l_3.setHidden(False)
+            self.welcome_l_2.setText("Type Password")
+            self.welcome_l_2.setStyleSheet('background-color:transparent;color:rgb(107, 107, 107);font-size:17px')
+            
+
+            return
         face_count = 0
         video_capture = cv2.VideoCapture(0)
         # Load a sample picture and learn how to recognize it.
-        obama_image = face_recognition.load_image_file(os.getcwd() + "/UI/Unlock/face.jpg")
+        
+        obama_image = face_recognition.load_image_file(os.getcwd() + "/UI/Master"   + '/Files/Face/face_id.png')
         app_face.processEvents()
         obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
         known_face_encodings = [obama_face_encoding, ]
@@ -3170,13 +3271,14 @@ class face_ui(QMainWindow):
     def show_next(self):
 
         if self.close_cam == True:
+            global info
 
             self.lookingfor_l.setStyleSheet(
                 'background-color:rgba(255, 255, 255, 0.5);')
             movie = QtGui.QMovie(os.getcwd() + '/UI/Unlock/after.gif')
             self.lookingfor_l.setMovie(movie)
             movie.start()
-            self.welcome_l.setText("Hello "+"mohammad hossein"+" !")
+            self.welcome_l.setText("Hello "+info[0][1]+" !")
             self.welcome_l_2.setHidden(True)
             self.textEdit.setHidden(True)
             self.welcome_l.setHidden(False)
@@ -3184,29 +3286,40 @@ class face_ui(QMainWindow):
             self.timer_face = QtCore.QTimer()
             self.timer_face.singleShot(3400, lambda: self.close())
 
-# app_login = QApplication(sys.argv)
-# window = UI_login()
-# app_login.exit(app_login.exec_())
 
-# app_face = QApplication(sys.argv)
-# face = face_ui()
-# app_face.exit(app_face.exec_())
+login_check()
+# App = QApplication(sys.argv)
+# window_master = UI_Master()
+# sys.exit(App.exec_())
 
-App = QApplication(sys.argv)
-window_master = UI_Master()
-sys.exit(App.exec_())
+# if not info:
+app_login = QApplication(sys.argv)
+window = UI_login()
+app_login.exit(app_login.exec_())
+# elif not info[0][3]:
+#     App = QApplication(sys.argv)
+#     window_master = UI_Master()
+#     sys.exit(App.exec_())
+# else:
+#     app_face = QApplication(sys.argv)
+#     face = face_ui()
+#     app_face.exit(app_face.exec_())
+#     App = QApplication(sys.argv)
+#     window_master = UI_Master()
+#     sys.exit(App.exec_())
 
 
 
 
-if (path.isfile('Other/lice_l_2.txt')):
 
-    app_face = QApplication(sys.argv)
-    face = face_ui()
-    app_face.exit(app_face.exec_())
-    pass
-else:
-    app = QApplication(sys.argv)
-    window = UI_Ads()
-    app.exec_()
+# if (path.isfile('Other/lice_l_2.txt')):
+
+#     app_face = QApplication(sys.argv)
+#     face = face_ui()
+#     app_face.exit(app_face.exec_())
+#     pass
+# else:
+#     app = QApplication(sys.argv)
+#     window = UI_Ads()
+#     app.exec_()
 
