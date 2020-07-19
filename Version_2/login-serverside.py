@@ -8,11 +8,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import os
-import pyqrcode
-import png
+# import pyqrcode
+# import png
 import random
-from pyqrcode import QRCode
-import smtplib
+# from pyqrcode import QRCode
+# import smtplib
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -21,8 +21,8 @@ print("\nThe server was successfully activated.\n")
 
 # Server information
 ## 51.195.19.3
-ip = '0.0.0.0'
-port = 1261
+ip = '192.168.109.1'
+port = 14200
 online_users={}
 f=""
 
@@ -31,7 +31,7 @@ class Socket:
     size = 4096  # Size of information sent and received
     user_info = ""
 
-    def __init__(self, host="192.168.1.107", port=14200):  # first run
+    def __init__(self, host="192.168.109.1", port=14200):  # first run
         self.socket = socket()  # socket.socket()
         self.socket.bind((host, port))
         self.socket.listen(1)  # Open the port and wait for the new user
@@ -499,6 +499,89 @@ def send_ads(s:socket,data):
     #     #     print('we tried tosend ads to online client but no one is not online... ')
     # else:
     #         print('we tried tosend ads to online client but no one is not online... ')
+
+def adding_friends(data:list):
+    '''
+    clearly connection is our connection object to  user database that we 
+    did it 
+    r is a  cruded data(list) from database  and username is a person that 
+    you want to add friend to him/her 
+    '''
+    user_that_send_response=data[0]
+    connection = sqlite3.connect("./database.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM users WHERE user_id=?", (data[1],))
+    r = cursor.fetchall()
+    if r==[]:
+        return int(404)
+
+    else:
+
+        ls=json.loads(r[0][-1])
+        if data[1] not in ls :
+            ls.append(data[1])
+            ls=json.dumps(ls)
+            cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls,user_that_send_response))
+            connection.commit()
+            connection.close()
+
+            connection = sqlite3.connect("./database.db")
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM users WHERE user_id=?", (data[1],))
+            r2 = cursor.fetchall()
+            data3=[int(512),r2[0][0],r2[0][1],r2[0][-3],r2[0][-2]]
+            ls2=json.loads(r2[0][-1])
+            if data[0] not in ls2:
+                ls2.append(data[0])
+                ls2=json.dumps(ls2)
+                cursor = connection.cursor()
+                cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
+                connection.commit()
+                connection.close()
+
+            else:
+                ls2.remove(data[0])
+                ls2.append(data[0])
+                ls2=json.dumps(ls2)
+                cursor = connection.cursor()
+                cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
+                connection.commit()
+                connection.close()
+
+            return data3
+        else:
+            ls.remove(data[1])
+            ls.append(data[1])
+            ls=json.dumps(ls)
+            cursor = connection.cursor()
+            cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls,user_that_send_response))
+            connection.commit()
+            connection = sqlite3.connect("./database.db")
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM users WHERE user_id=?", (data[1],))
+            r2 = cursor.fetchall()
+            data3=[int(512),r2[0][0],r2[0][1],r2[0][-3],r2[0][-2]]
+            ls2=json.loads(r2[0][-1])
+            if data[0] not in ls2:
+                ls2.append(data[0])
+                ls2=json.dumps(ls2)
+                cursor = connection.cursor()
+                cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
+                connection.commit()
+                connection.close()
+
+            else:
+                ls2.remove(data[0])
+                ls2.append(data[0])
+                ls2=json.dumps(ls2)
+                cursor = connection.cursor()
+                cursor.execute("UPDATE users SET freinds=? WHERE user_id=?", (ls2,data[1]))
+                connection.commit()
+                connection.close()
+
+            return data3
+
+        connection.close()
 
 
 

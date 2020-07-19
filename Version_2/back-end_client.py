@@ -183,8 +183,32 @@ class user :
             if not l:
                 data = [int(108), sender,reciver,str(x),ext,b'end'.hex(),media_id,usage,send_time]
                 sending_to_server(s, data)
-                print("sended")
-                break
+                print("your file sent ")
+
+            if str(sender)>str(reciver):
+                tabale=str(sender+str(reciver))
+            else:
+                tabale=str(reciver+str(sender))
+            connection = sqlite3.connect("./client.db")
+            cursor = connection.cursor()
+
+            sql=f"""
+                CREATE TABLE IF NOT EXISTS {tabale}(
+                sender VARCHAR (48),
+                reciver VARCHAR(48),
+                message VARCHAR (600),
+                message_time DATETIME (60),
+                message_id VARCHAR (60),
+                message_type VARCHAR (3)
+                );
+            """
+            cursor.execute(sql)
+            connection.commit()
+
+            cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (sender, reciver,root.filename,send_time,media_id,usage))
+            connection.commit()
+            connection.close()
+            break
 
     def profile_changed(self,s:socket,data:list):
         print('your profile changed :)')
@@ -433,9 +457,9 @@ threading.Thread(target=do_work,args=(obj,s)).start()
 #online zakhire konad #TODO #in tike ro bayad behtar konam 
 
 token='yasin78'
-im_online=[int(105),token]
+# im_online=[int(105),token]
 # sending_to_server(s,im_online)
-# obj.send_profilepic(s,token,'yasin78','m')
+obj.send_profilepic(s,token,'yasin78','m')
 
 # obj.add_friend(s,token)
 
@@ -443,7 +467,7 @@ im_online=[int(105),token]
 
 
 # obj.login(s)
-obj.user_want_sign_in(s)
+# obj.user_want_sign_in(s)
 # obj.forgot_password(s)
 # for i in range(2):
 #     obj.send_text_message(s,token,'yasin78')
