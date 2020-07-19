@@ -94,7 +94,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.19.3
-s.connect(('0.0.0.0', 1261))
+s.connect(('192.168.43.44', 14200))
 
 email_changer = ''
 data_user = []
@@ -1632,10 +1632,10 @@ class UI_Master(QMainWindow):
                 cv2.imwrite(img_name, frame)
                 cam.release()
                 cv2.destroyAllWindows()
-                
 
 
-               
+
+
 
         cam.release()
 
