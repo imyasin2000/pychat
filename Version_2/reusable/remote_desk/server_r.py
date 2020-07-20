@@ -79,4 +79,3 @@ class window_r(QMainWindow):
 app = QApplication(sys.argv)
 window = window_r()
 sys.exit(app.exec())
-

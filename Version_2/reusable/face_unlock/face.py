@@ -170,7 +170,7 @@ class face_ui(QMainWindow):
     
        
 
-
+  
 app = QApplication(sys.argv)
 window3 = face_ui()
 app.exit(app.exec_())

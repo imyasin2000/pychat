@@ -17,10 +17,7 @@ import webbrowser
 from os import path
 import random
 import http.client as httplib
-from playsound import playsound
-from PyQt5 import QtCore
 import re
-from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.Qt import Qt
@@ -30,51 +27,23 @@ import pyqrcode
 import png
 from pyqrcode import QRCode 
 from requests import get, post
-import json
-import webbrowser
 import jwt
 import base64
 import turtle
-
 import cv2
 import numpy as np
 import pyzbar.pyzbar as pyzbar
-
 import pyaudio
 import wave
-import threading
-
-from PyQt5.QtWidgets import *  # UI
-from PyQt5 import QtWidgets
-from PyQt5.QtGui import QIcon, QPixmap
-from captcha.image import ImageCaptcha
-from PyQt5 import uic
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QWidget, QScrollArea, QVBoxLayout, QGroupBox, QLabel, QPushButton, QFormLayout
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5 import QtCore
-from PyQt5.QtCore import *
-import sys
-from PyQt5.QtGui import *
-import os
 import datetime
-import time
-from PyQt5.QtCore import QTimer
-import cv2
-# import pygame
-from PyQt5.QtCore import QTimer
+import pygame
 from threading import Thread
 import emoji
-#####
-from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu,QMessageBox
-import sys
 from PIL import Image, ImageOps, ImageDraw
-import re
-
 from playsound import playsound #++sudo apt-get install ffmpeg
-import os
 import shutil
 from pydub.utils import mediainfo
 from tkinter import filedialog
@@ -82,11 +51,11 @@ from tkinter import *
 import os.path
 from kavenegar import *
 import face_recognition
-import cv2
-import numpy as np
 import sqlite3
+from random import *
+from turtle import *
+from freegames import vector
 
-sys.setrecursionlimit(10000)
 
 
 q = Queue()
@@ -94,12 +63,11 @@ s = socket.socket()
 
 # Server information
 ## 51.195.19.3
-s.connect(('192.168.43.44', 14200))
+s.connect(('51.195.19.3', 1399))
 
 email_changer = ''
 data_user = []
 code_g = 0
-
 record_until = True
 rec_sec = 0
 rec_min = 0
@@ -116,7 +84,9 @@ icon_d='down'
 item_change=''
 find_mess_ls = ["",[],0]
 color=''
-
+bird = vector(0, 0)
+balls = []
+score = 0
 mic_port=True
 download_status= False
 new_messeg = []
@@ -337,7 +307,7 @@ class user:
         if str(sender)>str(reciver):
             tabale=str(sender+str(reciver))
         else:
-            tabale=str(sender+str(reciver))
+            tabale=str(reciver+str(sender))
 
         message_time=str(datetime.datetime.now())
         message_id=str(time.time())
@@ -403,17 +373,21 @@ class user:
         sending_to_server(s,data2)
 
     def failed_add_friend(self,socket,data):
-        notification('Unfortunately, User not found!')
+        notification('Unfortunately,User not found!')
 
     def friend_added(self,socket,data):
+        global window_master
         print(f'{data[0]} , with name {data[1]} now is your friend his bio is {data[2]} and profile address is {data[3]}')
         connection = sqlite3.connect("./client.db")
         cur = connection.cursor()
+        print(data)
         cur.execute(f"INSERT INTO friends VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
         connection.commit()
         connection.close()
         print('now your freind is ',chat_list(data[0]))
-        return chat_list(data[0])
+        window_master.clickedBtn_user()
+        notification(f'{data[1]} is Added to chat list.')
+
 
 
 def get_all_chat(your_name,your_friend):
@@ -548,10 +522,10 @@ def login_check():
     if r ==[]:
         info = []
     else:
-        print(r)
+       
         token = r[0][0]   
         info = r
-        print (info)
+       
 # ----------------------------------------------------------------------------------------------other func ------------------
 def wating_form(wating_until, form):
     global window
@@ -659,7 +633,7 @@ obj_work={
       '509':obj.get_code_server,
       '504':obj.password_changed,
       '503':recive_message,
-    #   '509':obj.profile_changed,
+    #   '509':profile_changed,
       '510':receve_file,
       '511':obj.failed_add_friend,
       '512':obj.friend_added,
@@ -723,6 +697,7 @@ class UI_login(QMainWindow):
         self.lineEdit_forget_pass = self.findChild(QLineEdit, "Username_LE_5")
         self.lineEdit_forget_repass = self.findChild(QLineEdit, "Username_LE_6")
         self.label_18.setHidden(True)
+
         self.capcha()
         # window.label_18.setStyleSheet('background-color:rgba(255, 255, 255, 0.5);')
         self.label_background = self.findChild(QLabel, "background")
@@ -1008,6 +983,7 @@ class UI_login(QMainWindow):
         self.close()
 
     def capcha(self):
+        import random
         img = ImageCaptcha()
         rnd_num = random.randint(10000, 100000)
         image = img.generate_image(str(rnd_num))
@@ -1132,6 +1108,7 @@ class UI_Master(QMainWindow):
 
         self.listWidget = self.findChild(QListWidget, "listWidget")
         self.label_6.setHidden(True)
+        self.label_26.setPixmap(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/background.png')))
         self.label_7.setHidden(True)
         
 
@@ -1207,6 +1184,14 @@ class UI_Master(QMainWindow):
         self.label_sidebar = self.findChild(QLabel, "side_bar_l")
         # self.label_topchatbar = self.findChild(QLabel, "topchat_bar_l")
         # self.label_bottomchatbar = self.findChild(QLabel, "bottomchat_bar_l")
+        self.label_26.setHidden(True)
+        self.label_27.setHidden(True)
+
+        self.label_26.setEnabled(False)
+        self.label_27.setStyleSheet('background-color:transparent;')
+        movie = QtGui.QMovie(os.getcwd() + '/UI/Master/icons/floding.gif')
+        self.label_27.setMovie(movie)
+        movie.start()
 
         self.label_usernamem = self.findChild(QLabel, "usernamem_l")
         self.label_lastseen = self.findChild(QLabel, "lastseen_l")
@@ -1317,7 +1302,7 @@ class UI_Master(QMainWindow):
         self.button_menu_user.setIcon(
             QIcon(os.getcwd() + "/UI/Master"  +'/icons/menu_user.png'))
         self.button_searchuser.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/search.png'))
-        self.button_call.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/phone.png'))
+        self.button_call.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/snake.png'))
         self.emoji_BTN_2.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/laugh2.png'))
         self.emoji_BTN.setIcon(
             QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/laugh.png')))
@@ -1643,6 +1628,8 @@ class UI_Master(QMainWindow):
 
     def cancel_changepass(self):
         self.frame_3.setHidden(True)
+        self.user_add_3.clear()
+        self.user_add_4.clear()
 
     def search_users(self):
         ls = self.listWidget.findItems(self.user_search_t.toPlainText(), Qt.MatchContains)
@@ -1890,6 +1877,7 @@ class UI_Master(QMainWindow):
         global token
         for data in messege :
             App.processEvents()
+         
             
             if data[0] == token:
                 if data[5] == 't' and data[2]!="":
@@ -1911,7 +1899,10 @@ class UI_Master(QMainWindow):
                      
                     self.file_receve(data[2:4])
                     App.processEvents()
-
+        self.label_26.setHidden(True)
+        self.label_27.setHidden(True)
+        QTimer.singleShot(100, self.scrol_down)
+    
     def user_list_click(self,item):
         global item_change,reciver,token
         if item_change != item.text():
@@ -1931,12 +1922,17 @@ class UI_Master(QMainWindow):
             self.label_23.setText(profile[2])
             reciver = profile[0]
             messege = get_all_chat(token,reciver)
-        
+            App.processEvents()
+            
             if messege == [] or messege == False:
                 self.label_25.setHidden(False)
+                
 
             else:
-            
+                self.wating_l.setHidden(True)
+                self.label_26.setHidden(False)
+                self.label_27.setHidden(False)
+                App.processEvents()
                 self.print_data_messege(messege)
                 
             
@@ -3250,7 +3246,120 @@ class UI_Master(QMainWindow):
     
     
     def snake(self):
-        pass
+        global bird,balls,score
+        bird = vector(0, 0)
+        balls = []
+        score = 0
+    
+        rgb_list = ['red','lightcoral']
+
+        def tap(x, y):
+
+            up = vector(0, 30)
+            bird.move(up)
+
+        def inside(point):
+            
+            return -200 < point.x < 200 and -200 < point.y < 200
+
+        def draw(alive):
+          
+            clear()
+
+            goto(bird.x, bird.y)
+
+            if alive:
+                global score
+
+                dot(13, rgb_list[randrange(0,2)])
+                score += 1
+                if score-39 >=10000:
+                    
+                    title(f" 🥇  youre score is : {score-39}")
+
+                elif 1000< score-39  <= 5000:
+                
+                    title(f" 🥈  youre score is : {score-39}")
+                elif 0< score-39 <=1000:
+                    title(f" 🥉  youre score is : {score-39}")
+                elif score<39:
+                    title(f"    youre score is : 0")
+
+             
+            else:
+                if score-39 >=10000:
+                    self.messegebox_t.setText(f"⚽   {token} points in fly ball is : {score-39} 🥇")
+                    self.clickedBtn_send("None")
+                    App.processEvents()
+
+                elif 1000< score-39  <= 5000:
+                    self.messegebox_t.setText(f"⚽    {token} points in fly ball is : {score-39} 🥈")
+                    self.clickedBtn_send("None")
+                    App.processEvents()
+                elif 0< score-39 <=1000:
+                    self.messegebox_t.setText(f"⚽   {token} points in fly ball is : {score-39} 🥉")
+                    self.clickedBtn_send("None")
+                    App.processEvents()
+                    
+                
+
+
+                exitonclick()
+                TurtleScreen._RUNNING = True
+                # done()
+                return
+                dot(10, 'red')
+
+                quit()
+
+            for ball in balls:
+                goto(ball.x, ball.y)
+                dot(20, 'darkgray')
+
+            update()
+
+        def move():
+          
+            bird.y -= 5
+
+            for ball in balls:
+                ball.x -= 3
+
+            if randrange(10) == 0:
+                y = randrange(-199, 199)
+                ball = vector(199, y)
+                balls.append(ball)
+
+            while len(balls) > 0 and not inside(balls[0]):
+                balls.pop(0)
+                # pass
+
+            if not inside(bird):
+                draw(False)
+                return
+
+            for ball in balls:
+                if abs(ball - bird) < 15:
+                    draw(False)
+                    return
+
+            draw(True)
+            ontimer(move, 40)
+       
+        try:
+            setup(420, 420, 600, 200)
+        except:
+            print("s")
+        hideturtle()
+        up()
+        tracer(False)
+        onscreenclick(tap)
+        move()
+        
+        
+        done()
+        TurtleScreen._RUNNING = True
+        return
 
 
 

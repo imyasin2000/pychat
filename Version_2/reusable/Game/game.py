@@ -4,11 +4,12 @@ from freegames import vector
 
 bird = vector(0, 0)
 balls = []
-# best_score = []
 score = 0
 
 
 def game():
+
+    rgb_list = ['red','lightcoral']
 
     def tap(x, y):
         "Move bird up in response to screen tap."
@@ -28,19 +29,18 @@ def game():
         if alive:
             global score
 
-            dot(10, 'green')
+            dot(13, rgb_list[randrange(0,2)])
             score += 1
         else:
-            # best_score.append(score)
+
             print(f"your score is : {score-39}")
             dot(10, 'red')
-            # os.system("TASKKILL /F /IM firefox.exe")
-            # print(best_score)
+
             quit()
 
         for ball in balls:
             goto(ball.x, ball.y)
-            dot(20, 'black')
+            dot(20, 'darkgray')
 
         update()
 
