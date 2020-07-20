@@ -8,11 +8,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import os
-import pyqrcode
-import png
+# import pyqrcode
+# import png
 import random
-from pyqrcode import QRCode
-import smtplib
+# from pyqrcode import QRCode
+# import smtplib
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -21,8 +21,8 @@ print("\nThe server was successfully activated.\n")
 
 # Server information
 ## 51.195.19.3
-ip = '51.195.53.142'
-port = 1400
+ip = '192.168.109.1'
+port = 14200
 online_users={}
 f=""
 
@@ -467,6 +467,7 @@ def send_file_to_client(s:socket,data1:list):
                 print("file sent to client...")
                 break
 
+
 def to_check_friend_adding(s:socket,data:list):
     res=adding_friends(data)
     if res==int(404):
@@ -582,6 +583,47 @@ def adding_friends(data:list):
             return data3
 
         connection.close()
+
+
+
+
+def send_profile_to_client(s:socket,data:list):
+
+    connection = sqlite3.connect("./database.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM users WHERE user_id=?", (data[0],))
+    r = cursor.fetchall()
+    print(r)
+    print(data,'data in server ')
+    print(r,'r in server')
+    adress=r[0][-2]
+    print(adress,'adress')
+    data1 = [int(513),b'start'.hex(),adress,data[0]]
+    data1 = json.dumps(data1)
+    s.send((data1.encode() + b'\0'))
+    path=adress
+    f = open(path, 'rb')
+    while True:
+        l = f.read(1024)
+
+        while (l):
+            # f"{str(x)}{ext}{l}".encode()
+            data1 = [int(513),l.hex(),adress,data[0]]  # pasvand file + size file
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
+            l = f.read(1024)
+        if not l:
+            data1 = [int(513),b'end'.hex(),adress,data[0]]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
+            print("file sent to client...")
+            break
+
+    
+
+
+    #code jadid baraye hali kardan be client 
+
 
 
 
@@ -701,13 +743,13 @@ def create_database_for_recover_some_one():
 
 
 #-----------------------------------------END FUNC ------------------------------------------------------------
-recover_acount(['PyChat'])
+# recover_acount(['PyChat'])
 
 
 print(online_users)
 
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
-      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'9000':send_ads}
+      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'122':send_profile_to_client,'9000':send_ads}
 
 s=Socket(ip, port)#run socket init make object from socket
 #s.send
