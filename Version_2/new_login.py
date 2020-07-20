@@ -2196,15 +2196,12 @@ class UI_Master(QMainWindow):
                 self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/download (1).png')))
                 icon_d = "f"
          
-               
-    def download_file(self,data):
-     
-        global icon_d
-        if os.path.isfile(os.getcwd()+'/Download_Res/' + data[0]) and icon_d == "down":
-            file =os.path.abspath(os.getcwd() + '/Download_Res/' + data[0])
-            opener ="open" if sys.platform == "darwin" else "xdg-open"
-            subprocess.call([opener, file])
-            where = self.index_serarch(data[0])
+    def set_icon_down(self,data):
+        where = self.index_serarch(data[0])
+        
+        if os.path.isfile(os.getcwd()+'/Download_Res/' + data[0]):
+            
+            
             if os.path.splitext(data[0])[1] in ['.jpg','.png','.jpeg']:
                 self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd()+'/Download_Res/'+data[0])))
                 self.formLayout.itemAt(where).widget().setIconSize(QSize(500, 300))
@@ -2220,21 +2217,67 @@ class UI_Master(QMainWindow):
             else:
                 self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file.png')))
                 self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
+        else:
+            self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/download.png')))
+            self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
+
+    def open_filecon(self,data):
+        file =os.path.abspath(os.getcwd() + '/Download_Res/' + data[0])
+
+        opener ="open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, file])
+        self.set_icon_down(data)
+
+
+    def delete_file(self,data):
+        qm = QMessageBox()
+        ret = qm.question(self,'warning!', "Are you sure you want to Delete this file ?", qm.Yes | qm.No)
+        if ret == qm.Yes:
+            os.remove(os.getcwd()+'/Download_Res/' + data[0])
+            self.set_icon_down(data)
+            
+
+    def redownload(self,data):
+        qm = QMessageBox()
+        ret = qm.question(self,'warning!', "Are you sure you want to Download this file again ?", qm.Yes | qm.No)
+        if ret == qm.Yes:
+            os.remove(os.getcwd()+'/Download_Res/' + data[0])
+            self.set_icon_down(data)
+            self.timer17 = QtCore.QTimer()
+            self.timer17.timeout.connect(lambda :self.download_state(data))
+            self.timer17.start(200)
+            sending_to_server(s,[int(120),data[0]])
+
+   
+    def download_file(self,data):
+
+        if os.path.isfile(os.getcwd()+'/Download_Res/' + data[0]) and icon_d == "down":
+            menu = QMenu(self)
+            info = newAct = menu.addAction("Open file")
+            mute = menu.addAction("Delet File")
+            clear_messages = menu.addAction("Download again")
+            info.triggered.connect(lambda : self.open_filecon(data))
+            mute.triggered.connect(lambda: self.delete_file(data))
+            clear_messages.triggered.connect(lambda : self.redownload(data))
+            menu.exec_(QCursor.pos())
+       
+            
         elif icon_d != "s" and icon_d != "f":
     
             self.timer17 = QtCore.QTimer()
             self.timer17.timeout.connect(lambda :self.download_state(data))
             self.timer17.start(200)
-            
             sending_to_server(s,[int(120),data[0]])
     
-    def index_serarch(self,txt): ########################################################################################
+
+    def index_serarch(self,txt): 
         for i in range(0,self.formLayout.count()):
             if str(self.formLayout.itemAt(i).widget().whatsThis()) == str(txt):
                 # print(i)
                 return i
         return -1
     
+
     def file_receve(self,data):
         global new_messeg,reciver
         self.label_25.setHidden(True)
@@ -2311,10 +2354,12 @@ class UI_Master(QMainWindow):
         
 
     def file_s_open(self,patch):
-        global download_status
-        where = self.index_serarch(patch)
-        if where == -1 :
-            return
+
+ 
+        # global download_status
+        # where = self.index_serarch(patch)
+        # if where == -1 :
+        #     return
 
         if os.path.isfile(patch):
            
