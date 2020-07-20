@@ -19,6 +19,7 @@ s.connect(('192.168.109.1',14200))
 
 
 f=''
+f2=''
 
 class user :
 
@@ -229,7 +230,7 @@ class user :
     def failed_add_friend(self,socket,data):
         print('the username is not avaulable...')
     
-    def friend_added(self,socket,data):
+    def friend_added(self,s,data):
         print(f'{data[0]} , with name {data[1]} now is your friend his bio is {data[2]} and profile address is {data[3]}')
         connection = sqlite3.connect("./client.db")
         cur = connection.cursor()
@@ -237,7 +238,26 @@ class user :
         connection.commit()
         connection.close()
         print('now your freind is ',chat_list(data[0]))
+        give_me_her_profile(s,data[0])
         return chat_list(data[0])
+
+def receve_profile(s:socket,data:list):
+    global f2
+    # inja ro os.get.. bezan 
+    recived_f =data[1]
+    if bytes.fromhex(data[0])==b"start":
+        f2 = open(recived_f, "wb")
+    elif bytes.fromhex(data[0])==b"end":
+        print(data)
+        print(f"profile of {data[-1]} from recived")
+        f2.close()
+        connection = sqlite3.connect("./client.db")
+        cursor = connection.cursor()
+        cursor.execute("UPDATE friends SET profile=? WHERE user_id=?", (recived_f, data[2]))
+        connection.commit()
+        connection.close()
+    else:
+        f2.write(bytes.fromhex(data[0]))
 
 
 
@@ -272,6 +292,7 @@ def recive_message(s:socket,data:list):
             tabale=str(mes[0]+str(mes[1]))
         else:
             tabale=str(mes[1]+str(mes[0]))
+        
         connection = sqlite3.connect("./client.db")
         cursor = connection.cursor()
 
@@ -356,6 +377,19 @@ def receve_file(s:socket,data:list):
         f.close()
     else:
         f.write(bytes.fromhex(data[0]))
+
+
+def give_me_her_profile(s:socket,username):
+    data=[int(122),str(username)]
+    sending_to_server(s,data)
+
+
+
+#in tabee baaraye in ast ta be server beguiem profile yek shakhs khas ra mikhahim
+
+
+
+    
     
 
 #----------------network connections with Queue--------------------------------
@@ -433,6 +467,7 @@ def set_internal_pass():
     cursor.execute("UPDATE info SET internal_password=?", (password))
     connection.commit()
     connection.close()
+
     
 
 
@@ -451,6 +486,7 @@ obj_work={ 'token':"yasin78",
       '510':receve_file,
       '511':obj.failed_add_friend,
       '512':obj.friend_added,
+      '513':receve_profile,
 
  
       }
@@ -469,7 +505,8 @@ token='yasin78'
 # obj.send_profilepic(s,token,'yasin78','m')
 
 # obj.add_friend(s,token)
-obj.logout(s)
+give_me_her_profile(s,'as')
+# obj.logout(s)
 
 
 
