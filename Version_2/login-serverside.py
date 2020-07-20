@@ -20,8 +20,8 @@ from email.mime.multipart import MIMEMultipart
 print("\nThe server was successfully activated.\n")
 
 # Server information
-## 51.195.19.3
-ip = '51.195.53.142'
+## 51.195.53.142
+ip = '0.0.0.0'
 port = 1400
 online_users={}
 f=""
@@ -334,7 +334,7 @@ def sending_messages(s:socket,data:list):
     global online_users
     print(data)
     for key, value in online_users.items(): 
-        if data[1] == value: 
+        if data[1] == value and data[1]!=data[0]: 
             data1=[int(503),(data[0],data[1],data[2],data[3],data[4],data[5])]
             data1 = json.dumps(data1)
             key.send((data1.encode() + b'\0'))
@@ -360,6 +360,32 @@ def sending_messages(s:socket,data:list):
             cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
             connection.commit()
             connection.close()
+            print("messege sended")
+        elif data[1]==data[0]:
+            print("saved in save messeges")
+            connection = sqlite3.connect("./database.db")
+            cur = connection.cursor()
+
+            if str(data[0])>str(data[1]):
+                tabale=str(data[0]+str(data[1]))
+            else:
+                tabale=str(data[1]+str(data[0]))
+
+            sql=f"""
+                CREATE TABLE IF NOT EXISTS {tabale}(
+                sender VARCHAR (48),
+                reciver VARCHAR(48),
+                message VARCHAR (600),
+                message_time DATETIME (60),
+                message_id VARCHAR (60),
+                message_type VARCHAR (3)
+                );
+            """
+            cur.execute(sql)
+            cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
+            connection.commit()
+            connection.close()
+
         else:
             print(data)
             connection = sqlite3.connect("./database.db")
@@ -399,7 +425,7 @@ def add_picprofile(s:socket,data:list):
         
         else:
             for key, value in online_users.items(): 
-                if data[1] == value: 
+                if data[1] == value and data[1]!=data[0] : 
                     data1=[int(503),(data[0], data[1],recived_f, data[-1],data[5],data[-2])]
                     data1 = json.dumps(data1)
                     key.send((data1.encode() + b'\0'))
@@ -426,6 +452,31 @@ def add_picprofile(s:socket,data:list):
                     connection.commit()
                     connection.close()
                     print(f"we recived a file from {data[0]}  , server sent this file to {data[1]} ")
+                elif data[1]==data[0]:
+                    connection = sqlite3.connect("./database.db")
+                    cur = connection.cursor()
+
+                    if str(data[0])>str(data[1]):
+                        tabale=str(data[0]+str(data[1]))
+                    else:
+                        tabale=str(data[1]+str(data[0]))
+
+                    sql=f"""
+                        CREATE TABLE IF NOT EXISTS {tabale}(
+                        sender VARCHAR (48),
+                        reciver VARCHAR(48),
+                        message VARCHAR (600),
+                        message_time DATETIME (60),
+                        message_id VARCHAR (60),
+                        message_type VARCHAR (3)
+                        );
+                    """
+                    cur.execute(sql)
+                    cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
+                    connection.commit()
+                    connection.close()
+                    print(f"file saved in save messeges {data[0]}")
+                    
                 else:
                     connection = sqlite3.connect("./database.db")
                     cur = connection.cursor()

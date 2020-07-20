@@ -1102,35 +1102,6 @@
         <normaloff>../../icons/menu (copy).png</normaloff>../../icons/menu (copy).png</iconset>
       </property>
      </widget>
-     <widget class="QPushButton" name="user_b">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>31</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>add user</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="clear_b">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>110</y>
-        <width>31</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="whatsThis">
-       <string>sdfgsdfgfdsgdf</string>
-      </property>
-      <property name="text">
-       <string>voice</string>
-      </property>
-     </widget>
     </widget>
     <widget class="QPushButton" name="doc_BTN">
      <property name="geometry">

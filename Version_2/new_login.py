@@ -62,8 +62,8 @@ q = Queue()
 s = socket.socket()
 
 # Server information
-## 51.195.19.3
-s.connect(('51.195.53.142', 1400))
+## 51.195.53.142
+s.connect(('0.0.0.0', 1400))
 
 email_changer = ''
 data_user = []
@@ -345,15 +345,17 @@ class user:
         media_id=media_id.replace(":","-")
         media_id=media_id.replace(' ','-')
         media_id=media_id.replace('.','-')
-    
+       
         down=0
         data = [int(108), sender,reciver,str(x),ext,b'start'.hex(),media_id,usage]  # pasvand file + size file
         sending_to_server(s, data)
         f = open(file_patch, 'rb')
         while True:
+            App.processEvents()
             l = f.read(20480)
 
             while (l):
+                App.processEvents()
                 # f"{str(x)}{ext}{l}".encode()
                 down = down + 20480
                 percent = (100 * float(down) / float(x))-0.03
@@ -365,8 +367,34 @@ class user:
                 data = [int(108), sender,reciver,str(x),ext,b'end'.hex(),media_id,usage,send_time]
                 sending_to_server(s, data)
                 print("sended")
-                break
+                
 
+                if str(sender)>str(reciver):
+                    tabale=str(sender+str(reciver))
+                else:
+                    tabale=str(reciver+str(sender))
+                
+                connection = sqlite3.connect("./client.db")
+                cursor = connection.cursor()
+
+                sql=f"""
+                    CREATE TABLE IF NOT EXISTS {tabale}(
+                    sender VARCHAR (48),
+                    reciver VARCHAR(48),
+                    message VARCHAR (600),
+                    message_time DATETIME (60),
+                    message_id VARCHAR (60),
+                    message_type VARCHAR (3)
+                    );
+                """
+                cursor.execute(sql)
+                connection.commit()
+
+                cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (sender, reciver,file_patch,send_time,media_id,usage))
+                connection.commit()
+                connection.close()
+                break
+  
     def add_friend(self,s:socket,token,friend):
     
         data2=[int(121),token,friend]
@@ -1173,10 +1201,10 @@ class UI_Master(QMainWindow):
         self.emoji_FRM.setStyleSheet(
             "background-color: rgba(255, 255, 255, .7);border: 0px solid gray;font-size: 25px;border-radius:10px;")
 
-        self.button_user = self.findChild(QPushButton, "user_b")
+        # self.button_user = self.findChild(QPushButton, "user_b")
         self.button_send = self.findChild(QPushButton, "send_b")
         
-        self.button_clear = self.findChild(QPushButton, "clear_b")
+        # self.button_clear = self.findChild(QPushButton, "clear_b")
         self.button_attach = self.findChild(QPushButton, "attach_b")
         self.button_record = self.findChild(QPushButton, "record_b")
         self.button_menu = self.findChild(QPushButton, "menu_b")
@@ -1343,7 +1371,7 @@ class UI_Master(QMainWindow):
 
         self.button_send.clicked.connect(lambda : self.clickedBtn_send("None"))
     
-        self.button_clear.clicked.connect(self.voice_mess_other)
+        # self.button_clear.clicked.connect(self.voice_mess_other)
         self.searchuser_b.clicked.connect(self.click_search)
         self.pushButton.clicked.connect(self.back_from_search)
         self.profile_LBL_2.clicked.connect(self.show_user_pic)
@@ -2203,7 +2231,7 @@ class UI_Master(QMainWindow):
     def index_serarch(self,txt): ########################################################################################
         for i in range(0,self.formLayout.count()):
             if str(self.formLayout.itemAt(i).widget().whatsThis()) == str(txt):
-                print(i)
+                # print(i)
                 return i
         return -1
     
@@ -2246,7 +2274,8 @@ class UI_Master(QMainWindow):
                 self.formLayout.itemAt(where).widget().setIconSize(QSize(500, 300))
 
             elif os.path.splitext(data[0])[1] in ['.mkv','.mp4']:
-                c
+                self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/video-camera.png')))
+                
                 self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
 
             elif os.path.splitext(data[0])[1] in ['.mp3','.vaw']:
@@ -2291,6 +2320,8 @@ class UI_Master(QMainWindow):
            
             opener ="open" if sys.platform == "darwin" else "xdg-open"
             subprocess.call([opener, patch])
+
+
         # print(where,type(where))
         
         
@@ -2307,10 +2338,11 @@ class UI_Master(QMainWindow):
         fname=[]
         if wich=='c':
             fname=[data,'']#camera datash hamon masire
+            print("cam",fname[0])
             obj.send_file(s,token,reciver,'m',fname[0])
         elif wich == 'print':
             
-            fname = [os.getcwd()+'/Download_Res/' + data[2],]
+            fname = [data[2],]
             # obj.send_file(s,token,reciver,'m',os.getcwd() + '/' + fname[0])
         else:
             try:
@@ -2329,10 +2361,38 @@ class UI_Master(QMainWindow):
 
         self.messege_user = QPushButton()
 
-
-        self.messege_user.setIcon(QIcon(fname[0]))
+        
+        if os.path.isfile(fname[0]):###########change_sh
             
-        self.messege_user.setIconSize(QSize(500, 300))
+            if os.path.splitext(fname[0])[1] in ['.jpg','.png','.jpeg']:
+                self.messege_user.setIcon(QIcon(os.path.abspath(fname[0])))
+                self.messege_user.setIconSize(QSize(500, 300))
+
+            elif os.path.splitext(fname[0])[1] in ['.mkv','.mp4']:
+                self.messege_user.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/video-camera.png')))
+                
+                self.messege_user.setIconSize(QSize(300, 35))
+
+            elif os.path.splitext(fname[0])[1] in ['.mp3','.vaw']:
+                self.messege_user.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/mp3.png')))
+                self.messege_user.setIconSize(QSize(300, 35))
+
+            else:
+                self.messege_user.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file.png')))
+                self.messege_user.setIconSize(QSize(300, 35))
+            self.messege_user.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        else:
+                self.messege_user = QPushButton("   File not available.")
+                self.messege_user.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file (1).png')))
+                self.messege_user.setIconSize(QSize(300, 35))
+                self.messege_user.setCursor(QCursor(QtCore.Qt.ForbiddenCursor))
+
+
+
+
+        # self.messege_user.setIcon(QIcon(fname[0]))
+            
+        # self.messege_user.setIconSize(QSize(500, 300))
 
         # self.messege_user.setStyleSheet("background-color: white;border: 0px solid lightgray;border-radius: 17px;font-size: 20px;")
         if self.last_used == "me":
@@ -2342,34 +2402,14 @@ class UI_Master(QMainWindow):
 
         self.formLayout.itemAt(self.formLayout.count()-2).widget().setStyleSheet(
             "background-color:transparent;border: 0px solid white;border-radius:20px;color:white;")
-        self.formLayout.itemAt(self.formLayout.count(
-        )-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.formLayout.itemAt(self.formLayout.count()-2).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
         self.formLayout.itemAt(self.formLayout.count()-1).widget().clicked.connect(lambda : self.file_s_open (fname[0]))
         self.formLayout.itemAt(self.formLayout.count()-1).widget().setWhatsThis(fname[0])
 
         self.formLayout.itemAt(self.formLayout.count()-1).widget().setStyleSheet(
             "background-color: #D7FAB3;border: 12px solid rbg(215,250,175);border-radius: 25px;font-size: 20px;")
-        self.formLayout.itemAt(self.formLayout.count(
-        )-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-
-        where = self.formLayout.count()-1
-
-        if os.path.splitext(fname[0])[1] in ['.jpg','.png','.jpeg']:
-            self.formLayout.itemAt(where).widget().setIcon(QIcon(fname[0]))
-            self.formLayout.itemAt(where).widget().setIconSize(QSize(500, 300))
-
-        elif os.path.splitext(fname[0])[1] in ['.mkv','.mp4']:
-            self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/video-camera.png')))
-            self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
-
-        elif os.path.splitext(fname[0])[1] in ['.mp3','.vaw']:
-            self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/mp3.png')))
-            self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
-
-        else:
-            self.formLayout.itemAt(where).widget().setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file.png')))
-            self.formLayout.itemAt(where).widget().setIconSize(QSize(300, 35))
+        # self.formLayout.itemAt(self.formLayout.count()-1).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
 
 
@@ -3204,14 +3244,24 @@ class UI_Master(QMainWindow):
         self.clickedBtn_user(reciver)
 
     def clickedBtn_user(self,friend=None):
+        global token,info
         list_users = chat_list(friend)
         list_users.reverse()
         self.listWidget.clear()
+        self.listWidget_2.clear()
         for (count,item_l) in enumerate(list_users):
-            itm = QListWidgetItem("\n "+item_l[1]+"\n")
-            itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
-            self.listWidget.insertItem(count,itm)        
-            self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+            if item_l[0] == token:
+                print(item_l)
+                itm = QListWidgetItem("\n Saved Messages\n")
+                itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/icons/bookmark.png")))
+                self.listWidget.insertItem(count,itm)        
+                self.listWidget.item(count).setWhatsThis('>,_,<'.join((token,'Saved Messages',info[0][5],'bookmark.png')))
+
+            else: 
+                itm = QListWidgetItem("\n "+item_l[1]+"\n")
+                itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+                self.listWidget.insertItem(count,itm)        
+                self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
 
             itm = QListWidgetItem("\n "+item_l[1]+"\n")
             itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
@@ -3347,6 +3397,7 @@ class UI_Master(QMainWindow):
             ontimer(move, 40)
        
         try:
+            
             setup(420, 420, 600, 200)
         except:
             print("s")
