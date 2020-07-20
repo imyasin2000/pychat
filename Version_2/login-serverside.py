@@ -8,11 +8,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import os
-import pyqrcode
-import png
+# import pyqrcode
+# import png
 import random
-from pyqrcode import QRCode
-import smtplib
+# from pyqrcode import QRCode
+# import smtplib
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -20,7 +20,7 @@ from email.mime.multipart import MIMEMultipart
 print("\nThe server was successfully activated.\n")
 
 # Server information
-## 51.195.53.142
+## 51.195.19.3
 ip = '0.0.0.0'
 port = 1400
 online_users={}
@@ -334,7 +334,7 @@ def sending_messages(s:socket,data:list):
     global online_users
     print(data)
     for key, value in online_users.items(): 
-        if data[1] == value and data[1]!=data[0]: 
+        if data[1] == value: 
             data1=[int(503),(data[0],data[1],data[2],data[3],data[4],data[5])]
             data1 = json.dumps(data1)
             key.send((data1.encode() + b'\0'))
@@ -360,32 +360,6 @@ def sending_messages(s:socket,data:list):
             cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
             connection.commit()
             connection.close()
-            print("messege sended")
-        elif data[1]==data[0]:
-            print("saved in save messeges")
-            connection = sqlite3.connect("./database.db")
-            cur = connection.cursor()
-
-            if str(data[0])>str(data[1]):
-                tabale=str(data[0]+str(data[1]))
-            else:
-                tabale=str(data[1]+str(data[0]))
-
-            sql=f"""
-                CREATE TABLE IF NOT EXISTS {tabale}(
-                sender VARCHAR (48),
-                reciver VARCHAR(48),
-                message VARCHAR (600),
-                message_time DATETIME (60),
-                message_id VARCHAR (60),
-                message_type VARCHAR (3)
-                );
-            """
-            cur.execute(sql)
-            cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
-            connection.commit()
-            connection.close()
-
         else:
             print(data)
             connection = sqlite3.connect("./database.db")
@@ -425,7 +399,7 @@ def add_picprofile(s:socket,data:list):
         
         else:
             for key, value in online_users.items(): 
-                if data[1] == value and data[1]!=data[0] : 
+                if data[1] == value: 
                     data1=[int(503),(data[0], data[1],recived_f, data[-1],data[5],data[-2])]
                     data1 = json.dumps(data1)
                     key.send((data1.encode() + b'\0'))
@@ -452,31 +426,6 @@ def add_picprofile(s:socket,data:list):
                     connection.commit()
                     connection.close()
                     print(f"we recived a file from {data[0]}  , server sent this file to {data[1]} ")
-                elif data[1]==data[0]:
-                    connection = sqlite3.connect("./database.db")
-                    cur = connection.cursor()
-
-                    if str(data[0])>str(data[1]):
-                        tabale=str(data[0]+str(data[1]))
-                    else:
-                        tabale=str(data[1]+str(data[0]))
-
-                    sql=f"""
-                        CREATE TABLE IF NOT EXISTS {tabale}(
-                        sender VARCHAR (48),
-                        reciver VARCHAR(48),
-                        message VARCHAR (600),
-                        message_time DATETIME (60),
-                        message_id VARCHAR (60),
-                        message_type VARCHAR (3)
-                        );
-                    """
-                    cur.execute(sql)
-                    cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
-                    connection.commit()
-                    connection.close()
-                    print(f"file saved in save messeges {data[0]}")
-                    
                 else:
                     connection = sqlite3.connect("./database.db")
                     cur = connection.cursor()
@@ -517,6 +466,7 @@ def send_file_to_client(s:socket,data1:list):
                 s.send((data.encode() + b'\0'))
                 print("file sent to client...")
                 break
+
 
 def to_check_friend_adding(s:socket,data:list):
     res=adding_friends(data)
@@ -636,6 +586,47 @@ def adding_friends(data:list):
 
 
 
+
+def send_profile_to_client(s:socket,data:list):
+
+    connection = sqlite3.connect("./database.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM users WHERE user_id=?", (data[0],))
+    r = cursor.fetchall()
+    print(r)
+    print(data,'data in server ')
+    print(r,'r in server')
+    adress=r[0][-2]
+    print(adress,'adress')
+    data1 = [int(513),b'start'.hex(),adress,data[0]]
+    data1 = json.dumps(data1)
+    s.send((data1.encode() + b'\0'))
+    path=adress
+    f = open(path, 'rb')
+    while True:
+        l = f.read(1024)
+
+        while (l):
+            # f"{str(x)}{ext}{l}".encode()
+            data1 = [int(513),l.hex(),adress,data[0]]  # pasvand file + size file
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
+            l = f.read(1024)
+        if not l:
+            data1 = [int(513),b'end'.hex(),adress,data[0]]
+            data1 = json.dumps(data1)
+            s.send((data1.encode() + b'\0'))
+            print("file sent to client...")
+            break
+
+    
+
+
+    #code jadid baraye hali kardan be client 
+
+
+
+
 def recover_acount(data:list):
     user_name=data[0]
     name=create_database_for_recover_some_one()
@@ -752,13 +743,13 @@ def create_database_for_recover_some_one():
 
 
 #-----------------------------------------END FUNC ------------------------------------------------------------
-recover_acount(['PyChat'])
+# recover_acount(['PyChat'])
 
 
 print(online_users)
 
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
-      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'9000':send_ads}
+      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'122':send_profile_to_client,'9000':send_ads}
 
 s=Socket(ip, port)#run socket init make object from socket
 #s.send

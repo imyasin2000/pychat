@@ -218,6 +218,7 @@ class user :
             connection.close()
             break
 
+    
     def profile_changed(self,s:socket,data:list):
         print('your profile changed :)')
 

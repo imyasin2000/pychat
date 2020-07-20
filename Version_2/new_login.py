@@ -94,6 +94,7 @@ new_messeg = []
 
 
 f=''
+f2=''
 token=''
 info=[]
 reciver='mhfa1380'
@@ -337,7 +338,7 @@ class user:
 
     def send_file(self, s: socket,sender,reciver,usage,file_patch):
         
-        # root.filename = filedialog.askopenfilename(initialdir="/", title="Select file",filetypes=( ("all files", "*.*"),("jpeg files", "*.jpg"),("ppng files", "*.png")))
+    
         name, ext = os.path.splitext(file_patch)
         x = os.path.getsize(file_patch) #size
         send_time=str(datetime.datetime.now())[:-4]
@@ -409,12 +410,116 @@ class user:
         connection = sqlite3.connect("./client.db")
         cur = connection.cursor()
         print(data)
-        cur.execute(f"INSERT INTO friends VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
+        cur.execute("SELECT * FROM friends WHERE user_id=?", (data[0],))
+        r = cur.fetchall()
         connection.commit()
         connection.close()
-        print('now your freind is ',chat_list(data[0]))
+        if r != []:
+            notification("The contact is in Youre chat list")
+        
+        else:
+            connection = sqlite3.connect("./client.db")
+            cur = connection.cursor()
+            cur.execute(f"INSERT INTO friends VALUES (?,?,?,?)", (data[0], data[1], data[2], data[3]))
+            connection.commit()
+            connection.close()
+            print('now your freind is ',chat_list(data[0]))
+            give_me_her_profile(socket,data[0])
+            window_master.clickedBtn_user()
+            notification(f'{data[1]} is Added to chat list.')
+
+    def profile_changed(self,s:socket,data:list):
+            notification('your profile changed :)') 
+
+    def send_profilepic(self, s: socket,sender,reciver,usage,path):
+  
+        
+        name, ext = os.path.splitext(path)
+        x = os.path.getsize(path) #size
+        send_time=str(datetime.datetime.now())[:-4]
+        if str(sender)>str(reciver):
+            tabale=str(sender+str(reciver))
+        else:
+            tabale=str(sender+str(reciver))
+
+        media_id=str(tabale)+send_time
+        media_id=media_id.replace(":","-")
+        media_id=media_id.replace(' ','-')
+        media_id=media_id.replace('.','-')
+       
+        down=0
+        data = [int(108), sender,reciver,str(x),ext,b'start'.hex(),media_id,usage]  # pasvand file + size file
+        sending_to_server(s, data)
+        f = open(path, 'rb')
+        while True:
+            l = f.read(20480)
+
+            while (l):
+                # f"{str(x)}{ext}{l}".encode()
+                down = down + 20480
+                percent = (100 * float(down) / float(x))-0.03
+                print("{:.2f} %".format(percent),end="--")
+                data = [int(108), sender,reciver,str(x),ext,l.hex(),media_id,usage,send_time]  # pasvand file + size file
+                sending_to_server(s, data)
+                l = f.read(20480)
+            if not l:
+                data = [int(108), sender,reciver,str(x),ext,b'end'.hex(),media_id,usage,send_time]
+                sending_to_server(s, data)
+                print("your file sent ")
+
+            if str(sender)>str(reciver):
+                tabale=str(sender+str(reciver))
+            else:
+                tabale=str(reciver+str(sender))
+            connection = sqlite3.connect("./client.db")
+            cursor = connection.cursor()
+
+            sql=f"""
+                CREATE TABLE IF NOT EXISTS {tabale}(
+                sender VARCHAR (48),
+                reciver VARCHAR(48),
+                message VARCHAR (600),
+                message_time DATETIME (60),
+                message_id VARCHAR (60),
+                message_type VARCHAR (3)
+                );
+            """
+            cursor.execute(sql)
+            connection.commit()
+
+            cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (sender, reciver,path,send_time,media_id,usage))
+            connection.commit()
+            connection.close()
+            break
+
+
+def receve_profile(s:socket,data:list):
+    global f2
+    print(data[1])
+    recived_f = os.getcwd()+'/UI/Master/Files/profile/' + data[1]
+    print("save",recived_f)
+    if bytes.fromhex(data[0])==b"start":
+        f2 = open(recived_f, "wb")
+    elif bytes.fromhex(data[0])==b"end":
+        print(data)
+        notification(f"profile of {data[-1]} from recived")
+        
+
+        f2.close()
+        connection = sqlite3.connect("./client.db")
+        cursor = connection.cursor()
+        cursor.execute("UPDATE friends SET profile=? WHERE user_id=?", (data[1], data[2]))
+        connection.commit()
+        connection.close()
         window_master.clickedBtn_user()
-        notification(f'{data[1]} is Added to chat list.')
+    else:
+        f2.write(bytes.fromhex(data[0]))
+
+
+def give_me_her_profile(s:socket,username):
+    
+    data=[int(122),str(username)]
+    sending_to_server(s,data)
 
 
 
@@ -661,10 +766,11 @@ obj_work={
       '509':obj.get_code_server,
       '504':obj.password_changed,
       '503':recive_message,
-    #   '509':profile_changed,
+      '509':obj.profile_changed,
       '510':receve_file,
       '511':obj.failed_add_friend,
       '512':obj.friend_added,
+      '513':receve_profile
 
  
       }
@@ -1877,6 +1983,7 @@ class UI_Master(QMainWindow):
     def add_user_freind(self):
         global obj,s,token
         if  self.user_add.text() :
+            
             obj.add_friend(s,token,self.user_add.text())
             self.hide_add_invite()
         else:
@@ -2060,6 +2167,7 @@ class UI_Master(QMainWindow):
         output.save(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
 
         self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
+        obj.send_profilepic(s,token,token,'p',os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
 
     def delete_profile_pic(self):
         qm = QMessageBox()
@@ -2069,6 +2177,7 @@ class UI_Master(QMainWindow):
             dst = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')
             shutil.copy(src, dst)
             self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
+            obj.send_profilepic(s,token,token,'p',os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
 
         
     def show_profile_pic(self):
@@ -2085,6 +2194,7 @@ class UI_Master(QMainWindow):
             img.show()
             
     def choose_profile_pic(self):
+        global obj,s,token
         from PIL import Image, ImageOps, ImageDraw
         try:
             fname = QFileDialog.getOpenFileName(self, 'Open file', 'c:\\',"Image files (*.jpg *.png)")
@@ -2106,6 +2216,7 @@ class UI_Master(QMainWindow):
         output.save(os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
 
         self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
+        obj.send_profilepic(s,token,token,'p',os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
         
     def capture_pic_profile(self):
         from PIL import Image, ImageOps, ImageDraw
@@ -2139,6 +2250,7 @@ class UI_Master(QMainWindow):
                 cam.release()
                 cv2.destroyAllWindows()
                 self.profile_LBL.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
+                obj.send_profilepic(s,token,token,'p',os.path.abspath(os.getcwd() + "/UI/Master"  +'/Files/profile/output.png'))
 
 
                
