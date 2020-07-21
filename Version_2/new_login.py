@@ -64,7 +64,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.53.142
-s.connect(('0.0.0.0', 1401))
+s.connect(('51.195.53.142', 1402))
 
 email_changer = ''
 data_user = []
@@ -1754,7 +1754,8 @@ class UI_Master(QMainWindow):
         self.user_add_5.text()
         self.user_add_6.text()
         print(self.user_add_5.text(),self.user_add_6.text())
-    
+        data=[int(118),sender,self.user_add_5.text(),self.user_add_6.text()]
+        # sending_to_server(s,data)
         self.user_add_5.clear()
         self.user_add_5.clear()
         self.close_ads()
