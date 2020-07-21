@@ -22,7 +22,7 @@ print("\nThe server was successfully activated.\n")
 # Server information
 ## 51.195.19.3
 ip = '51.195.53.142'
-port = 1402
+port = 1404
 online_users={}
 f=""
 
@@ -219,7 +219,7 @@ def add_new_user(s: socket, data: list):
     # agar chek kardan user name sahih bud in farakhani shavad
     connection = sqlite3.connect("./database.db")
     cur = connection.cursor()
-    cur.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],'Hey! Im Using PyChat.','output.png',ls))
+    cur.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],'Hey! Im Using PyChat.','def_pro.png',ls))
     connection.commit()
     connection.close()
     print(data)

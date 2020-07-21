@@ -56,6 +56,8 @@ from random import *
 from turtle import *
 from freegames import vector
 import urllib.request
+import clientdatabase
+
 
 
 
@@ -64,7 +66,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.53.142
-s.connect(('51.195.53.142', 1402))
+s.connect(('51.195.53.142', 1404))
 
 email_changer = ''
 data_user = []
@@ -593,6 +595,7 @@ def recive_message(s:socket,data:list):
                 new_mes2.append('t')
                 new_mes2.append(mes[2])
                 new_mes2.append(mes[3])
+                new_mes2.append(mes[0])
                 new_messeg = new_mes2
            
 
@@ -611,6 +614,7 @@ def recive_message(s:socket,data:list):
             new_mes2.append('m')
             new_mes2.append(mes[2])
             new_mes2.append(mes[3])
+            new_mes2.append(mes[0])
             new_messeg = new_mes2
             
 
@@ -618,9 +622,9 @@ def recive_message(s:socket,data:list):
             tabale=str(mes[0]+str(mes[1]))
         else:
             tabale=str(mes[1]+str(mes[0]))
+        
         connection = sqlite3.connect("./client.db")
         cursor = connection.cursor()
-
         sql=f"""
             CREATE TABLE IF NOT EXISTS {tabale}(
             sender VARCHAR (48),
@@ -753,9 +757,13 @@ def load_data(data):
 
 
 def sending_to_server(socket: socket, data):
-    data = json.dumps(data)
-    socket.send((data.encode() + b'\0'))
+    try:
+        data = json.dumps(data)
+        socket.send((data.encode() + b'\0'))
+    except Exception as inst:
+        print("dis")
 
+        return
 
 def do_work(obj: user, s: socket):
     while True:
@@ -1537,7 +1545,7 @@ class UI_Master(QMainWindow):
     
         self.button_attach.clicked.connect(self.click_attach)
         self.textedit_messegebox.textChanged.connect(self.textChanged_messege_event)
-        # self.user_search_t.textChanged.connect(self.search_users) 
+        self.user_search_t.textChanged.connect(self.search_users) 
         # self.lineEdit.textChanged.connect(self.show_find_mess)
         
         
@@ -1822,9 +1830,9 @@ class UI_Master(QMainWindow):
         self.user_add_4.clear()
 
     def search_users(self):
-        pass
-        # self.child_win = UI_Ads()
-        # self.child_win.show()
+        # # pass
+        # # self.child_win = UI_Ads()
+        # # self.child_win.show()
         # ls = self.listWidget.findItems(self.user_search_t.toPlainText(), Qt.MatchContains)
         # if ls == [] or self.user_search_t.toPlainText()=="":
         #     self.clickedBtn_user()
@@ -1832,22 +1840,33 @@ class UI_Master(QMainWindow):
         # elif len(ls) == self.listWidget.count() :
         #     pass
         # else:
-        #     after=[]
-        #     for i in range(len(ls)):
-        #         after.append(ls[i].text())
-        #     list_users = chat_list()
+
             
-        #     # print(list(map(filter(lambda x : x in list_users[], ls))))
+            list_users = list(filter(lambda chat : self.user_search_t.toPlainText() in chat[1],chat_list()))
+            list_users.reverse()
             
-        #     # ist_users = chat_list()
-        #     # list_users.reverse()
-        #     # map(filter)
-        #     # self.listWidget.clear()
-        #     # for (count,item_l) in enumerate(list_users):
-        #     #     itm = QListWidgetItem("\n "+item_l[1]+"\n")
-        #     #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
-        #     #     self.listWidget.insertItem(count,itm)        
-        #     #     self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+            self.listWidget.clear()
+            for (count,item_l) in enumerate(list_users):
+                if item_l[0] == token:
+                    # print(item_l)
+                    itm = QListWidgetItem("\n Saved Messages\n")
+                    itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/icons/bookmark.png")))
+                    self.listWidget.insertItem(count,itm)        
+                    self.listWidget.item(count).setWhatsThis('>,_,<'.join((token,'Saved Messages',info[0][5],'bookmark.png')))
+
+                else: 
+                    itm = QListWidgetItem("\n "+item_l[1]+"\n")
+        
+                    if path.isfile(os.getcwd()  + "/UI/Master/Files/profile/"  + item_l[3]):
+
+                        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+                        self.listWidget.insertItem(count,itm)        
+                        self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+                    else:
+                        itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/def_pro.png")))
+                        self.listWidget.insertItem(count,itm) 
+                        self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+
 
         #     #     itm = QListWidgetItem("\n "+item_l[1]+"\n")
         #     #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
@@ -2050,20 +2069,37 @@ class UI_Master(QMainWindow):
 
 
     def choos_type(self,data):
+        global reciver,new_messeg
+        
        
         self.move_down_wheel()
         if data==[]:
             return 
-
-        elif data[0] == 't':
+        
+        elif data[0] == 't' and data[3] == reciver:
+            # print(data[3],"t",reciver)
             self.clickedBtn_other(data[1:])
             App.processEvents()
         
-        elif data[0] == 'm':
+        elif data[0] == 'm' and data[3] == reciver:
+            # print(reciver)
             
             self.file_receve(data[1:])
             App.processEvents()
 
+        elif (data[0] == 't' or data[0] == 'm')  and data[3] != reciver:
+            
+    
+            list_users = chat_list()
+            list_users.reverse()
+            for (count,item_l) in enumerate(list_users):
+                if item_l[0] == data[3]:
+                    self.listWidget.item(count).setForeground(QtCore.Qt.blue)
+                
+
+            notification("new message from " + data[3])
+            new_messeg.clear()
+       
 
     def print_data_messege(self,messege):
         
@@ -2105,6 +2141,7 @@ class UI_Master(QMainWindow):
             self.messegebox_t.setFocus()
             
             item_change = item.text()
+            item.setForeground(QtCore.Qt.black)
             self.exit_move_back_chat_info_FRM()
             self.pv_LBL.setIcon(item.icon())
             self.profile_LBL_2.setIcon(item.icon())
@@ -2183,7 +2220,11 @@ class UI_Master(QMainWindow):
             os.remove(os.getcwd() + "/UI/Master"  +'/Files/Face/face_id.png')
 
     def sign_out(self):
-        pass
+        if os.path.exists("client.db"):
+            os.remove("client.db")
+            clientdatabase.create_database()
+            self.close()
+        
    
     def delete_account(self):
         pass
@@ -2354,7 +2395,7 @@ class UI_Master(QMainWindow):
             self.formLayout.itemAt(where).widget().setCursor(QCursor(QtCore.Qt.PointingHandCursor))
             
             
-            print(download_status)
+            
             self.timer17.stop()
         else:
             
@@ -3463,13 +3504,14 @@ class UI_Master(QMainWindow):
 
     def clickedBtn_user(self,friend=None):
         global token,info
-        list_users = chat_list(friend)
+        list_users = chat_list()
         list_users.reverse()
         self.listWidget.clear()
         self.listWidget_2.clear()
         for (count,item_l) in enumerate(list_users):
+            
             if item_l[0] == token:
-                print(item_l)
+                
                 itm = QListWidgetItem("\n Saved Messages\n")
                 itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/icons/bookmark.png")))
                 self.listWidget.insertItem(count,itm)        
@@ -3646,7 +3688,7 @@ class UI_Master(QMainWindow):
         return
 
 
-
+pass
 
 
 class face_ui(QMainWindow):
@@ -3797,6 +3839,9 @@ login_check()
 # sys.exit(App.exec_())
 
 if not info:
+    src = os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/output.png')
+    dst = os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')
+    shutil.copy(src, dst)
     app_login = QApplication(sys.argv)
     window = UI_login()
     app_login.exit(app_login.exec_())
