@@ -33,7 +33,7 @@ import turtle
 import cv2
 import numpy as np
 import pyzbar.pyzbar as pyzbar
-import pyaudio
+# import pyaudio
 import wave
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QWidget, QScrollArea, QVBoxLayout, QGroupBox, QLabel, QPushButton, QFormLayout
@@ -55,6 +55,7 @@ import sqlite3
 from random import *
 from turtle import *
 from freegames import vector
+import urllib.request
 
 
 
@@ -63,7 +64,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.53.142
-s.connect(('0.0.0.0', 1400))
+s.connect(('0.0.0.0', 1401))
 
 email_changer = ''
 data_user = []
@@ -81,6 +82,7 @@ move_smth2 = 571
 move_smth4 = 1060
 move_smth5 = 570
 icon_d='down'
+Ads_down = 'pychat.sazito.com'
 item_change=''
 find_mess_ls = ["",[],0]
 color=''
@@ -365,6 +367,7 @@ class user:
                 sending_to_server(s, data)
                 l = f.read(20480)
             if not l:
+                App.processEvents()
                 data = [int(108), sender,reciver,str(x),ext,b'end'.hex(),media_id,usage,send_time]
                 sending_to_server(s, data)
                 print("sended")
@@ -424,8 +427,9 @@ class user:
             connection.commit()
             connection.close()
             print('now your freind is ',chat_list(data[0]))
-            give_me_her_profile(socket,data[0])
+            
             window_master.clickedBtn_user()
+            give_me_her_profile(socket,data[0])
             notification(f'{data[1]} is Added to chat list.')
 
     def profile_changed(self,s:socket,data:list):
@@ -452,6 +456,7 @@ class user:
         sending_to_server(s, data)
         f = open(path, 'rb')
         while True:
+            App.processEvents()
             l = f.read(20480)
 
             while (l):
@@ -462,6 +467,7 @@ class user:
                 data = [int(108), sender,reciver,str(x),ext,l.hex(),media_id,usage,send_time]  # pasvand file + size file
                 sending_to_server(s, data)
                 l = f.read(20480)
+                App.processEvents()
             if not l:
                 data = [int(108), sender,reciver,str(x),ext,b'end'.hex(),media_id,usage,send_time]
                 sending_to_server(s, data)
@@ -498,6 +504,7 @@ def receve_profile(s:socket,data:list):
     print(data[1])
     recived_f = os.getcwd()+'/UI/Master/Files/profile/' + data[1]
     print("save",recived_f)
+    App.processEvents()
     if bytes.fromhex(data[0])==b"start":
         f2 = open(recived_f, "wb")
     elif bytes.fromhex(data[0])==b"end":
@@ -633,6 +640,7 @@ def recive_message(s:socket,data:list):
 
 def receve_file(s:socket,data:list):
     global f,download_status
+    App.processEvents()
     recived_f = os.getcwd()+'/Download_Res/' + data[1]
     if bytes.fromhex(data[0])==b"start":
         f = open(recived_f, "wb")
@@ -1195,17 +1203,24 @@ class UI_Ads(QMainWindow):
         self.offset = None
         radius = 10.0
         path = QtGui.QPainterPath()
-        img = QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads.png'))
+        if os.path.isfile(os.getcwd() + '/UI/Ads/images/Ads_file.png'):
+            img = QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads_file.png'))
+
+        else:
+            img = QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads.png'))
+
         self.ads_l.setPixmap(img)
         self.ads_l.setFixedWidth(img.width())
         self.ads_l.setFixedHeight(img.height())
         self.exit_b.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Ads/images/cross.png')))
         self.exit_b.setStyleSheet("background-color: transparent;border: 0px solid white;")
+        self.pushButton.setStyleSheet("background-color: rgba(255,255,255,.9);border: 0px solid white;border-radius:12px;")
         self.exit_b.move(img.width() - 32, 10)
         self.exit_b.clicked.connect(self.close)
         self.setFixedSize(self.ads_l.size())
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
+        self.pushButton.clicked.connect(self.open_link)
         qr.moveCenter(cp)
         self.move(qr.topLeft())
         path.addRoundedRect(QtCore.QRectF(self.rect()), radius, radius)
@@ -1213,6 +1228,11 @@ class UI_Ads(QMainWindow):
         self.setMask(mask)
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
         self.show()
+    
+    def open_link(self):
+        global Ads_down
+        webbrowser.open(Ads_down)
+
 
 
 class UI_Master(QMainWindow):
@@ -1225,6 +1245,12 @@ class UI_Master(QMainWindow):
         global token,reciver,s,obj
         im_online=[int(105),token]
         sending_to_server(s,im_online)
+        if token =="pychat":
+            
+            self.send_b_14.setHidden(True)
+            self.call_b.setHidden(True)
+        else:
+            self.menu_b_2.setHidden(True)
 
         # with open("theme.txt") as file: # Use file to refer to the file object
         #     data = file.read()
@@ -1352,8 +1378,8 @@ class UI_Master(QMainWindow):
         self.pushButton_2.setStyleSheet(
             "background-color: transparent;border: 0px solid transparent;")
 
-        self.button_menu_user.setStyleSheet(
-            "background-color: transparent;border: 1px solid transparent;")
+        self.button_menu_user.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
+        self.menu_b_2.setStyleSheet("background-color: transparent;border: 1px solid transparent;")
         self.button_searchuser.setStyleSheet(
             "background-color: transparent;border: 1px transparent;")
         self.button_call.setStyleSheet(
@@ -1381,9 +1407,10 @@ class UI_Master(QMainWindow):
 
 
 
-        self.add_freind.setStyleSheet(
-                    "background-color: rgb(95, 125, 149);border: 0px solid white;border-radius:11px;color : white;font-size: 13px;")
+        self.add_freind.setStyleSheet("background-color: rgb(95, 125, 149);border: 0px solid white;border-radius:11px;color : white;font-size: 13px;")
 
+        self.add_freind_4.setStyleSheet("background-color: rgb(95, 125, 149);border: 0px solid white;border-radius:11px;color : white;font-size: 13px;")
+        
         self.invite.setStyleSheet(
                     "background-color: rgb(95, 125, 149);border: 0px solid white;border-radius:11px;color : white;font-size: 13px;")
 
@@ -1410,6 +1437,7 @@ class UI_Master(QMainWindow):
         self.send_b_11.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/up-chevron.png'))
         
         self.cancle_user.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/left-arrow.png'))
+        self.cancle_user_3.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/left-arrow.png'))
 
         
         self.send_b_11.setHidden(True)
@@ -1444,6 +1472,7 @@ class UI_Master(QMainWindow):
         self.button_usersearch.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/search.png'))
 
         self.menu_bk_BTN_3.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/menuseting.png'))
+        self.menu_b_2.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/megaphone.png'))
         self.menu_bk_BTN_4.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/call.png'))
         self.menu_bk_BTN_4.clicked.connect(self.contact_us)
         self.menu_bk_BTN_4.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;color:black")
@@ -1460,11 +1489,15 @@ class UI_Master(QMainWindow):
         self.send_b_14.setIcon(QIcon(os.getcwd() + "/UI/Master"  +'/icons/add-button.png'))
 
         self.send_b_14.clicked.connect(self.show_add_invite)
+        self.menu_b_2.clicked.connect(self.send_ads_server)
         self.invite.clicked.connect(self.sms_invite)
         self.add_freind.clicked.connect(self.add_user_freind)
 
         self.user_add.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:10px;")
         self.user_add_2.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:10px;")
+
+        self.user_add_5.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:10px;")
+        self.user_add_6.setStyleSheet("background-color: white;border: 1px solid gray;border-radius:10px;")
 
         
         self.profile_LBL_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/Files/profile/output.png')))
@@ -1583,8 +1616,10 @@ class UI_Master(QMainWindow):
         self.send_b_13.setIcon(
             QIcon(QPixmap(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/close (1).png'))))
         self.send_b_13.setHidden(True)
+        self.label_28.setStyleSheet("background-color: rgba(1,36,32,.7);")
         self.send_b_13.clicked.connect(self.stop_rec)
         self.menu_bk_BTN_2.clicked.connect(lambda:self.frame_3.setHidden(False))
+        self.add_freind_4.clicked.connect(self.send_ads_to_all)
         self.call_b.clicked.connect(self.snake)
 
         self.record_b.setCheckable(True)
@@ -1610,6 +1645,7 @@ class UI_Master(QMainWindow):
         self.user_search_b.setToolTip("<font color=white>%s</font>" % 'Search'.replace("\n", "<br/>"))
         self.menu_b.setToolTip("<font color=black>%s</font>" % 'Menu'.replace("\n", "<br/>"))
         self.menu_bk_BTN.setToolTip("<font color=white>%s</font>" % 'Go Back'.replace("\n", "<br/>"))
+        self.menu_b_2.setToolTip("<font color=white>%s</font>" % 'Send Ads'.replace("\n", "<br/>"))
 
         self.send_b_6.setToolTip("<font color=white>%s</font>" % '🌹'.replace("\n", "<br/>"))
         self.send_b_3.setToolTip("<font color=white>%s</font>" % '😬'.replace("\n", "<br/>"))
@@ -1635,6 +1671,8 @@ class UI_Master(QMainWindow):
         self.user_add_4.setStyleSheet("background-color: rgb(255,255,255);border: 0px solid white ;border-radius: 12px;")
         self.cancle_user_2.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"   + '/icons/face-scan.png')))
         self.cancle_user_2.setStyleSheet("background-color: transparent;")
+        self.cancle_user_3.setStyleSheet("background-color: transparent;border: 0px solid white;border-radius:15px;")
+
         self.add_frindl_4.setStyleSheet("background-color: #F0F0F0;")
         self.add_freind_3.setStyleSheet("background-color: rgb(255,255,255);border: 0px solid white ;border-radius: 12px;color:black;")
         self.add_freind_2.setStyleSheet("background-color: rgb(255,255,255);border: 0px solid white ;border-radius: 12px;color:black;")
@@ -1650,6 +1688,7 @@ class UI_Master(QMainWindow):
         
         self.label_25.setHidden(True)
         self.menu_user_b.clicked.connect(self.contex_menu)
+        self.cancle_user_3.clicked.connect(self.close_ads)
         self.add_freind_2.clicked.connect(self.change_local_pass)
         self.add_freind_3.clicked.connect(self.cancel_changepass)
         self.invite_2.clicked.connect(self.qr_invite)
@@ -1703,6 +1742,22 @@ class UI_Master(QMainWindow):
 
         
         self.show()
+
+    def send_ads_server(self):
+        self.frame_4.setGeometry(QtCore.QRect(50, 370, 331, 201))
+        
+
+    def close_ads(self):
+        self.frame_4.setGeometry(QtCore.QRect(50, 1140, 331, 201))
+
+    def send_ads_to_all(self):
+        self.user_add_5.text()
+        self.user_add_6.text()
+        print(self.user_add_5.text(),self.user_add_6.text())
+    
+        self.user_add_5.clear()
+        self.user_add_5.clear()
+        self.close_ads()
 
 
     def contact_us(self):
@@ -1766,33 +1821,36 @@ class UI_Master(QMainWindow):
         self.user_add_4.clear()
 
     def search_users(self):
-        ls = self.listWidget.findItems(self.user_search_t.toPlainText(), Qt.MatchContains)
-        if ls == [] or self.user_search_t.toPlainText()=="":
-            self.clickedBtn_user()
+        pass
+        # self.child_win = UI_Ads()
+        # self.child_win.show()
+        # ls = self.listWidget.findItems(self.user_search_t.toPlainText(), Qt.MatchContains)
+        # if ls == [] or self.user_search_t.toPlainText()=="":
+        #     self.clickedBtn_user()
            
-        elif len(ls) == self.listWidget.count() :
-            pass
-        else:
-            after=[]
-            for i in range(len(ls)):
-                after.append(ls[i].text())
-            list_users = chat_list()
+        # elif len(ls) == self.listWidget.count() :
+        #     pass
+        # else:
+        #     after=[]
+        #     for i in range(len(ls)):
+        #         after.append(ls[i].text())
+        #     list_users = chat_list()
             
-            # print(list(map(filter(lambda x : x in list_users[], ls))))
+        #     # print(list(map(filter(lambda x : x in list_users[], ls))))
             
-            # ist_users = chat_list()
-            # list_users.reverse()
-            # map(filter)
-            # self.listWidget.clear()
-            # for (count,item_l) in enumerate(list_users):
-            #     itm = QListWidgetItem("\n "+item_l[1]+"\n")
-            #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
-            #     self.listWidget.insertItem(count,itm)        
-            #     self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+        #     # ist_users = chat_list()
+        #     # list_users.reverse()
+        #     # map(filter)
+        #     # self.listWidget.clear()
+        #     # for (count,item_l) in enumerate(list_users):
+        #     #     itm = QListWidgetItem("\n "+item_l[1]+"\n")
+        #     #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+        #     #     self.listWidget.insertItem(count,itm)        
+        #     #     self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
 
-            #     itm = QListWidgetItem("\n "+item_l[1]+"\n")
-            #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
-            #     self.listWidget_2.insertItem(count,itm)    
+        #     #     itm = QListWidgetItem("\n "+item_l[1]+"\n")
+        #     #     itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+        #     #     self.listWidget_2.insertItem(count,itm)    
 
             
 
@@ -1983,7 +2041,6 @@ class UI_Master(QMainWindow):
     def add_user_freind(self):
         global obj,s,token
         if  self.user_add.text() :
-            
             obj.add_friend(s,token,self.user_add.text())
             self.hide_add_invite()
         else:
@@ -2419,6 +2476,7 @@ class UI_Master(QMainWindow):
        
         self.formLayout.itemAt(self.formLayout.count()-1).widget().clicked.connect(lambda : self.download_file(data))
         self.formLayout.itemAt(self.formLayout.count()-1).widget().setWhatsThis(data[0])
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().setToolTip("<font color=black>%s</font>" %os.getcwd()+'/Download_Res/'+data[0].replace("\n", "<br/>"))
         
         
         where = self.formLayout.count()-1
@@ -2539,7 +2597,7 @@ class UI_Master(QMainWindow):
                 self.messege_user.setIconSize(QSize(300, 35))
             self.messege_user.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         else:
-                self.messege_user = QPushButton("   File not available.")
+                self.messege_user = QPushButton("    File not available.")
                 self.messege_user.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master"  +'/icons/file (1).png')))
                 self.messege_user.setIconSize(QSize(300, 35))
                 self.messege_user.setCursor(QCursor(QtCore.Qt.ForbiddenCursor))
@@ -2563,6 +2621,7 @@ class UI_Master(QMainWindow):
 
         self.formLayout.itemAt(self.formLayout.count()-1).widget().clicked.connect(lambda : self.file_s_open (fname[0]))
         self.formLayout.itemAt(self.formLayout.count()-1).widget().setWhatsThis(fname[0])
+        self.formLayout.itemAt(self.formLayout.count()-1).widget().setToolTip("<font color=black>%s</font>" % fname[0].replace("\n", "<br/>"))
 
         self.formLayout.itemAt(self.formLayout.count()-1).widget().setStyleSheet(
             "background-color: #D7FAB3;border: 12px solid rbg(215,250,175);border-radius: 25px;font-size: 20px;")
@@ -2904,6 +2963,7 @@ class UI_Master(QMainWindow):
             self.timer.stop()
 
     def start_menu(self):
+        self.close_ads()
         self.hide_add_invite()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.move_ups)
@@ -3416,13 +3476,25 @@ class UI_Master(QMainWindow):
 
             else: 
                 itm = QListWidgetItem("\n "+item_l[1]+"\n")
-                itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
-                self.listWidget.insertItem(count,itm)        
-                self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+     
+                if path.isfile(os.getcwd()  + "/UI/Master/Files/profile/"  + item_l[3]):
+
+                    itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+                    self.listWidget.insertItem(count,itm)        
+                    self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
+                else:
+                    itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/def_pro.png")))
+                    self.listWidget.insertItem(count,itm) 
+                    self.listWidget.item(count).setWhatsThis('>,_,<'.join(item_l))
 
             itm = QListWidgetItem("\n "+item_l[1]+"\n")
-            itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
-            self.listWidget_2.insertItem(count,itm)    
+            if path.isfile(os.getcwd()   + "/UI/Master/Files/profile/"  + item_l[3]):
+                itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/"  + item_l[3])))
+                self.listWidget_2.insertItem(count,itm)    
+            else:
+
+                itm.setIcon(QIcon(os.path.abspath(os.getcwd() + "/UI/Master/Files/profile/def_pro.png")))
+                self.listWidget_2.insertItem(count,itm) 
 
         # for i in range (0,20):
         #     itm = QListWidgetItem("\n "+'hhh'+"\n")
@@ -3451,7 +3523,6 @@ class UI_Master(QMainWindow):
             self.formLayout.itemAt(i).widget().deleteLater()
             App.processEvents()
     
-    
     def snake(self):
         global bird,balls,score
         bird = vector(0, 0)
@@ -3461,15 +3532,18 @@ class UI_Master(QMainWindow):
         rgb_list = ['red','lightcoral']
 
         def tap(x, y):
+            App.processEvents()
 
             up = vector(0, 30)
             bird.move(up)
 
         def inside(point):
+            App.processEvents()
             
             return -200 < point.x < 200 and -200 < point.y < 200
 
         def draw(alive):
+            App.processEvents()
           
             clear()
 
@@ -3526,6 +3600,7 @@ class UI_Master(QMainWindow):
             update()
 
         def move():
+            App.processEvents()
           
             bird.y -= 5
 
@@ -3564,7 +3639,7 @@ class UI_Master(QMainWindow):
         onscreenclick(tap)
         move()
         
-        
+        App.processEvents()
         done()
         TurtleScreen._RUNNING = True
         return
@@ -3711,6 +3786,9 @@ class face_ui(QMainWindow):
             self.timer_face = QtCore.QTimer()
             self.timer_face.singleShot(3400, lambda: self.close())
 
+# app = QApplication(sys.argv)
+# window = UI_Ads()
+# app.exec_()
 
 login_check()
 # App = QApplication(sys.argv)
@@ -3729,6 +3807,7 @@ else:
     app_face = QApplication(sys.argv)
     face = face_ui()
     app_face.exit(app_face.exec_())
+    
     App = QApplication(sys.argv)
     window_master = UI_Master()
     sys.exit(App.exec_())
@@ -3744,7 +3823,7 @@ else:
 #     app_face.exit(app_face.exec_())
 #     pass
 # else:
-#     app = QApplication(sys.argv)
-#     window = UI_Ads()
-#     app.exec_()
+app = QApplication(sys.argv)
+window = UI_Ads()
+app.exec_()
 

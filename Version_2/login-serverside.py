@@ -8,11 +8,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import os
-# import pyqrcode
-# import png
+import pyqrcode
+import png
 import random
-# from pyqrcode import QRCode
-# import smtplib
+from pyqrcode import QRCode
+import smtplib
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -22,7 +22,7 @@ print("\nThe server was successfully activated.\n")
 # Server information
 ## 51.195.19.3
 ip = '0.0.0.0'
-port = 1400
+port = 1401
 online_users={}
 f=""
 
