@@ -66,7 +66,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.53.142
-s.connect(('51.195.53.142', 1404))
+s.connect(('51.195.53.142', 1500))
 
 email_changer = ''
 data_user = []
@@ -540,6 +540,7 @@ def receve_ads(s:socket,data:list):
     # app = QApplication(sys.argv)
     # window = UI_Ads()
     # app.exec_()
+    time.sleep(5)
     window_master.show_add_ver()
     
 
@@ -796,7 +797,8 @@ obj_work={
       '509':obj.get_code_server,
       '504':obj.password_changed,
       '503':recive_message,
-      '509':obj.profile_changed,
+      '515':obj.profile_changed,
+      
       '510':receve_file,
       '511':obj.failed_add_friend,
       '512':obj.friend_added,
@@ -1252,7 +1254,7 @@ class UI_Master(QMainWindow):
         self.pushButton_4.clicked.connect(self.open_ads_lnk)
         self.exit_b.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Ads/images/cross.png')))
         self.exit_b.setStyleSheet("background-color: transparent;border: 0px solid white;")
-        self.pushButton.setStyleSheet("background-color: rgba(255,255,255,.9);border: 0px solid white;border-radius:12px;")
+        self.pushButton_4.setStyleSheet("background-color: rgba(255,255,255,.9);border: 0px solid white;border-radius:12px;")
         self.label_29.setStyleSheet("background-color: rgba(255,255,255,.9);")
 
         self.setStyleSheet("QWidget { background-color: %s}" %

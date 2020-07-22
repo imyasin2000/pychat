@@ -393,7 +393,7 @@ def add_picprofile(s:socket,data:list):
             cursor.execute("UPDATE users SET profile=? WHERE user_id=?", (recived_f,data[0]))
             connection.commit()
             connection.close()
-            data1=[int(509)]
+            data1=[int(515)]
             data1 = json.dumps(data1)
             s.send((data1.encode() + b'\0'))
         
