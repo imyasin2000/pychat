@@ -21,7 +21,7 @@ print("\nThe server was successfully activated.\n")
 
 # Server information
 ## 51.195.19.3
-ip = '51.195.53.142'
+ip = '0.0.0.0'
 port = 1404
 online_users={}
 f=""
@@ -481,25 +481,26 @@ def to_check_friend_adding(s:socket,data:list):
 
 
 def send_ads(s:socket,data):
-    add=data[1:]
-    add=[int(6000)]+add
-    add=json.dumps(add)
     global online_users
-    print(online_users)
     print(data)
-
-    # if not bool(online_users) :
-        # try:
-        #     for (key,reciver) in online_users.items():
-        #         try:
-        #             key.send((data.encode() + b'\0'))
-        #         except:
-        #             print("while sending ads to client one client immadiatly get offline...")
-        #             continue
-        # except:
-    #     #     print('we tried tosend ads to online client but no one is not online... ')
-    # else:
-    #         print('we tried tosend ads to online client but no one is not online... ')
+    data1 = [int(514),data[0],data[1]]
+    data1 = json.dumps(data1)
+    if len(online_users) > 1 :
+        try:
+            for (key,reciver) in online_users.items():
+                try:
+                    if reciver != 'pychat':
+                        key.send((data1.encode() + b'\0'))
+                    else:
+                        print("while sending ads to client one client immadiatly get offline...")
+                        continue
+                except:
+                    print("while sending ads to client one client immadiatly get offline...")
+                    continue
+        except:
+            print('we tried tosend ads to online client but no one is not online... ')
+    else:
+        print('we tried tosend ads to online client but no one is online... ')
 
 def adding_friends(data:list):
     '''

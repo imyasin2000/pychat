@@ -1646,6 +1646,54 @@
       <bool>true</bool>
      </property>
     </widget>
+    <widget class="QLabel" name="label_29">
+     <property name="geometry">
+      <rect>
+       <x>3</x>
+       <y>0</y>
+       <width>1051</width>
+       <height>571</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>83</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Download</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="exit_b">
+     <property name="geometry">
+      <rect>
+       <x>980</x>
+       <y>30</y>
+       <width>21</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
     <zorder>label_2</zorder>
     <zorder>label_3</zorder>
     <zorder>record_b</zorder>
@@ -1684,6 +1732,9 @@
     <zorder>label_25</zorder>
     <zorder>label_26</zorder>
     <zorder>label_27</zorder>
+    <zorder>label_29</zorder>
+    <zorder>pushButton_4</zorder>
+    <zorder>exit_b</zorder>
    </widget>
    <widget class="QPushButton" name="emoji_BTN_2">
     <property name="geometry">

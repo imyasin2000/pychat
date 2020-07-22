@@ -66,7 +66,7 @@ s = socket.socket()
 
 # Server information
 ## 51.195.53.142
-s.connect(('51.195.53.142', 1404))
+s.connect(('0.0.0.0', 1405))
 
 email_changer = ''
 data_user = []
@@ -101,7 +101,7 @@ f=''
 f2=''
 token=''
 info=[]
-reciver='mhfa1380'
+reciver=''
 # token='mhfa1380'
 # reciver='yasin78'
 
@@ -531,6 +531,20 @@ def give_me_her_profile(s:socket,username):
     sending_to_server(s,data)
 
 
+def receve_ads(s:socket,data:list):
+    global Ads_down,window_master
+    Ads_down = data[1]
+    url = data[0]
+    urllib.request.urlretrieve(url, os.getcwd() + '/UI/Ads/images/Ads_file.jpeg')
+    print(data)
+    # app = QApplication(sys.argv)
+    # window = UI_Ads()
+    # app.exec_()
+    window_master.show_add_ver()
+    
+
+
+
 
 def get_all_chat(your_name,your_friend):
 
@@ -761,7 +775,7 @@ def sending_to_server(socket: socket, data):
         data = json.dumps(data)
         socket.send((data.encode() + b'\0'))
     except Exception as inst:
-        print("dis")
+        notification("Oh. connection lost!")
 
         return
 
@@ -786,7 +800,8 @@ obj_work={
       '510':receve_file,
       '511':obj.failed_add_friend,
       '512':obj.friend_added,
-      '513':receve_profile
+      '513':receve_profile,
+      '514':receve_ads
 
  
       }
@@ -1204,50 +1219,14 @@ class UI_login(QMainWindow):
         self.capcha()
 
 
-class UI_Ads(QMainWindow):
-    def __init__(self):
-        super(UI_Ads, self).__init__()
-        uic.loadUi("UI/Ads/Ads.ui", self)
-        self.offset = None
-        radius = 10.0
-        path = QtGui.QPainterPath()
-        if os.path.isfile(os.getcwd() + '/UI/Ads/images/Ads_file.png'):
-            img = QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads_file.png'))
-
-        else:
-            img = QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads.png'))
-
-        self.ads_l.setPixmap(img)
-        self.ads_l.setFixedWidth(img.width())
-        self.ads_l.setFixedHeight(img.height())
-        self.exit_b.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Ads/images/cross.png')))
-        self.exit_b.setStyleSheet("background-color: transparent;border: 0px solid white;")
-        self.pushButton.setStyleSheet("background-color: rgba(255,255,255,.9);border: 0px solid white;border-radius:12px;")
-        self.exit_b.move(img.width() - 32, 10)
-        self.exit_b.clicked.connect(self.close)
-        self.setFixedSize(self.ads_l.size())
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        self.pushButton.clicked.connect(self.open_link)
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-        path.addRoundedRect(QtCore.QRectF(self.rect()), radius, radius)
-        mask = QtGui.QRegion(path.toFillPolygon().toPolygon())
-        self.setMask(mask)
-        self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
-        self.show()
-    
-    def open_link(self):
-        global Ads_down
-        webbrowser.open(Ads_down)
-
-
 
 class UI_Master(QMainWindow):
     last_used = ""
 
     def __init__(self):
         super().__init__()
+
+
         
         uic.loadUi(os.path.abspath(os.getcwd() + "/UI/Master/Chat_box.ui"), self)
         global token,reciver,s,obj
@@ -1263,11 +1242,19 @@ class UI_Master(QMainWindow):
         # with open("theme.txt") as file: # Use file to refer to the file object
         #     data = file.read()
         #     print (data)
-
+        self.pushButton_4.setHidden(True)
+        self.exit_b.setHidden(True)
+        self.label_29.setHidden(True)
         self.setFixedSize(1051, 560)
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint |
                             QtCore.Qt.WindowMinimizeButtonHint)
-        
+        self.exit_b.clicked.connect(self.close_add_bt)
+        self.pushButton_4.clicked.connect(self.open_ads_lnk)
+        self.exit_b.setIcon(QIcon(os.path.abspath(os.getcwd() + '/UI/Ads/images/cross.png')))
+        self.exit_b.setStyleSheet("background-color: transparent;border: 0px solid white;")
+        self.pushButton.setStyleSheet("background-color: rgba(255,255,255,.9);border: 0px solid white;border-radius:12px;")
+        self.label_29.setStyleSheet("background-color: rgba(255,255,255,.9);")
+
         self.setStyleSheet("QWidget { background-color: %s}" %
                            QtGui.QColor(252, 255, 253).name())
         self.textedit_messegebox = self.findChild(QTextEdit, "messegebox_t")
@@ -1762,8 +1749,8 @@ class UI_Master(QMainWindow):
         self.user_add_5.text()
         self.user_add_6.text()
         print(self.user_add_5.text(),self.user_add_6.text())
-        data=[int(118),sender,self.user_add_5.text(),self.user_add_6.text()]
-        # sending_to_server(s,data)
+        data = [int(9000),self.user_add_5.text(),self.user_add_6.text()]
+        sending_to_server(s,data)
         self.user_add_5.clear()
         self.user_add_5.clear()
         self.close_ads()
@@ -3566,6 +3553,30 @@ class UI_Master(QMainWindow):
             self.formLayout.itemAt(i).widget().deleteLater()
             App.processEvents()
     
+    def show_add_ver(self):
+        self.pushButton_4.setHidden(False)
+        self.exit_b.setHidden(False)
+        self.label_29.setHidden(False)
+        
+        if os.path.isfile(os.getcwd() + '/UI/Ads/images/Ads_file.jpeg'):
+            img = QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads_file.jpeg'))
+
+        else:
+            img = QPixmap(os.path.abspath(os.getcwd() + '/UI/Ads/images/Ads.png'))
+
+        self.label_29.setPixmap(img)
+        
+    def close_add_bt(self):
+        self.pushButton_4.setHidden(True)
+        self.exit_b.setHidden(True)
+        self.label_29.setHidden(True)
+
+    def open_ads_lnk(self):
+        global Ads_down
+        webbrowser.open(Ads_down)
+        
+
+
     def snake(self):
         global bird,balls,score
         bird = vector(0, 0)
@@ -3869,7 +3880,7 @@ else:
 #     app_face.exit(app_face.exec_())
 #     pass
 # else:
-app = QApplication(sys.argv)
-window = UI_Ads()
-app.exec_()
+# app = QApplication(sys.argv)
+# window = UI_Ads()
+# app.exec_()
 
