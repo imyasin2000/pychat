@@ -16,13 +16,14 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
+import codecs
 
-print("\nThe server was successfully activated.\n - 1500")
+
 
 # Server information
 ## 51.195.19.3
-ip = '51.195.53.142'
-port = 1500
+ip = '192.168.1.107'
+port = 14200
 online_users={}
 f=""
 
@@ -31,14 +32,16 @@ class Socket:
     size = 4096  # Size of information sent and received
     user_info = ""
 
-    def __init__(self, host="192.168.109.1", port=14200):  # first run
+    def __init__(self, host="192.168.1.107", port=14200):  # first run
         self.socket = socket()  # socket.socket()
         self.socket.bind((host, port))
         self.socket.listen(1)  # Open the port and wait for the new user
+        print(f"\nThe server was successfully activated on port : {port} , ip : {host}")
         while True:  # trade two function            #connect to client
             threading.Thread(target=self._wait_recv, args=self.socket.accept()).start()  # 2ta khorji conn,addr ghabli
 
     def _wait_recv(self, conn: socket, addr):  # waiting for new messege or conect or diconnect
+        global online_users
         self._on_connect(conn)
         data = b''  # byte format
         while True:  # wait for new message
@@ -276,6 +279,7 @@ def edit_password(s: socket, data: list):
     s.send((data1.encode() + b'\0'))
 
 
+    
 def adding_new_client_to_online(s:socket,data:list):
     global online_users
     #-------add to online------------------------------------------------------
@@ -284,7 +288,8 @@ def adding_new_client_to_online(s:socket,data:list):
     print(data[0]+' connected!')
     online=data[0]
     online_users.update({s:data[0]})
-    print(online_users)
+
+    print("im online",online_users)
     # print(online_users)
     #start sending pm that recived when client was ofline
 
@@ -294,10 +299,12 @@ def adding_new_client_to_online(s:socket,data:list):
     r = cursor.fetchall()
     cursor.execute("DELETE FROM unsend WHERE reciver=?", (online,))
     if r!=[]:
-        data=[int(503)]+r
-        print("start sending unsend pm to user")
-        data = json.dumps(data)
-        s.send((data.encode() + b'\0'))
+        
+        print("toee?",r)
+        data2=[int(503)]+r
+        print("start sending unsend pm")
+        data2 = json.dumps(data2)
+        s.send((data2.encode() + b'\0'))
         print("sending pm finished")
         for i in r :
             if str(i[0])>str(i[1]):
@@ -320,8 +327,10 @@ def adding_new_client_to_online(s:socket,data:list):
 
             cursor.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (i[0], i[1], i[2], i[3],i[4],i[5]))
             connection.commit()
+        # connection.close()
+        # print(f'messages from {r[0][0]} to {r[1][1]} stored in our database ')
+        # print("ghhfgghf")
         connection.close()
-        print(f'messages from {r[0][0]} to {r[1][1]} stored in our database ')
 
     else:
         connection.commit()
@@ -331,8 +340,8 @@ def adding_new_client_to_online(s:socket,data:list):
 #dar data base unsend
 #---> data= [sender,reciver,message,message_time,message_id,'t']
 def sending_messages(s:socket,data:list):
-    global online_users
-    print(data)
+    
+
     for key, value in online_users.items(): 
         if data[1] == value: 
             data1=[int(503),(data[0],data[1],data[2],data[3],data[4],data[5])]
@@ -360,25 +369,26 @@ def sending_messages(s:socket,data:list):
             cur.execute(f"INSERT INTO {tabale} VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
             connection.commit()
             connection.close()
-        else:
-            print(data)
-            connection = sqlite3.connect("./database.db")
-            cur = connection.cursor()
-            cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
-            connection.commit()
-            connection.close()
-            print("message added to data base")
+            return
+        
+    print(data)
+    connection = sqlite3.connect("./database.db")
+    cur = connection.cursor()
+    cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1], data[2], data[3],data[4],data[5]))
+    connection.commit()
+    connection.close()
+    print("message added to data base")
 
 #[sender(0),reciver(1),str(x)  (2),ext(3),bf"{usage}".hex()  (4),media_id (5),usage (6), time(7)]
 
 def add_picprofile(s:socket,data:list):
-    global online_users
+   
     global f
 
-    recived_f = data[5]+data[3]
+    recived_f =  data[5]+data[3]
 
     if bytes.fromhex(data[4]) == b"start":
-        f = open(recived_f, "wb")
+        f = open(os.getcwd() + '/Data/' + recived_f, "wb")
 
 
     elif bytes.fromhex(data[4]) ==b"end":
@@ -426,29 +436,30 @@ def add_picprofile(s:socket,data:list):
                     connection.commit()
                     connection.close()
                     print(f"we recived a file from {data[0]}  , server sent this file to {data[1]} ")
-                else:
-                    connection = sqlite3.connect("./database.db")
-                    cur = connection.cursor()
-                    cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
-                    connection.commit()
-                    connection.close()
-                    print(f"we recived a file from {data[0]} but reciver ({data[1]}) is not online we stored this message in our data base...")
+                    return
+            connection = sqlite3.connect("./database.db")
+            cur = connection.cursor()
+            cur.execute("INSERT INTO unsend VALUES (?,?,?,?,?,?)", (data[0], data[1],recived_f, data[-1],data[5],data[-2]))
+            connection.commit()
+            connection.close()
+            print(f"we recived a file from {data[0]} but reciver ({data[1]}) is not online we stored this message in our data base...")
 
 
 
 
     else:
-
-        f.write(bytes.fromhex(data[4]))
+        
+        f.write(codecs.decode(data[4], 'hex_codec'))
 
 
 def send_file_to_client(s:socket,data1:list):
-        data = [int(510),b'start'.hex(),data1[0]]
+    try:
+        data = [int(510),b'start'.hex(),data1[0], str(os.path.getsize(os.getcwd() + '/Data/'+data1[0]))]
         data = json.dumps(data)
-        print(data1)
-        print(type(data1))
+        print("\n\nthis : ",data1)
+        # print(type(da/ta1))
         s.send((data.encode() + b'\0'))
-        path=data1[0]
+        path=os.getcwd() + '/Data/' + data1[0]
         print(path)
         f = open(path, 'rb')
         while True:
@@ -466,8 +477,57 @@ def send_file_to_client(s:socket,data1:list):
                 s.send((data.encode() + b'\0'))
                 print("file sent to client...")
                 break
+    except:
+        data1=[int(502),"File Not Availble in Server!"]
+        data1 = json.dumps(data1)
+        s.send((data1.encode() + b'\0'))
+        
+def onlion_cheak(s:socket,data:list):
+    profile_status=''
+    name_file=''
+    if data[1]!='nothing':
+        connection = sqlite3.connect("./database.db")
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM users WHERE user_id=?", (data[0],))
+        r = cursor.fetchall()
+        connection.close()
+        if r!=[]:
+            if data[1]!=r[0][5]:
+                profile_status = 'changed'
+                name_file=r[0][5]
 
-
+    connection = sqlite3.connect("./database.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM unsend WHERE sender=?", (data[2],))
+    r = cursor.fetchall()
+    connection.close()
+    if r!=[]:
+        data1 = [int(560)]+r
+        data1 = json.dumps(data1)
+        s.send((data1.encode() + b'\0'))
+    else:
+        data1 = [int(560), ['']]
+        data1 = json.dumps(data1)
+        s.send((data1.encode() + b'\0'))
+    # print(data)
+    if data[0]=="pychat":
+        data2=[int(555),"Service notification",profile_status,data[0],name_file]
+        data2 = json.dumps(data2)
+        s.send((data2.encode() + b'\0'))
+        return
+    for key, value in online_users.items(): 
+        if data[0] == value: 
+            data2=[int(555),"online",profile_status,data[0],name_file]
+            data2 = json.dumps(data2)
+            s.send((data2.encode() + b'\0'))
+            return
+    data2=[int(555),"last seen recently",profile_status,data[0],name_file]
+    data2 = json.dumps(data2)
+    s.send((data2.encode() + b'\0'))
+            
+        
+    
+    
 def to_check_friend_adding(s:socket,data:list):
     res=adding_friends(data)
     if res==int(404):
@@ -481,7 +541,7 @@ def to_check_friend_adding(s:socket,data:list):
 
 
 def send_ads(s:socket,data):
-    global online_users
+    
     print(data)
     data1 = [int(514),data[0],data[1]]
     data1 = json.dumps(data1)
@@ -602,7 +662,7 @@ def send_profile_to_client(s:socket,data:list):
     data1 = [int(513),b'start'.hex(),adress,data[0]]
     data1 = json.dumps(data1)
     s.send((data1.encode() + b'\0'))
-    path=adress
+    path=os.getcwd() + '/Data/' + adress
     f = open(path, 'rb')
     while True:
         l = f.read(1024)
@@ -749,7 +809,8 @@ def create_database_for_recover_some_one():
 
 
 work={'100':login_chek,'101':send_email,'102':add_new_user,'103':sign_in_request,'105':adding_new_client_to_online,'106':sending_messages,
-      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'122':send_profile_to_client,'9000':send_ads}
+      '107':edit_password,'108':add_picprofile,'120':send_file_to_client,'121':to_check_friend_adding,'122':send_profile_to_client,'9000':send_ads,'123':onlion_cheak,
+}
 
 s=Socket(ip, port)#run socket init make object from socket
 #s.send
