@@ -1,7 +1,7 @@
 [![N|Solid](http://pychat.sazito.com/uploads/image/rootimage/19/65f034c0f853471ed478ceb34164523b.png?w=200&h=70)](https://nodesource.com/products/nsolid)
 # pychat messenger
 this project ellected as top project in advansed programing class in university of mazandaran.
-after 4 month exprince 💻
+after 4 month experience 💻
 
 what it can do?
   - sending text messages to freiends
@@ -11,8 +11,8 @@ what it can do?
   - play games and share score
   - set password or face unlock
   - set profile pic
-  - two step authenticasion
-  - yahoo authenticasion
+  - two step authentication
+  - yahoo authentication
   - qr code scanning 
 
 # how to run?
