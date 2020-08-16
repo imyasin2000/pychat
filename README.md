@@ -23,8 +23,10 @@ what can it do?
   - open terminal
   - cd to the directory where requirements.txt is located(cd to cloned folder ).
   - pip install -r requirements.txt in your shell.
-  -  first go to the server_side folder and edit login-serverside_1500.py like me then go to the client folder and edit new_login.py : 
-   ![](http://8upload.ir/uploads/f87867485.gif)
+  -  first go to the server_side folder and open login-serverside_1500.py replace '192.168.109.1' --> '0.0.0.0'  then go to the client folder and edit new_login.py replace '192.168.109.1' --> '0.0.0.0'  : 
+  -  [![N|Solid](http://8upload.ir/uploads/f23490690.jpg)](https://nodesource.com/products/nsolid)
+  -  [![N|Solid](http://8upload.ir/uploads/f53330266.jpg)](https://nodesource.com/products/nsolid)
+
   -  1)run login-serverside_1500.py      2)run new_login.py 
 
 
@@ -33,6 +35,7 @@ what can it do?
   - open terminal
   - cd to the directory where requirements.txt is located(cd to cloned folder ).
   - pip install -r requirements.txt in your shell.
+  -  open cmd an type ipconfig if your ip adress are diffrent(look at two pictures above) , first go to the server_side folder and open login-serverside_1500.py replace '192.168.109.1' --> 'your ip'  then go to the client folder and edit new_login.py replace '192.168.109.1' --> 'your ip'  :  
   -  1)run login-serverside_1500.py      2)run new_login.py
 
 # Screenshots
