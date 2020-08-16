@@ -1,10 +1,10 @@
 [![N|Solid](http://pychat.sazito.com/uploads/image/rootimage/19/65f034c0f853471ed478ceb34164523b.png?w=200&h=70)](https://nodesource.com/products/nsolid)
 # pychat messenger
 this project ellected as top project in advansed programing class in university of mazandaran.
-after 4 month experience 💻
+after 4 month experience with python and 8 month with programming  💻
 
-what it can do?
-  - sending text messages to freiends
+what can it do?
+  - sending text messages to freinds
   - sending media and files to freinds 
   - you can upload files in server (some thing like cloud 😊 )
   - sending ad to friends like google ads
@@ -22,7 +22,12 @@ what it can do?
   - cd to the directory where requirements.txt is located.
   - pip install -r requirements.txt in your shell.
 # notice
-1) if still its not working run program in text editor then error will be some packages not installed 
+1) if  it's still not working run program in text editor then error will be some packages not installed 
 just install it.
 2) for better usage some modulse comented , beacuse installing them  are difficult if you are sure 
 that cv2 , pyaudio and face_recognition installed , just uncomment them and enjoy face unlock
+
+# Screenshots
+  ![](http://8upload.ir/uploads/f597997611.gif)
+  
+ 
