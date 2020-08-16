@@ -17,15 +17,23 @@ what can it do?
 
 # how to run?
 
-
+    
+ # linux:
+  - 
   - open terminal
-  - cd to the directory where requirements.txt is located.
+  - cd to the directory where requirements.txt is located(cd to cloned folder ).
   - pip install -r requirements.txt in your shell.
-# notice
-1) if  it's still not working run program in text editor then error will be some packages not installed 
-just install it.
-2) for better usage some modulse comented , beacuse installing them  are difficult if you are sure 
-that cv2 , pyaudio and face_recognition installed , just uncomment them and enjoy face unlock
+  -  first go to the server_side folder and edit login-serverside_1500.py like me then go to the client folder and edit new_login.py : 
+   ![](http://8upload.ir/uploads/f87867485.gif)
+  -  1)run login-serverside_1500.py      2)run new_login.py 
+
+
+    
+ # windows:
+  - open terminal
+  - cd to the directory where requirements.txt is located(cd to cloned folder ).
+  - pip install -r requirements.txt in your shell.
+  -  1)run login-serverside_1500.py      2)run new_login.py
 
 # Screenshots
   ![](http://8upload.ir/uploads/f597997611.gif)
