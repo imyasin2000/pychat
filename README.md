@@ -1,7 +1,7 @@
 [![N|Solid](http://pychat.sazito.com/uploads/image/rootimage/19/65f034c0f853471ed478ceb34164523b.png?w=200&h=70)](https://nodesource.com/products/nsolid)
 # pychat messenger
 this project ellected as top project in advansed programing class in university of mazandaran.
-after 4 month experience with python and 8 month with programming i writed more than 90% of back-end server codes of this project and client side backend 💻
+more than 90% of back-end server codes of this project and client side backend developed by me.💻
 
 what can it do?
   - sending text messages to freinds
