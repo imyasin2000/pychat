@@ -42,7 +42,6 @@ what can it do?
   ![](https://img.techpowerup.org/201024/687474703a2f2f7575706c6f61642e69722f66696c65732f386366645f776562702e6e65742d6769666d616b65725f2837292e676966.gif)
   
  # contact me
-   - telagram id : yasinkh7
   -  email:yasinmhd110@gmail.com
  
 
