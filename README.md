@@ -5,7 +5,7 @@
 what can it do?
   - sending text messages to freinds
   - sending media and files to freinds 
-  - you can upload files in server (some thing like cloud 😊 and we serve them for ever )
+  - you can upload files in server (some thing like cloud 😊 and we serve them for ever, and you can redownload anytime)
   - sending ad to friends like google ads
   - play games and share score
   - set password or face unlock
